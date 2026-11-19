@@ -7,7 +7,7 @@ import { CamadaBatched } from './3d/CamadaBatched'
 import { RigCamera } from './3d/RigCamera'
 import { IndicadorCorte } from './3d/IndicadorCorte'
 import { CamadaRotulos, ProjetorRotulos } from './3d/RotulosDestaques'
-import { RotuloSelecao } from './3d/RotuloSelecao'
+import { CamadaRotuloSelecao, ProjetorSelecao } from './3d/RotuloSelecao'
 
 /** Luz de estúdio suave, sem baixar HDR externo. */
 function Iluminacao() {
@@ -96,13 +96,14 @@ export default function Viewer3D() {
         <Iluminacao />
         <Suspense fallback={null}>
           <Camadas />
-          <RotuloSelecao />
+          <ProjetorSelecao />
           <ProjetorRotulos />
         </Suspense>
         <IndicadorCorte />
         <RigCamera />
       </Canvas>
       <CamadaRotulos />
+      <CamadaRotuloSelecao />
     </>
   )
 }
