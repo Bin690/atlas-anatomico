@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { BotaoVoltar } from '../components/BotaoVoltar'
 import { SeloPro } from '../components/ui/Pro'
+import { useCatalogo } from '../data'
 import { aulaPorId } from '../data/aulas'
 import { useAtlasStore } from '../store/useAtlasStore'
 import type { PassoAula } from '../types/atlas'
@@ -32,6 +33,7 @@ export default function AulaView() {
   const premium = useAtlasStore((s) => s.premium)
   const exigirPro = useAtlasStore((s) => s.exigirPro)
   const [indice, setIndice] = useState(0)
+  const { porId } = useCatalogo()
 
   // Entra no modo aula guardando o estado do atlas, e restaura ao sair
   const anterior = useRef<{ camadas: string[]; raioX: boolean } | null>(null)
@@ -120,9 +122,22 @@ export default function AulaView() {
               ))}
             </ol>
             <h2 className="mt-3 text-lg leading-snug font-semibold text-white">{passo.titulo}</h2>
-            <p className="mt-2 min-h-0 overflow-y-auto text-sm leading-relaxed text-slate-200" aria-live="polite">
-              {passo.texto}
-            </p>
+            <div className="mt-2 min-h-0 overflow-y-auto" aria-live="polite">
+              <p className="text-sm leading-relaxed text-slate-200">{passo.texto}</p>
+              {/* No celular, os nomes ficam nesta legenda e o modelo mostra só os números */}
+              {!!passo.destaques?.length && (
+                <ol className="mt-3 space-y-1 sm:hidden" aria-label="Estruturas destacadas">
+                  {passo.destaques.slice(0, 10).map((id, i) => (
+                    <li key={id} className="flex items-start gap-2 text-[13px] text-slate-200">
+                      <span className="grid size-5 shrink-0 place-items-center rounded-full bg-amber-400 text-[11px] font-bold text-slate-950">
+                        {i + 1}
+                      </span>
+                      {porId.get(id)?.nome}
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
             <div className="mt-4 flex gap-2">
               <button
                 type="button"

@@ -6,7 +6,7 @@ import { useAtlasStore } from '../store/useAtlasStore'
 import { CamadaBatched } from './3d/CamadaBatched'
 import { RigCamera } from './3d/RigCamera'
 import { IndicadorCorte } from './3d/IndicadorCorte'
-import { RotulosDestaques } from './3d/RotulosDestaques'
+import { CamadaRotulos, ProjetorRotulos } from './3d/RotulosDestaques'
 import { RotuloSelecao } from './3d/RotuloSelecao'
 
 /** Luz de estúdio suave, sem baixar HDR externo. */
@@ -87,19 +87,22 @@ function Camadas() {
 /** Canvas único e persistente do atlas. */
 export default function Viewer3D() {
   return (
-    <Canvas
-      camera={{ fov: 35, position: [0, 1.1, 5], near: 0.005, far: 50 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, localClippingEnabled: true }}
-    >
-      <Iluminacao />
-      <Suspense fallback={null}>
-        <Camadas />
-        <RotuloSelecao />
-        <RotulosDestaques />
-      </Suspense>
-      <IndicadorCorte />
-      <RigCamera />
-    </Canvas>
+    <>
+      <Canvas
+        camera={{ fov: 35, position: [0, 1.1, 5], near: 0.005, far: 50 }}
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: true, localClippingEnabled: true }}
+      >
+        <Iluminacao />
+        <Suspense fallback={null}>
+          <Camadas />
+          <RotuloSelecao />
+          <ProjetorRotulos />
+        </Suspense>
+        <IndicadorCorte />
+        <RigCamera />
+      </Canvas>
+      <CamadaRotulos />
+    </>
   )
 }
