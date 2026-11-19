@@ -21,9 +21,12 @@ interface Margens {
 
 /** Áreas da tela (px) cobertas pela interface, para o modelo ficar na área livre. */
 function margens(largura: number, altura: number, temCartao: boolean, temPainel: boolean): Margens {
-  const quiz = useAtlasStore.getState().modoQuiz
+  const { modoQuiz, emAula } = useAtlasStore.getState()
+  const quiz = modoQuiz || emAula
   if (largura < 640) {
-    const folha = quiz ? altura * 0.58 : temCartao || temPainel ? Math.min(altura * 0.42, 300) : 0
+    let folha = temCartao || temPainel ? Math.min(altura * 0.42, 300) : 0
+    if (modoQuiz) folha = altura * 0.58
+    else if (emAula) folha = altura * 0.45
     return { topo: 64, base: 96 + folha, esquerda: 0, direita: 0 }
   }
   return { topo: 64, base: 100, esquerda: temPainel ? 372 : 0, direita: temCartao || quiz ? 400 : 0 }
@@ -90,8 +93,19 @@ export function RigCamera() {
     const c = controles.current
     if (!c) return
     const { selecionada, isoladas, painel } = useAtlasStore.getState()
+    const { regiaoFoco } = useAtlasStore.getState()
     let caixa: Box3 | null = selecionada ? caixaDaEstrutura(selecionada) : null
-    if (!caixa && isoladas) {
+    // Quiz "Encontre": enquadra uma região ampla (≥ 45 cm) ao redor da resposta, sem entregá-la
+    if (!caixa && regiaoFoco) {
+      const r = caixaDaEstrutura(regiaoFoco)
+      if (r) {
+        const t = r.getSize(new Vector3())
+        caixa = r.expandByVector(
+          new Vector3(Math.max(0, 0.45 - t.x), Math.max(0, 0.45 - t.y), Math.max(0, 0.45 - t.z)).multiplyScalar(0.5),
+        )
+      }
+    }
+    if (!caixa && isoladas && !useAtlasStore.getState().focoIds?.length) {
       caixa = new Box3()
       for (const id of isoladas) {
         const b = caixaDaEstrutura(id)
@@ -100,8 +114,19 @@ export function RigCamera() {
       if (caixa.isEmpty()) caixa = null
     }
     // Camada ainda carregando: a camada pede o foco de novo quando estiver pronta
-    useAtlasStore.setState({ focoPendente: !!selecionada && !caixa && !isoladas })
-    if (selecionada && !caixa && !isoladas) return
+    // Aula guiada: enquadra o conjunto de estruturas do passo
+    const { focoIds } = useAtlasStore.getState()
+    if (!caixa && focoIds?.length) {
+      const uniao = new Box3()
+      for (const id of focoIds) {
+        const b = caixaDaEstrutura(id)
+        if (b) uniao.union(b)
+      }
+      if (!uniao.isEmpty()) caixa = uniao
+    }
+    const pendente = (!!selecionada || !!regiaoFoco || !!focoIds?.length) && !caixa && !isoladas
+    useAtlasStore.setState({ focoPendente: pendente })
+    if (pendente) return
     // Corte axial visto de cima: enquadra só a fatia, não o corpo inteiro
     const { corte } = useAtlasStore.getState()
     let alvo = caixa ? caixa.clone() : CORPO

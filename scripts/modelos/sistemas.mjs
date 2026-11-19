@@ -92,7 +92,7 @@ const REGRAS = [
   ['pele', /^(skin|hair of head|pubic hair|eyebrow)$/],
   [
     'coracao',
-    /(atrium|ventricle of heart|^(wall|cavity) of (left|right) (atrium|ventricle)|valve|leaflet|cusp|papillary muscle|interventricular septum|interatrial septum)/,
+    /(atrium|ventricle of heart|^wall of ventricle$|^(wall|cavity) of (left|right) (atrium|ventricle)|valve|leaflet|cusp|papillary muscle|interventricular septum|interatrial septum)/,
   ],
   [
     'arterias',

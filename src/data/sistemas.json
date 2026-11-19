@@ -44,7 +44,7 @@
     "modelo": "/models/nervoso.glb",
     "modeloLeve": "/models/nervoso-leve.glb",
     "visivelPorPadrao": false,
-    "total": 128
+    "total": 127
   },
   {
     "id": "olhos",
@@ -60,7 +60,7 @@
     "cor": "#a32f37",
     "modelo": "/models/coracao.glb",
     "visivelPorPadrao": true,
-    "total": 22
+    "total": 23
   },
   {
     "id": "arterias",

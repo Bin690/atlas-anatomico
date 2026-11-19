@@ -19,6 +19,7 @@ import { atualizarPlano, camadasMontadas, intersecaoReal, PLANO } from './corte'
 
 const COR_SELECAO = new Color('#38bdf8')
 const COR_HOVER = new Color('#ffffff')
+const COR_DESTAQUE = new Color('#f59e0b')
 
 interface InfoCamada {
   malha: BatchedMesh
@@ -133,13 +134,15 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
   const hover = useAtlasStore((s) => s.hover)
   const ocultas = useAtlasStore((s) => s.ocultas)
   const isoladas = useAtlasStore((s) => s.isoladas)
+  const destaques = useAtlasStore((s) => s.destaques)
   const selecionar = useAtlasStore((s) => s.selecionar)
   const setHover = useAtlasStore((s) => s.setHover)
 
   // Registro global (para foco e rótulos)
   useLayoutEffect(() => {
-    const { selecionada: sel, focoPendente, focar } = useAtlasStore.getState()
-    if (focoPendente && sel && indice.has(sel)) requestAnimationFrame(focar)
+    const { selecionada: sel, regiaoFoco, focoIds, focoPendente, focar } = useAtlasStore.getState()
+    const pendentes = [sel, regiaoFoco, ...(focoIds ?? [])].filter((x): x is string => !!x)
+    if (focoPendente && pendentes.some((id) => indice.has(id))) requestAnimationFrame(focar)
     ids.forEach((id, instancia) => registro.set(id, { info, instancia }))
     camadasMontadas.add(info.malha)
     return () => {
@@ -177,10 +180,11 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
       if (i === undefined) return
       malha.setColorAt(i, tmp.copy(corBase[i]).lerp(cor, mistura))
     }
+    for (const id of destaques) marcar(id, COR_DESTAQUE, 0.55)
     marcar(hover, COR_HOVER, 0.35)
     marcar(selecionada, COR_SELECAO, 0.6)
-    anteriores.current = [hover, selecionada].filter((x): x is string => !!x)
-  }, [malha, indice, corBase, hover, selecionada])
+    anteriores.current = [...destaques, hover, selecionada].filter((x): x is string => !!x)
+  }, [malha, indice, corBase, hover, selecionada, destaques])
 
   // Raio-X e corte anatômico
   const corte = useAtlasStore((s) => s.corte)
@@ -223,10 +227,16 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
       }}
       onPointerOut={() => setHover(null)}
       onClick={(e: ThreeEvent<MouseEvent>) => {
-        if (e.delta > 6 || useAtlasStore.getState().modoQuiz) return // arrasto, ou quiz em andamento
+        if (e.delta > 6) return // foi arrasto, não toque
+        const estado = useAtlasStore.getState()
+        if (estado.modoQuiz && !estado.quizAguardandoToque) return // quiz: toques só no modo "Encontre"
         const alvo = idDoEvento(e)
         if (!alvo?.id) return
         e.stopPropagation()
+        if (estado.modoQuiz) {
+          useAtlasStore.setState({ quizToque: { id: alvo.id, ponto: alvo.ponto.toArray() } })
+          return
+        }
         selecionar(alvo.id, { ponto: alvo.ponto.toArray() })
       }}
     />

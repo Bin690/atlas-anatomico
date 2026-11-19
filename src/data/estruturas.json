@@ -5184,7 +5184,7 @@
     "id": "FMA13884",
     "nome": "Parede do ventrículo",
     "en": "Wall of ventricle",
-    "sistema": "nervoso",
+    "sistema": "coracao",
     "pai": "Ventrículo"
   },
   {

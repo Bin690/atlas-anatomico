@@ -6,6 +6,7 @@ import { useAtlasStore } from '../store/useAtlasStore'
 import { CamadaBatched } from './3d/CamadaBatched'
 import { RigCamera } from './3d/RigCamera'
 import { IndicadorCorte } from './3d/IndicadorCorte'
+import { RotulosDestaques } from './3d/RotulosDestaques'
 import { RotuloSelecao } from './3d/RotuloSelecao'
 
 /** Luz de estúdio suave, sem baixar HDR externo. */
@@ -56,8 +57,9 @@ function Camadas() {
   const { sistemas, porId } = useCatalogo()
   const camadas = useAtlasStore((s) => s.camadas)
   const raioX = useAtlasStore((s) => s.raioX)
-  const selecionada = useAtlasStore((s) => s.selecionada)
-  const sistemaSelecionado = selecionada ? porId.get(selecionada)?.sistema : undefined
+  // A camada da estrutura em estudo (selecionada, ou procurada no quiz "Encontre") nunca fica translúcida
+  const emEstudo = useAtlasStore((s) => s.selecionada ?? s.regiaoFoco)
+  const sistemaSelecionado = emEstudo ? porId.get(emEstudo)?.sistema : undefined
 
   // Camadas são baixadas na primeira vez que ficam visíveis e depois permanecem em memória
   const [carregadas, setCarregadas] = useState<Set<string>>(() => new Set())
@@ -94,6 +96,7 @@ export default function Viewer3D() {
       <Suspense fallback={null}>
         <Camadas />
         <RotuloSelecao />
+        <RotulosDestaques />
       </Suspense>
       <IndicadorCorte />
       <RigCamera />

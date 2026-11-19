@@ -49,3 +49,30 @@ export interface Conteudo {
   /** Ficha técnica (ex.: Origem, Inserção, Inervação, Ação). */
   ficha?: Record<string, string>
 }
+
+/** Um passo de aula guiada: define o que aparece no 3D e o texto explicativo. */
+export interface PassoAula {
+  titulo: string
+  texto: string
+  /** Camadas visíveis neste passo. */
+  camadas: string[]
+  raioX?: boolean
+  /** Se definido, só estas estruturas aparecem. */
+  isolar?: string[]
+  /** Estruturas destacadas em âmbar, com rótulo. */
+  destaques?: string[]
+  /** Estruturas que a câmera deve enquadrar. */
+  foco?: string[]
+  corte?: { plano: 'axial' | 'sagital' | 'coronal'; posicao: number; inverter: boolean } | null
+}
+
+export interface Aula {
+  id: string
+  titulo: string
+  resumo: string
+  duracaoMin: number
+  /** Exige assinatura PRO. */
+  premium: boolean
+  ordem: number
+  passos: PassoAula[]
+}

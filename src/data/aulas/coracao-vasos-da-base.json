@@ -1,0 +1,97 @@
+{
+  "id": "coracao-vasos-da-base",
+  "titulo": "Coração e vasos da base",
+  "resumo": "Câmaras, valvas, grandes vasos e circulação coronária, com correlações clínicas.",
+  "duracaoMin": 7,
+  "premium": true,
+  "ordem": 2,
+  "passos": [
+    {
+      "titulo": "O coração no mediastino",
+      "texto": "O coração ocupa o mediastino médio, entre os pulmões, com dois terços à esquerda da linha mediana. O ápice aponta para baixo, para a esquerda e para a frente, projetando-se no 5º espaço intercostal esquerdo, na linha hemiclavicular — onde se palpa o ictus cordis.",
+      "camadas": ["pele", "esqueleto", "pulmoes", "coracao"],
+      "raioX": true,
+      "destaques": ["FMA13884"],
+      "foco": ["FMA9457", "FMA9531", "FMA13884"]
+    },
+    {
+      "titulo": "As quatro câmaras",
+      "texto": "Os átrios recebem o sangue: o direito, das veias cavas e do seio coronário; o esquerdo, das veias pulmonares. Os ventrículos bombeiam: o direito para o tronco pulmonar e o esquerdo, com parede cerca de três vezes mais espessa, para a aorta.",
+      "camadas": ["coracao"],
+      "isolar": ["FMA9457", "FMA9531", "FMA13884"],
+      "destaques": ["FMA9457", "FMA9531", "FMA13884"],
+      "foco": ["FMA9457", "FMA9531", "FMA13884"]
+    },
+    {
+      "titulo": "Grandes vasos da base",
+      "texto": "Da base do coração saem a parte ascendente da aorta e o tronco pulmonar, e chegam as veias cavas superior e inferior. Do arco da aorta nascem, da direita para a esquerda, o tronco braquiocefálico, a artéria carótida comum esquerda e a artéria subclávia esquerda.",
+      "camadas": ["coracao", "arterias", "veias"],
+      "isolar": [
+        "FMA9457",
+        "FMA9531",
+        "FMA13884",
+        "FMA3736",
+        "FMA3768",
+        "FMA3784",
+        "FMA8612",
+        "FMA50872",
+        "FMA50873",
+        "FMA4720",
+        "FMA10951",
+        "FMA3932",
+        "FMA4058",
+        "FMA4694"
+      ],
+      "destaques": ["FMA3768", "FMA8612", "FMA4720", "FMA3932", "FMA4058", "FMA4694"],
+      "foco": ["FMA3768", "FMA8612", "FMA4720", "FMA13884"]
+    },
+    {
+      "titulo": "Valvas cardíacas",
+      "texto": "As valvas atrioventriculares (tricúspide à direita, mitral à esquerda) têm cúspides presas aos músculos papilares; as valvas semilunares (pulmonar e aórtica) têm três válvulas cada. Focos de ausculta: aórtico (2º EIC direito), pulmonar (2º EIC esquerdo), tricúspide (borda esternal esquerda baixa) e mitral (ápice).",
+      "camadas": ["coracao"],
+      "isolar": [
+        "FMA7242",
+        "FMA7243",
+        "FMA7238",
+        "FMA7239",
+        "FMA7240",
+        "FMA7253",
+        "FMA7252",
+        "FMA7254",
+        "FMA7249",
+        "FMA7247",
+        "FMA7250"
+      ],
+      "destaques": ["FMA7242", "FMA7238", "FMA7253", "FMA7249"],
+      "foco": ["FMA7242", "FMA7243", "FMA7238", "FMA7239", "FMA7253", "FMA7249"]
+    },
+    {
+      "titulo": "Circulação coronária",
+      "texto": "As artérias coronárias nascem dos seios da aorta. A esquerda divide-se em ramo interventricular anterior (descendente anterior) e ramo circunflexo; a direita percorre o sulco coronário e dá o ramo marginal e, na maioria das pessoas, o interventricular posterior. O sangue venoso volta pelo seio coronário ao átrio direito.",
+      "camadas": ["coracao", "arterias", "veias"],
+      "isolar": [
+        "FMA9457",
+        "FMA9531",
+        "FMA13884",
+        "FMA3855",
+        "FMA74912",
+        "FMA3895",
+        "FMA3802",
+        "FMA3818",
+        "FMA3840",
+        "FMA4706",
+        "FMA4707"
+      ],
+      "destaques": ["FMA3855", "FMA74912", "FMA3895", "FMA3802", "FMA3840"],
+      "foco": ["FMA9457", "FMA9531", "FMA13884"]
+    },
+    {
+      "titulo": "Correlação clínica: infarto",
+      "texto": "A oclusão do ramo interventricular anterior (\"artéria da viúva\") causa infarto da parede anterior e do septo, com alterações em V1–V4 no ECG. A oclusão da coronária direita tende a causar infarto inferior (DII, DIII e aVF) e bradiarritmias, pois ela costuma irrigar os nós sinoatrial e atrioventricular.",
+      "camadas": ["coracao", "arterias"],
+      "isolar": ["FMA9457", "FMA9531", "FMA13884", "FMA3855", "FMA74912", "FMA3895", "FMA3802", "FMA3818", "FMA3840"],
+      "destaques": ["FMA74912", "FMA3802"],
+      "foco": ["FMA13884", "FMA74912"]
+    }
+  ]
+}

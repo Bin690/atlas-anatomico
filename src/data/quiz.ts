@@ -56,6 +56,8 @@ export function gerarPerguntas(
   conteudo: Record<string, Conteudo>,
   sistema: string | null,
   quantidade = 10,
+  /** Ids a perguntar primeiro (ex.: revisões pendentes da repetição espaçada). */
+  prioritarios: string[] = [],
 ): Pergunta[] {
   const doSistema = estruturas.filter((e) => e.sistema !== 'pele' && (!sistema || e.sistema === sistema))
   const comConteudo = doSistema.filter((e) => conteudo[e.id])
@@ -63,7 +65,10 @@ export function gerarPerguntas(
 
   const perguntas: Pergunta[] = []
   const basesUsadas = new Set<string>()
-  for (const alvo of embaralhar(pool)) {
+  const porId = new Map(doSistema.map((e) => [e.id, e]))
+  const primeiro = prioritarios.map((id) => porId.get(id)).filter((e): e is Estrutura => !!e)
+  const jaVem = new Set(primeiro.map((e) => e.id))
+  for (const alvo of [...primeiro, ...embaralhar(pool.filter((e) => !jaVem.has(e.id)))]) {
     if (perguntas.length >= quantidade) break
     const b = base(alvo.nome)
     if (basesUsadas.has(b)) continue

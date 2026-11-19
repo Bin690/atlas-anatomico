@@ -5703,8 +5703,13 @@
     }
   },
   "FMA13884": {
-    "descricao": "Conjunto de estruturas que delimitam as cavidades ventriculares do encéfalo, revestidas internamente por epêndima.",
-    "correlacaoClinica": "Na hidrocefalia aguda, a passagem transependimária de líquor gera hipersinal periventricular em T2/FLAIR na ressonância magnética."
+    "descricao": "Parede muscular dos ventrículos direito e esquerdo (miocárdio ventricular), incluindo o septo interventricular; a do ventrículo esquerdo é cerca de três vezes mais espessa.",
+    "correlacaoClinica": "No infarto agudo do miocárdio, a necrose da parede ventricular pode levar a insuficiência cardíaca, aneurisma ventricular ou ruptura de parede livre ou do septo.",
+    "ficha": {
+      "Camadas": "Endocárdio, miocárdio e epicárdio",
+      "Irrigação": "Artérias coronárias direita e esquerda",
+      "Espessura": "VE ≈ 8–12 mm; VD ≈ 3–5 mm"
+    }
   },
   "FMA260791": {
     "descricao": "Substância branca de cada hemisfério cerebral, formada por fibras de associação, comissurais e de projeção, incluindo o centro semioval.",

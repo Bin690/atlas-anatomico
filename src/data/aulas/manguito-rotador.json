@@ -1,0 +1,81 @@
+{
+  "id": "manguito-rotador",
+  "titulo": "Manguito rotador",
+  "resumo": "Os quatro músculos que estabilizam o ombro: anatomia, função e testes clínicos.",
+  "duracaoMin": 5,
+  "premium": false,
+  "ordem": 1,
+  "passos": [
+    {
+      "titulo": "A articulação do ombro",
+      "texto": "O ombro (articulação glenoumeral) une a cabeça do úmero à cavidade glenoidal da escápula. A cavidade é rasa, o que dá grande mobilidade, mas pouca estabilidade óssea: quem segura a cabeça do úmero no lugar são, sobretudo, os músculos do manguito rotador.",
+      "camadas": ["pele", "esqueleto"],
+      "isolar": ["FMA13322", "FMA13395", "FMA23130"],
+      "destaques": ["FMA13395", "FMA23130", "FMA13322"],
+      "foco": ["FMA13395", "FMA23130", "FMA13322"]
+    },
+    {
+      "titulo": "Músculo supraespinal",
+      "texto": "Origem na fossa supraespinal da escápula; passa sob o acrômio e insere-se na face superior do tubérculo maior do úmero. Inicia a abdução do braço (primeiros 15°). Inervação: nervo supraescapular (C5–C6). É o tendão do manguito mais lesado.",
+      "camadas": ["esqueleto", "musculos"],
+      "isolar": ["FMA13322", "FMA13395", "FMA23130", "FMA32544", "FMA32547", "FMA32553", "FMA13414"],
+      "destaques": ["FMA32544"],
+      "foco": ["FMA32544", "FMA13395"]
+    },
+    {
+      "titulo": "Infraespinal e redondo menor",
+      "texto": "Na face posterior da escápula: o infraespinal (fossa infraespinal; nervo supraescapular) e o redondo menor (margem lateral da escápula; nervo axilar). Ambos se inserem no tubérculo maior do úmero, abaixo do supraespinal, e fazem a rotação lateral do braço.",
+      "camadas": ["esqueleto", "musculos"],
+      "isolar": ["FMA13322", "FMA13395", "FMA23130", "FMA32544", "FMA32547", "FMA32553", "FMA13414"],
+      "destaques": ["FMA32547", "FMA32553"],
+      "foco": ["FMA32547", "FMA32553", "FMA13395"]
+    },
+    {
+      "titulo": "Músculo subescapular",
+      "texto": "O único músculo do manguito na face anterior: ocupa a fossa subescapular e insere-se no tubérculo menor do úmero. Faz a rotação medial do braço. Inervação: nervos subescapulares superior e inferior (C5–C6). Mnemônico do manguito: SIRS (Supraespinal, Infraespinal, Redondo menor, Subescapular).",
+      "camadas": ["esqueleto", "musculos"],
+      "isolar": ["FMA13322", "FMA13395", "FMA23130", "FMA32544", "FMA32547", "FMA32553", "FMA13414"],
+      "destaques": ["FMA13414"],
+      "foco": ["FMA13414", "FMA13395"]
+    },
+    {
+      "titulo": "O deltoide cobre o manguito",
+      "texto": "Por fora do manguito está o deltoide, com suas partes clavicular, acromial e espinal. Ele é o principal abdutor do braço depois dos primeiros 15°, que ficam a cargo do supraespinal. Inervação: nervo axilar (C5–C6), que pode ser lesado em luxações do ombro e fraturas do colo cirúrgico do úmero.",
+      "camadas": ["esqueleto", "musculos"],
+      "isolar": [
+        "FMA13322",
+        "FMA13395",
+        "FMA23130",
+        "FMA32544",
+        "FMA32547",
+        "FMA32553",
+        "FMA13414",
+        "FMA34680",
+        "FMA34682",
+        "FMA34684"
+      ],
+      "destaques": ["FMA34680", "FMA34682", "FMA34684"],
+      "foco": ["FMA34680", "FMA34682", "FMA34684"]
+    },
+    {
+      "titulo": "Correlação clínica: síndrome do impacto",
+      "texto": "Neste corte coronal, veja o supraespinal passando no espaço estreito sob o acrômio. Na abdução, o tendão pode ser comprimido contra o arco coracoacromial (síndrome do impacto), levando a tendinopatia e ruptura. O teste de Jobe (abdução contra resistência, polegares para baixo) avalia o supraespinal.",
+      "camadas": ["esqueleto", "musculos"],
+      "isolar": [
+        "FMA13322",
+        "FMA13395",
+        "FMA23130",
+        "FMA32544",
+        "FMA32547",
+        "FMA32553",
+        "FMA13414",
+        "FMA34680",
+        "FMA34682",
+        "FMA34684"
+      ],
+      "destaques": ["FMA32544"],
+      "foco": ["FMA32544", "FMA23130"],
+      "corte": { "plano": "coronal", "posicao": -0.035, "inverter": false }
+    }
+  ]
+}

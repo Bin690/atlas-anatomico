@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Vec3 } from '../types/atlas'
 
-export type Painel = 'camadas' | 'busca' | 'cortes' | null
+export type Painel = 'camadas' | 'busca' | 'cortes' | 'aulas' | null
 
 export type PlanoCorte = 'axial' | 'sagital' | 'coronal'
 
@@ -41,6 +41,22 @@ interface AtlasState {
   modoQuiz: boolean
   /** No quiz: a resposta já foi dada (mostra o nome no rótulo). */
   quizRevelado: boolean
+  /** Quiz "Encontre a estrutura": aguardando o aluno tocar no modelo. */
+  quizAguardandoToque: boolean
+  /** Último toque do aluno no quiz "Encontre a estrutura". */
+  quizToque: { id: string; ponto: Vec3 } | null
+  /** Enquadra a região ao redor desta estrutura, sem destacá-la (quiz "Encontre"). */
+  regiaoFoco: string | null
+  /** Aula guiada em andamento (a interface ocupa parte da tela). */
+  emAula: boolean
+  /** Estruturas destacadas em âmbar, com rótulo (aulas guiadas). */
+  destaques: string[]
+  /** Enquadra o conjunto destas estruturas (aulas guiadas). */
+  focoIds: string[] | null
+  /** Recursos PRO liberados (protótipo: liberação de demonstração, salva no aparelho). */
+  premium: boolean
+  /** Recurso PRO que o usuário tentou abrir sem assinatura (mostra a tela de assinatura). */
+  paywall: string | null
 
   selecionar: (id: string | null, opcoes?: { focar?: boolean; ponto?: Vec3 }) => void
   setHover: (id: string | null) => void
@@ -56,9 +72,13 @@ interface AtlasState {
   definirQuiz: (modo: boolean, revelado?: boolean) => void
   definirRaioX: (ligado: boolean) => void
   definirCorte: (corte: Corte | null, opcoes?: { vista?: Vec3 }) => void
+  definirPremium: (ligado: boolean) => void
+  /** Executa a ação se for PRO; senão mostra a tela de assinatura. Retorna se executou. */
+  exigirPro: (recurso: string, acao?: () => void) => boolean
+  fecharPaywall: () => void
 }
 
-export const useAtlasStore = create<AtlasState>()((set) => ({
+export const useAtlasStore = create<AtlasState>()((set, get) => ({
   selecionada: null,
   pontoSelecao: null,
   hover: null,
@@ -74,6 +94,19 @@ export const useAtlasStore = create<AtlasState>()((set) => ({
   vista: null,
   modoQuiz: false,
   quizRevelado: false,
+  quizAguardandoToque: false,
+  quizToque: null,
+  regiaoFoco: null,
+  emAula: false,
+  destaques: [],
+  focoIds: null,
+  premium: (() => {
+    try {
+      return localStorage.getItem('atlas3d:premium-demo') === '1'
+    } catch {
+      return false
+    }
+  })(),
 
   selecionar: (id, { focar = false, ponto } = {}) =>
     set((s) => ({
@@ -104,6 +137,22 @@ export const useAtlasStore = create<AtlasState>()((set) => ({
   abrirPainel: (painel) => set((s) => ({ painel: s.painel === painel ? null : painel })),
   definirQuiz: (modoQuiz, quizRevelado = false) => set({ modoQuiz, quizRevelado, hover: null }),
   definirRaioX: (raioX) => set({ raioX }),
+  paywall: null,
+  exigirPro: (recurso, acao) => {
+    const ok = get().premium
+    if (ok) acao?.()
+    else set({ paywall: recurso })
+    return ok
+  },
+  fecharPaywall: () => set({ paywall: null }),
+  definirPremium: (premium) => {
+    try {
+      localStorage.setItem('atlas3d:premium-demo', premium ? '1' : '0')
+    } catch {
+      // sem armazenamento: vale só nesta sessão
+    }
+    set({ premium, paywall: null })
+  },
   definirCorte: (corte, { vista } = {}) =>
     set((s) => (vista ? { corte, vista, selecionada: null, focoVersao: s.focoVersao + 1 } : { corte })),
 }))

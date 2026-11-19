@@ -7,6 +7,7 @@ import { IconeBusca } from '../components/ui/Icones'
 import { PainelBusca } from '../components/ui/PainelBusca'
 import { PainelCamadas } from '../components/ui/PainelCamadas'
 import { PainelCortes } from '../components/ui/PainelCortes'
+import { PainelAulas } from '../components/ui/PainelAulas'
 import { useCatalogo } from '../data'
 import { useAtlasStore } from '../store/useAtlasStore'
 
@@ -34,6 +35,13 @@ function DicaInicial() {
       músculos, vasos e nervos
     </p>
   )
+}
+
+function PainelAtual({ painel }: { painel: string }) {
+  if (painel === 'busca') return <PainelBusca />
+  if (painel === 'cortes') return <PainelCortes />
+  if (painel === 'aulas') return <PainelAulas />
+  return <PainelCamadas />
 }
 
 export default function Explorador() {
@@ -70,18 +78,27 @@ export default function Explorador() {
           <p className="text-[11px] font-medium tracking-wide text-sky-400 uppercase">Atlas Anatômico 3D</p>
           <h1 className="text-lg leading-tight font-bold text-white sm:text-xl">Corpo humano</h1>
         </div>
-        <button
-          type="button"
-          onClick={() => abrirPainel('busca')}
-          className="pointer-events-auto flex min-h-11 items-center gap-2 rounded-full border border-borda bg-superficie/80 px-4 text-sm text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
-        >
-          <IconeBusca className="size-4" />
-          <span className="hidden sm:inline">Buscar entre {estruturas.length} estruturas</span>
-          <span className="sm:hidden">Buscar</span>
-          <kbd className="ml-2 hidden rounded border border-slate-600 px-1.5 text-[10px] text-slate-400 lg:inline">
-            /
-          </kbd>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => abrirPainel('aulas')}
+            className="pointer-events-auto flex min-h-11 items-center gap-2 rounded-full border border-amber-400/40 bg-superficie/80 px-4 text-sm font-medium text-amber-200 backdrop-blur transition hover:border-amber-300 hover:text-white"
+          >
+            Aulas
+          </button>
+          <button
+            type="button"
+            onClick={() => abrirPainel('busca')}
+            className="pointer-events-auto flex min-h-11 items-center gap-2 rounded-full border border-borda bg-superficie/80 px-4 text-sm text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
+          >
+            <IconeBusca className="size-4" />
+            <span className="hidden sm:inline">Buscar entre {estruturas.length} estruturas</span>
+            <span className="sm:hidden">Buscar</span>
+            <kbd className="ml-2 hidden rounded border border-slate-600 px-1.5 text-[10px] text-slate-400 lg:inline">
+              /
+            </kbd>
+          </button>
+        </div>
       </header>
 
       <CarregandoCamada />
@@ -92,7 +109,7 @@ export default function Explorador() {
         <aside
           className={`${folha} flex flex-col overflow-hidden rounded-2xl border border-borda bg-superficie/95 shadow-2xl backdrop-blur sm:top-20 sm:left-4 sm:w-[340px]`}
         >
-          {painel === 'busca' ? <PainelBusca /> : painel === 'cortes' ? <PainelCortes /> : <PainelCamadas />}
+          <PainelAtual painel={painel} />
         </aside>
       )}
 

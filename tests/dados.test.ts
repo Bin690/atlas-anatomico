@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import conteudo from '../src/data/conteudo.json'
 import estruturas from '../src/data/estruturas.json'
 import sistemas from '../src/data/sistemas.json'
+import { readdirSync, readFileSync } from 'node:fs'
 import type { Conteudo, Estrutura, Sistema } from '../src/types/atlas'
 
 const lista = estruturas as Estrutura[]
@@ -42,5 +43,20 @@ describe('integridade dos dados', () => {
   it('todos os modelos .glb existem em public/', () => {
     const arquivos = camadas.flatMap((s) => [s.modelo, s.modeloLeve].filter(Boolean) as string[])
     expect(arquivos.filter((a) => !existsSync(join(PUBLIC, a)))).toEqual([])
+  })
+
+  it('aulas guiadas só usam estruturas e camadas existentes', () => {
+    const ids = new Set(lista.map((e) => e.id))
+    const camadasIds = new Set(camadas.map((s) => s.id))
+    const pasta = join(__dirname, '..', 'src', 'data', 'aulas')
+    for (const arquivo of readdirSync(pasta)) {
+      const aula = JSON.parse(readFileSync(join(pasta, arquivo), 'utf8'))
+      expect(aula.passos.length, arquivo).toBeGreaterThan(0)
+      for (const p of aula.passos) {
+        for (const c of p.camadas) expect(camadasIds.has(c), `${arquivo}: camada ${c}`).toBe(true)
+        for (const id of [...(p.isolar ?? []), ...(p.destaques ?? []), ...(p.foco ?? [])])
+          expect(ids.has(id), `${arquivo}: ${id}`).toBe(true)
+      }
+    }
   })
 })

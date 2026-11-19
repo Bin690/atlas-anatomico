@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router'
 import { Carregando } from './components/Carregando'
+import { TelaPro } from './components/ui/Pro'
 import { useCatalogo } from './data'
 import { useAtlasStore } from './store/useAtlasStore'
 
@@ -8,6 +9,7 @@ import { useAtlasStore } from './store/useAtlasStore'
 const Viewer3D = lazy(() => import('./components/Viewer3D'))
 const Explorador = lazy(() => import('./pages/Explorador'))
 const Quiz = lazy(() => import('./pages/Quiz'))
+const AulaView = lazy(() => import('./pages/AulaView'))
 const NaoEncontrado = lazy(() => import('./pages/NaoEncontrado'))
 
 /** Liga as camadas padrão na primeira carga do catálogo. */
@@ -36,6 +38,7 @@ function Layout() {
         {/* Camada de interface: deixa os toques passarem para o 3D, exceto em links e botões */}
         <div className="pointer-events-none relative z-20 h-full [&_a]:pointer-events-auto [&_button]:pointer-events-auto [&_input]:pointer-events-auto">
           <Outlet />
+          <TelaPro />
         </div>
       </Suspense>
     </div>
@@ -48,6 +51,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Explorador /> },
       { path: '/quiz', element: <Quiz /> },
+      { path: '/aula/:id', element: <AulaView /> },
       { path: '*', element: <NaoEncontrado /> },
     ],
   },
