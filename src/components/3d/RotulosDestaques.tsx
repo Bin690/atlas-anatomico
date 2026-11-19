@@ -3,8 +3,8 @@ import { useMemo, useRef } from 'react'
 import { Vector3 } from 'three'
 import { useCatalogo } from '../../data'
 import { useAtlasStore } from '../../store/useAtlasStore'
-import { caixaDaEstrutura } from './CamadaBatched'
-import { estruturaVisivelEm } from './corte'
+import { caixaDaEstrutura, pontosDaEstrutura } from './CamadaBatched'
+import { VisibilidadeEstavel } from './corte'
 
 export const VAGAS_ROTULOS = 10
 const ALTURA = 26 // px por rótulo (inclui espaçamento)
@@ -70,20 +70,11 @@ interface Item {
   id: string
   nome: string
   centro: Vector3
-  /** Meia-diagonal da caixa da peça. */
-  raio: number
+  /** Pontos da superfície da peça (candidatos a âncora). */
+  candidatos: Vector3[]
+  visibilidade: VisibilidadeEstavel
 }
 
-/** Pontos de amostra no plano da tela ao redor do centro (fração do raio da peça). */
-const AMOSTRAS: [number, number][] = [
-  [0, 0],
-  [0.3, 0],
-  [-0.3, 0],
-  [0, 0.3],
-  [0, -0.3],
-  [0.22, 0.22],
-  [-0.22, -0.22],
-]
 /** A visibilidade (raycast) é recalculada a cada N quadros; o resto só reprojeta. */
 const QUADROS_ENTRE_TESTES = 3
 
@@ -108,19 +99,22 @@ export function ProjetorRotulos() {
         const caixa = caixaDaEstrutura(id)
         const nome = porId.get(id)?.nome
         if (!caixa || !nome) return []
-        return [{ id, nome, centro: caixa.getCenter(new Vector3()), raio: caixa.getSize(new Vector3()).length() / 2 }]
+        return [
+          {
+            id,
+            nome,
+            centro: caixa.getCenter(new Vector3()),
+            candidatos: pontosDaEstrutura(id, 16),
+            visibilidade: new VisibilidadeEstavel(),
+          },
+        ]
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [destaques, porId, focoVersao],
   )
 
-  // Estado de visibilidade por item: ponto visível da peça (mundo) ou null se escondida
-  const visivel = useRef<(Vector3 | null)[]>([])
   const quadro = useRef(0)
   const tmp = useMemo(() => new Vector3(), [])
-  const direita = useMemo(() => new Vector3(), [])
-  const cima = useMemo(() => new Vector3(), [])
-  const amostra = useMemo(() => new Vector3(), [])
 
   useFrame(() => {
     const { rotulos, linhas, pontos } = domRotulos
@@ -130,31 +124,18 @@ export function ProjetorRotulos() {
     }
     if (!itens.length) return
 
-    // 1) Visibilidade: procura um ponto da peça que a câmera enxergue diretamente
-    if (quadro.current++ % QUADROS_ENTRE_TESTES === 0 || visivel.current.length !== itens.length) {
-      direita.setFromMatrixColumn(camera.matrixWorld, 0)
-      cima.setFromMatrixColumn(camera.matrixWorld, 1)
-      visivel.current = itens.map((it) => {
-        for (const [dx, dy] of AMOSTRAS) {
-          amostra
-            .copy(it.centro)
-            .addScaledVector(direita, dx * it.raio)
-            .addScaledVector(cima, dy * it.raio)
-          const hit = estruturaVisivelEm(camera.position, amostra)
-          if (hit?.id === it.id) return hit.ponto.clone()
-        }
-        return null
-      })
-    }
+    // 1) Visibilidade estável: mantém a âncora se ainda visível; senão busca na superfície da peça
+    if (quadro.current++ % QUADROS_ENTRE_TESTES === 0)
+      for (const it of itens) it.visibilidade.atualizar(it.id, camera.position, it.candidatos)
 
     // 2) Projeção na tela das âncoras visíveis
-    const ancoras = itens.map((it, i) => {
-      tmp.copy(visivel.current[i] ?? it.centro).project(camera)
+    const ancoras = itens.map((it) => {
+      tmp.copy(it.visibilidade.ponto ?? it.centro).project(camera)
       const naTela = tmp.z < 1 && Math.abs(tmp.x) < 1.05 && Math.abs(tmp.y) < 1.05
       return {
         x: ((tmp.x + 1) / 2) * largura,
         y: ((1 - tmp.y) / 2) * altura,
-        visivel: !!visivel.current[i] && naTela,
+        visivel: !!it.visibilidade.ponto && naTela,
       }
     })
     const vis = itens.map((_, i) => i).filter((i) => ancoras[i].visivel)

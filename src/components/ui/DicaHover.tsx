@@ -16,7 +16,9 @@ export function DicaHover() {
     return () => window.removeEventListener('pointermove', mover)
   }, [])
 
-  const nome = hover ? porId.get(hover)?.nome : null
+  const selecionada = useAtlasStore((s) => s.selecionada)
+  // A peça selecionada já tem rótulo no 3D: não repete o nome junto ao cursor
+  const nome = hover && hover !== selecionada ? porId.get(hover)?.nome : null
   return (
     <div
       ref={caixa}

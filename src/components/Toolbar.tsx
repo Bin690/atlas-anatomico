@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { useAtlasStore } from '../store/useAtlasStore'
-import { IconeAlvo, IconeBusca, IconeCamadas, IconeCorte, IconeQuiz, IconeRaioX, IconeRotacao } from './ui/Icones'
+import { IconeAlvo, IconeCamadas, IconeCorte, IconeQuiz, IconeRaioX, IconeRotacao } from './ui/Icones'
 
 interface BotaoProps {
   rotulo: string
@@ -45,9 +45,6 @@ export function Toolbar() {
     >
       <Botao rotulo="Camadas" ativo={painel === 'camadas'} onClick={() => abrirPainel('camadas')}>
         <IconeCamadas />
-      </Botao>
-      <Botao rotulo="Buscar" ativo={painel === 'busca'} onClick={() => abrirPainel('busca')}>
-        <IconeBusca />
       </Botao>
       <Botao rotulo="Cortes" ativo={painel === 'cortes' || temCorte} onClick={() => abrirPainel('cortes')}>
         <IconeCorte />

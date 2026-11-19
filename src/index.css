@@ -15,6 +15,16 @@
     height: 100%;
   }
 
+  /* O app ocupa exatamente a janela: a página nunca rola (o 3D e os painéis têm rolagem própria) */
+  html,
+  body {
+    overflow: hidden;
+  }
+  #root {
+    position: fixed;
+    inset: 0;
+  }
+
   body {
     @apply bg-fundo text-slate-100 antialiased;
     /* Evita "puxar para atualizar" e zoom duplo-toque atrapalhando o 3D no mobile */

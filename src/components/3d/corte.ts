@@ -91,3 +91,40 @@ export function estruturaVisivelEm(origem: Vector3, alvo: Vector3) {
   const ids = hit.object.userData.ids as string[] | undefined
   return ids ? { id: ids[hit.batchId], ponto: hit.point } : null
 }
+
+/**
+ * Visibilidade estável de uma peça para os rótulos:
+ * - se o ponto atual ainda é visto, mantém (o rótulo não pula);
+ * - senão, testa pontos da superfície da peça, dos mais próximos da câmera aos mais distantes;
+ * - só declara "escondida" após várias falhas seguidas (evita piscar).
+ */
+export class VisibilidadeEstavel {
+  ponto: Vector3 | null = null
+  private falhas = 0
+  private readonly tolerancia: number
+  constructor(tolerancia = 3) {
+    this.tolerancia = tolerancia
+  }
+
+  atualizar(id: string, camera: Vector3, candidatos: Vector3[]) {
+    if (this.ponto && estruturaVisivelEm(camera, this.ponto)?.id === id) {
+      this.falhas = 0
+      return
+    }
+    const ordenados = [...candidatos].sort((a, b) => a.distanceToSquared(camera) - b.distanceToSquared(camera))
+    for (const c of ordenados) {
+      const hit = estruturaVisivelEm(camera, c)
+      if (hit?.id === id) {
+        this.ponto = hit.ponto.clone()
+        this.falhas = 0
+        return
+      }
+    }
+    if (++this.falhas >= this.tolerancia) this.ponto = null
+  }
+
+  reiniciar() {
+    this.ponto = null
+    this.falhas = 0
+  }
+}

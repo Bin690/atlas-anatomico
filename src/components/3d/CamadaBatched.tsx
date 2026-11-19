@@ -9,6 +9,7 @@ import {
   FrontSide,
   Matrix4,
   MeshStandardMaterial,
+  Vector3,
   type BufferGeometry,
   type Mesh,
   type Object3D,
@@ -44,6 +45,28 @@ export function caixaDaEstrutura(id: string): Box3 | null {
   const m = new Matrix4()
   info.malha.getMatrixAt(instancia, m)
   return caixa.applyMatrix4(m).applyMatrix4(info.malha.matrixWorld)
+}
+
+/**
+ * Pontos da superfície da estrutura (vértices distribuídos ao longo da malha), em coordenadas do
+ * mundo. Usados para testar se a peça está à vista: o centro da caixa pode cair fora de peças finas
+ * e curvas (vasos, corpo cavernoso).
+ */
+export function pontosDaEstrutura(id: string, quantidade = 24): Vector3[] {
+  const r = registro.get(id)
+  if (!r) return []
+  const { info, instancia } = r
+  const faixa = info.malha.getGeometryRangeAt(info.geometria[instancia])
+  if (!faixa) return []
+  const posicao = info.malha.geometry.getAttribute('position')
+  const m = new Matrix4()
+  info.malha.getMatrixAt(instancia, m)
+  m.premultiply(info.malha.matrixWorld)
+  const passo = Math.max(1, Math.floor(faixa.vertexCount / quantidade))
+  const pontos: Vector3[] = []
+  for (let v = faixa.vertexStart; v < faixa.vertexStart + faixa.vertexCount; v += passo)
+    pontos.push(new Vector3().fromBufferAttribute(posicao, v).applyMatrix4(m))
+  return pontos
 }
 
 /**
