@@ -45,10 +45,15 @@ export const mantido = (p: Vector3) => !ativo || PLANO.distanceToPoint(p) >= 0
  * Primeira interseção "real" do raio: numa camada interativa e visível, em uma peça visível,
  * e do lado mantido pelo corte (o raycast do Three não respeita planos de corte).
  */
-export function primeiraIntersecao(intersecoes: Intersection<Object3D>[]) {
+export function primeiraIntersecao(intersecoes: Intersection<Object3D>[], ignorarTranslucidas = false) {
   for (const i of intersecoes) {
-    const o = i.object as Object3D & { isBatchedMesh?: boolean; getVisibleAt?: (n: number) => boolean }
+    const o = i.object as Object3D & {
+      isBatchedMesh?: boolean
+      getVisibleAt?: (n: number) => boolean
+      material?: { transparent?: boolean; opacity?: number }
+    }
     if (!o.isBatchedMesh || !o.visible || o.userData.naoInterativo) continue
+    if (ignorarTranslucidas && o.material?.transparent && (o.material.opacity ?? 1) < 0.5) continue
     if (i.batchId !== undefined && o.getVisibleAt && !o.getVisibleAt(i.batchId)) continue
     if (!mantido(i.point)) continue
     return i
@@ -70,4 +75,19 @@ export function intersecaoReal(intersecoes: Intersection<Object3D>[], raio: Ray)
   raycaster.set(raio.origin, raio.direction)
   const visiveis = [...camadasMontadas].filter((o) => o.visible)
   return primeiraIntersecao(raycaster.intersectObjects(visiveis, false))
+}
+
+const direcao = new Vector3()
+
+/**
+ * Qual estrutura a câmera vê primeiro ao olhar para um ponto (camadas translúcidas do raio-X e a pele
+ * não contam como obstáculo). Retorna o id e o ponto atingido, ou null.
+ */
+export function estruturaVisivelEm(origem: Vector3, alvo: Vector3) {
+  raycaster.set(origem, direcao.copy(alvo).sub(origem).normalize())
+  const visiveis = [...camadasMontadas].filter((o) => o.visible)
+  const hit = primeiraIntersecao(raycaster.intersectObjects(visiveis, false), true)
+  if (!hit || hit.batchId === undefined) return null
+  const ids = hit.object.userData.ids as string[] | undefined
+  return ids ? { id: ids[hit.batchId], ponto: hit.point } : null
 }

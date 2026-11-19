@@ -113,6 +113,8 @@ function construir(cena: Object3D, estilo?: Sistema['estilo']): InfoCamada {
     corBase[i] = cor
     indice.set(m.name, i)
   }
+  // Permite descobrir a estrutura de uma interseção de raio (rótulos, oclusão)
+  malha.userData.ids = ids
   return { malha, ids, indice, geometria, corBase }
 }
 
