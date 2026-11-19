@@ -34,13 +34,14 @@ npm run dev            # http://localhost:5173
 Para testar no celular ou no iPad na mesma rede Wi-Fi, abra o endereço da linha **Network** que o
 `npm run dev` mostra (ex.: `http://192.168.0.10:5173`). Libere o Node no firewall do macOS, se ele pedir.
 
-| Comando           | O que faz                                         |
-| ----------------- | ------------------------------------------------- |
-| `npm run dev`     | Servidor de desenvolvimento                       |
-| `npm run build`   | Build de produção em `dist/` (com service worker) |
-| `npm run preview` | Serve o build de produção                         |
-| `npm run lint`    | Lint (oxlint)                                     |
-| `npm run format`  | Formatação (Prettier)                             |
+| Comando           | O que faz                                                              |
+| ----------------- | ---------------------------------------------------------------------- |
+| `npm run dev`     | Servidor de desenvolvimento                                            |
+| `npm run build`   | Build de produção em `dist/` (com service worker)                      |
+| `npm run preview` | Serve o build de produção                                              |
+| `npm test`        | Testes (Vitest): tradutor, busca, quiz, integridade dos dados e cortes |
+| `npm run lint`    | Lint (oxlint)                                                          |
+| `npm run format`  | Formatação (Prettier)                                                  |
 
 ## Stack
 

@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "format": "prettier --write src"
+    "format": "prettier --write src",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
@@ -36,6 +38,7 @@
     "typescript": "~7.0.2",
     "vite": "^8.3.6",
     "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^3.2.7",
     "workbox-window": "^7.4.1"
   }
 }
