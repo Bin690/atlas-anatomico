@@ -1,4 +1,5 @@
 import { useCatalogo } from '../../data'
+import { useOffline } from '../../hooks/useOffline'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import { IconeFechar } from './Icones'
 
@@ -14,6 +15,7 @@ export function PainelCamadas() {
   const isoladas = useAtlasStore((s) => s.isoladas)
   const mostrarTudo = useAtlasStore((s) => s.mostrarTudo)
   const abrirPainel = useAtlasStore((s) => s.abrirPainel)
+  const { estado: offline, baixar } = useOffline(sistemas)
 
   return (
     <section aria-label="Camadas do corpo" className="flex max-h-full min-h-0 flex-col">
@@ -86,6 +88,20 @@ export function PainelCamadas() {
             className="rounded-full bg-amber-400/15 px-3 py-1.5 text-xs font-medium text-amber-200 hover:bg-amber-400/25"
           >
             Mostrar ocultas
+          </button>
+        )}
+        {offline.fase !== 'indisponivel' && (
+          <button
+            type="button"
+            onClick={baixar}
+            disabled={offline.fase !== 'parcial'}
+            className="ml-auto rounded-full bg-emerald-400/10 px-3 py-1.5 text-xs font-medium text-emerald-200 hover:bg-emerald-400/20 disabled:hover:bg-emerald-400/10"
+          >
+            {offline.fase === 'pronto'
+              ? '✓ Disponível offline'
+              : offline.fase === 'baixando'
+                ? `Baixando… ${Math.round(offline.progresso * 100)}%`
+                : 'Baixar para usar offline'}
           </button>
         )}
       </footer>
