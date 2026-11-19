@@ -17,7 +17,7 @@ function aplicarPasso(p: PassoAula) {
   useAtlasStore.setState({
     destaques: p.destaques ?? [],
     focoIds: p.foco ?? null,
-    vista: null,
+    vista: p.vista ?? null,
     selecionada: null,
     pontoSelecao: null,
     ocultas: new Set(),
@@ -44,7 +44,14 @@ export default function AulaView() {
     useAtlasStore.setState({ emAula: true })
     return () => {
       const st = useAtlasStore.getState()
-      useAtlasStore.setState({ emAula: false, destaques: [], focoIds: null, isoladas: null, ocultas: new Set() })
+      useAtlasStore.setState({
+        emAula: false,
+        destaques: [],
+        focoIds: null,
+        isoladas: null,
+        ocultas: new Set(),
+        vista: null,
+      })
       st.definirCorte(null)
       if (anterior.current) {
         st.definirCamadas(anterior.current.camadas)

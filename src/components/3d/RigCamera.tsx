@@ -124,7 +124,8 @@ export function RigCamera() {
       }
       if (!uniao.isEmpty()) caixa = uniao
     }
-    const pendente = (!!selecionada || !!regiaoFoco || !!focoIds?.length) && !caixa && !isoladas
+    // Algo foi pedido mas a camada ainda está carregando: a camada pede o foco de novo quando estiver pronta
+    const pendente = (!!selecionada || !!regiaoFoco || !!focoIds?.length || !!isoladas) && !caixa
     useAtlasStore.setState({ focoPendente: pendente })
     if (pendente) return
     // Corte axial visto de cima: enquadra só a fatia, não o corpo inteiro
@@ -152,8 +153,8 @@ export function RigCamera() {
     // Direção de visão: corpo todo de frente; numa peça, de frente (ou de trás, se for posterior),
     // puxando para o lado em que ela está
     const { vista } = useAtlasStore.getState()
-    const direcao = vista && !caixa ? new Vector3(...vista) : new Vector3(0, 0.12, 1)
-    if (caixa) {
+    const direcao = vista ? new Vector3(...vista) : new Vector3(0, 0.12, 1)
+    if (caixa && !vista) {
       const posterior = centro.z < -0.04
       direcao.set(Math.max(-1, Math.min(1, centro.x / 0.15)) * 0.7, 0.15, posterior ? -1 : 1)
     }
