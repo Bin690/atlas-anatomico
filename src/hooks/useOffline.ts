@@ -3,6 +3,10 @@ import type { Sistema } from '../types/atlas'
 
 const CACHE = 'modelos-3d'
 
+/** Todos os arquivos de modelo (versões detalhada e leve). */
+const arquivos = (sistemas: Sistema[]) =>
+  sistemas.flatMap((s) => (s.modeloLeve ? [s.modelo, s.modeloLeve] : [s.modelo]))
+
 export type EstadoOffline =
   { fase: 'indisponivel' } | { fase: 'parcial' } | { fase: 'baixando'; progresso: number } | { fase: 'pronto' }
 
@@ -23,7 +27,7 @@ export function useOffline(sistemas: Sistema[]) {
       .then((c) => c.keys())
       .then((chaves) => {
         const salvos = new Set(chaves.map((r) => new URL(r.url).pathname))
-        if (ativo && sistemas.every((s) => salvos.has(s.modelo))) setEstado({ fase: 'pronto' })
+        if (ativo && arquivos(sistemas).every((a) => salvos.has(a))) setEstado({ fase: 'pronto' })
       })
       .catch(() => {})
     return () => {
@@ -35,17 +39,18 @@ export function useOffline(sistemas: Sistema[]) {
     if (!suportado) return
     setEstado({ fase: 'baixando', progresso: 0 })
     let feitos = 0
-    for (const s of sistemas) {
+    const lista = arquivos(sistemas)
+    for (const url of lista) {
       try {
         // A requisição passa pelo service worker, que guarda a resposta no cache
-        const r = await fetch(s.modelo)
+        const r = await fetch(url)
         await r.arrayBuffer()
       } catch {
         setEstado({ fase: 'parcial' })
         return
       }
       feitos++
-      setEstado({ fase: 'baixando', progresso: feitos / sistemas.length })
+      setEstado({ fase: 'baixando', progresso: feitos / lista.length })
     }
     setEstado({ fase: 'pronto' })
   }, [suportado, sistemas])

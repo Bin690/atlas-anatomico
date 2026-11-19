@@ -1,6 +1,6 @@
-import { Environment, Lightformer } from '@react-three/drei'
+import { Environment, Lightformer, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState, type ComponentProps } from 'react'
 import { useCatalogo } from '../data'
 import { useAtlasStore } from '../store/useAtlasStore'
 import { CamadaBatched } from './3d/CamadaBatched'
@@ -24,6 +24,34 @@ function Iluminacao() {
   )
 }
 
+/** Baixa o modelo detalhado em segundo plano e avisa quando estiver pronto. */
+function PreCarregar({ url, onPronto }: { url: string; onPronto: () => void }) {
+  useGLTF(url)
+  useEffect(onPronto, [onPronto])
+  return null
+}
+
+/** Mostra a versão leve imediatamente e troca pela detalhada quando ela termina de baixar. */
+function CamadaProgressiva(props: Omit<ComponentProps<typeof CamadaBatched>, 'url'>) {
+  const { sistema } = props
+  const [detalhada, setDetalhada] = useState(!sistema.modeloLeve)
+  const [pronta] = useState(() => () => setDetalhada(true))
+  // Este efeito só roda depois que a versão leve terminou de carregar e apareceu (o componente
+  // fica suspenso até lá): só então começa a baixar a detalhada, sem disputar banda com a leve.
+  const [podeDetalhar, setPodeDetalhar] = useState(false)
+  useEffect(() => setPodeDetalhar(true), [])
+  return (
+    <>
+      <CamadaBatched {...props} url={detalhada || !sistema.modeloLeve ? sistema.modelo : sistema.modeloLeve} />
+      {!detalhada && podeDetalhar && (
+        <Suspense fallback={null}>
+          <PreCarregar url={sistema.modelo} onPronto={pronta} />
+        </Suspense>
+      )}
+    </>
+  )
+}
+
 function Camadas() {
   const { sistemas, porId } = useCatalogo()
   const camadas = useAtlasStore((s) => s.camadas)
@@ -43,7 +71,7 @@ function Camadas() {
         .filter((s) => carregadas.has(s.id))
         .map((s) => (
           <Suspense key={s.id} fallback={null}>
-            <CamadaBatched
+            <CamadaProgressiva
               sistema={s}
               visivel={camadas.has(s.id)}
               translucida={raioX && !!s.raioX && s.id !== sistemaSelecionado}

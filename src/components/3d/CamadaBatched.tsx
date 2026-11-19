@@ -88,6 +88,8 @@ function construir(cena: Object3D, estilo?: Sistema['estilo']): InfoCamada {
   let vertices = 0
   let indices = 0
   for (const m of meshes) {
+    // Modelos leves vêm sem normais (arquivo menor): calcula aqui
+    if (!m.geometry.attributes.normal) m.geometry.computeVertexNormals()
     vertices += m.geometry.attributes.position.count
     indices += m.geometry.index?.count ?? 0
   }
@@ -115,13 +117,15 @@ function construir(cena: Object3D, estilo?: Sistema['estilo']): InfoCamada {
 
 interface CamadaProps {
   sistema: Sistema
+  /** .glb a usar (versão leve ou detalhada). */
+  url: string
   visivel: boolean
   /** Translúcida (raio-X ou camada externa sobre a seleção). */
   translucida: boolean
 }
 
-function CamadaBatchedBase({ sistema, visivel, translucida }: CamadaProps) {
-  const { scene } = useGLTF(sistema.modelo)
+function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) {
+  const { scene } = useGLTF(url)
   const info = useMemo(() => construir(scene, sistema.estilo), [scene, sistema.estilo])
   const { malha, ids, indice, corBase } = info
 

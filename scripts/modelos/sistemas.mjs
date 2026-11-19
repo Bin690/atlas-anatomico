@@ -8,6 +8,7 @@
  * reducao/erro: fração de triângulos mantida e erro máximo (relativo) da simplificação.
  * estilo "vidro": pele translúcida; interativo false: não captura toques (não bloqueia o que está dentro).
  * raioX: fica translúcida no modo raio-X.
+ * leve: gera também uma versão leve (carrega primeiro; a detalhada substitui ao terminar de baixar).
  */
 export const SISTEMAS = [
   {
@@ -28,6 +29,7 @@ export const SISTEMAS = [
     reducao: 0.4,
     erro: 0.0008,
     raioX: true,
+    leve: { reducao: 0.08, erro: 0.01 },
   },
   {
     id: 'articulacoes',
@@ -45,12 +47,37 @@ export const SISTEMAS = [
     reducao: 0.15,
     erro: 0.006,
     raioX: true,
+    leve: { reducao: 0.05, erro: 0.02 },
   },
-  { id: 'nervoso', nome: 'Sistema nervoso', cor: '#f2c94c', visivelPorPadrao: false, reducao: 0.25, erro: 0.0015 },
+  {
+    id: 'nervoso',
+    nome: 'Sistema nervoso',
+    cor: '#f2c94c',
+    visivelPorPadrao: false,
+    reducao: 0.25,
+    erro: 0.0015,
+    leve: { reducao: 0.05, erro: 0.02 },
+  },
   { id: 'olhos', nome: 'Olhos e orelhas', cor: '#8fb8d8', visivelPorPadrao: false, reducao: 0.25, erro: 0.0015 },
   { id: 'coracao', nome: 'Coração', cor: '#a32f37', visivelPorPadrao: true, reducao: 0.5 },
-  { id: 'arterias', nome: 'Artérias', cor: '#d23c3c', visivelPorPadrao: false, reducao: 0.3, erro: 0.0015 },
-  { id: 'veias', nome: 'Veias', cor: '#3d63c4', visivelPorPadrao: false, reducao: 0.3, erro: 0.0015 },
+  {
+    id: 'arterias',
+    nome: 'Artérias',
+    cor: '#d23c3c',
+    visivelPorPadrao: false,
+    reducao: 0.3,
+    erro: 0.0015,
+    leve: { reducao: 0.05, erro: 0.02 },
+  },
+  {
+    id: 'veias',
+    nome: 'Veias',
+    cor: '#3d63c4',
+    visivelPorPadrao: false,
+    reducao: 0.3,
+    erro: 0.0015,
+    leve: { reducao: 0.05, erro: 0.02 },
+  },
   { id: 'pulmoes', nome: 'Pulmões', cor: '#e3a1a4', visivelPorPadrao: true, reducao: 0.45, raioX: true },
   { id: 'respiratorio', nome: 'Vias respiratórias', cor: '#d9cfc0', visivelPorPadrao: true, reducao: 0.45 },
   { id: 'digestorio', nome: 'Sistema digestório', cor: '#c98a6b', visivelPorPadrao: true, reducao: 0.3, erro: 0.0012 },

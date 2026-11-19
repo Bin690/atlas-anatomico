@@ -12,6 +12,8 @@ export interface Sistema {
   cor: string
   /** Caminho público do .glb da camada. */
   modelo: string
+  /** Versão leve (carrega primeiro; a detalhada a substitui ao terminar de baixar). */
+  modeloLeve?: string
   /** Visível ao abrir o app. */
   visivelPorPadrao: boolean
   /** Quantidade de estruturas nomeadas. */

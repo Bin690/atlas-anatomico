@@ -14,6 +14,7 @@
     "nome": "Esqueleto",
     "cor": "#e6dcc6",
     "modelo": "/models/esqueleto.glb",
+    "modeloLeve": "/models/esqueleto-leve.glb",
     "visivelPorPadrao": true,
     "total": 203,
     "raioX": true
@@ -31,6 +32,7 @@
     "nome": "Músculos",
     "cor": "#b5443d",
     "modelo": "/models/musculos.glb",
+    "modeloLeve": "/models/musculos-leve.glb",
     "visivelPorPadrao": false,
     "total": 408,
     "raioX": true
@@ -40,6 +42,7 @@
     "nome": "Sistema nervoso",
     "cor": "#f2c94c",
     "modelo": "/models/nervoso.glb",
+    "modeloLeve": "/models/nervoso-leve.glb",
     "visivelPorPadrao": false,
     "total": 128
   },
@@ -64,6 +67,7 @@
     "nome": "Artérias",
     "cor": "#d23c3c",
     "modelo": "/models/arterias.glb",
+    "modeloLeve": "/models/arterias-leve.glb",
     "visivelPorPadrao": false,
     "total": 423
   },
@@ -72,6 +76,7 @@
     "nome": "Veias",
     "cor": "#3d63c4",
     "modelo": "/models/veias.glb",
+    "modeloLeve": "/models/veias-leve.glb",
     "visivelPorPadrao": false,
     "total": 217
   },

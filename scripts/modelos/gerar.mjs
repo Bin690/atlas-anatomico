@@ -16,7 +16,7 @@
  */
 import { Document, NodeIO } from '@gltf-transform/core'
 import { EXTMeshoptCompression, KHRMeshQuantization } from '@gltf-transform/extensions'
-import { meshopt, prune, simplify, weld } from '@gltf-transform/functions'
+import { cloneDocument, meshopt, prune, simplify, weld } from '@gltf-transform/functions'
 import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -190,31 +190,45 @@ for (const sistema of SISTEMAS) {
   }
   if (!cena.listChildren().length) continue
 
-  await doc.transform(
-    weld(),
-    simplify({
-      simplifier: MeshoptSimplifier,
-      ratio: sistema.reducao,
-      error: sistema.erro ?? 0.0006,
-      lockBorder: false,
-    }),
-    prune(),
-    meshopt({ encoder: MeshoptEncoder, level: 'medium' }),
-  )
-  let tri = 0
-  for (const m of doc.getRoot().listMeshes()) for (const p of m.listPrimitives()) tri += p.getIndices().getCount() / 3
-  const arquivo = join(SAIDA, `${sistema.id}.glb`)
-  await io.write(arquivo, doc)
-  const kb = Math.round(readFileSync(arquivo).length / 1024)
+  /** Simplifica, comprime e grava; retorna [triângulos, KB]. */
+  const gravar = async (documento, reducao, erro, nome, semNormais = false) => {
+    // Na versão leve, as normais são descartadas (as costuras de normais travam a simplificação);
+    // o app as recalcula ao montar a camada
+    if (semNormais)
+      for (const m of documento.getRoot().listMeshes())
+        for (const p of m.listPrimitives()) p.setAttribute('NORMAL', null)
+    await documento.transform(
+      weld(),
+      simplify({ simplifier: MeshoptSimplifier, ratio: reducao, error: erro, lockBorder: false }),
+      prune(),
+      meshopt({ encoder: MeshoptEncoder, level: 'medium' }),
+    )
+    let tri = 0
+    for (const m of documento.getRoot().listMeshes())
+      for (const p of m.listPrimitives()) tri += p.getIndices().getCount() / 3
+    const arquivo = join(SAIDA, `${nome}.glb`)
+    await io.write(arquivo, documento)
+    return [tri, Math.round(readFileSync(arquivo).length / 1024)]
+  }
+
+  // Versão leve (aparece primeiro) para as camadas pesadas; a detalhada substitui quando termina de baixar
+  const docLeve = sistema.leve ? cloneDocument(doc) : null
+  const [tri, kb] = await gravar(doc, sistema.reducao, sistema.erro ?? 0.0006, sistema.id)
   const total = cena.listChildren().length
+  let infoLeve = ''
+  if (docLeve) {
+    const [triL, kbL] = await gravar(docLeve, sistema.leve.reducao, sistema.leve.erro, `${sistema.id}-leve`, true)
+    infoLeve = `  (leve: ${triL} tri, ${kbL} KB)`
+  }
   console.log(
-    `✓ ${sistema.id.padEnd(13)} ${String(total).padStart(4)} estruturas  ${triOriginais} → ${tri} tri  ${kb} KB`,
+    `✓ ${sistema.id.padEnd(13)} ${String(total).padStart(4)} estruturas  ${triOriginais} → ${tri} tri  ${kb} KB${infoLeve}`,
   )
   sistemasSaida.push({
     id: sistema.id,
     nome: sistema.nome,
     cor: sistema.cor,
     modelo: `/models/${sistema.id}.glb`,
+    ...(sistema.leve ? { modeloLeve: `/models/${sistema.id}-leve.glb` } : {}),
     visivelPorPadrao: sistema.visivelPorPadrao,
     total,
     ...(sistema.estilo ? { estilo: sistema.estilo } : {}),
