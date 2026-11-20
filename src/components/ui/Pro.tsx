@@ -73,11 +73,8 @@ export function TelaPro() {
           onClick={() => definirPremium(true)}
           className="mt-6 min-h-11 w-full rounded-xl bg-gradient-to-r from-amber-300 to-orange-400 font-semibold text-slate-950 transition hover:brightness-110"
         >
-          Liberar demonstração
+          Experimentar o PRO grátis
         </button>
-        <p className="mt-2 text-center text-[11px] text-slate-500">
-          Protótipo: libera o PRO só neste aparelho. A assinatura real exigirá login e pagamento.
-        </p>
       </div>
     </div>
   )

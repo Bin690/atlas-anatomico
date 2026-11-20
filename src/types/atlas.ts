@@ -75,6 +75,8 @@ export interface PassoAula {
   corte?: { plano: 'axial' | 'sagital' | 'coronal'; posicao: number; inverter: boolean; normal?: Vec3 } | null
   /** Direção de onde a câmera olha (opcional; ex.: [-1, 0.1, 0] = vista do lado direito do paciente). */
   vista?: [number, number, number]
+  /** Ilustração de referência mostrada no passo (caminho em public/figuras/, listada em data/figuras.ts). */
+  figura?: string
 }
 
 export interface Aula {

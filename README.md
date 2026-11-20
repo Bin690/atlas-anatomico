@@ -16,12 +16,19 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
   "Sistema genital feminino" mostra esses órgãos isolados, de frente e de lado. A escolha fica guardada no aparelho.
 - **Voz:** ao tocar numa peça, uma voz masculina diz o nome dela (botão de alto-falante no topo liga e
   desliga; no cartão, o alto-falante repete). No quiz a voz fica muda, para não entregar a resposta.
+- **Ligações entre estruturas:** no cartão, nomes de outras peças citados na descrição e na ficha (origem,
+  inserção, inervação…) viram atalhos que levam até elas, do mesmo lado do corpo.
+- **Partilhar uma vista:** o botão de partilhar do topo gera um link com corpo, camadas, raio-X, corte, peça
+  selecionada e câmera (menu do sistema no celular; no computador, copia o link).
+- **Figuras de referência:** ilustrações em `public/figuras/` (listadas em `src/data/figuras.ts`) aparecem nos
+  passos das aulas e no cartão das estruturas ligadas a elas ("Ver figura de referência").
 - **Busca** em português ou inglês, sem precisar de acentos (`/` ou Ctrl/⌘+K).
 - **Ferramentas:**
   - camadas que se ligam e desligam;
   - ocultar e isolar estruturas;
   - raio-X;
   - cortes anatômicos axial, sagital e coronal.
+- **Quiz "Ouça e encontre":** a voz diz o nome (sem mostrá-lo) e o aluno toca na peça no modelo 3D.
 - **Quiz:** a estrutura fica destacada no modelo, sem nome, e o aluno escolhe entre 4 opções. São 10
   perguntas por sistema, com explicação depois de cada resposta.
 - **Offline (PWA):** a interface fica guardada no aparelho, e os modelos podem ser baixados pelo painel de
@@ -143,6 +150,7 @@ de licença CC0 ([piper-voices](https://huggingface.co/rhasspy/piper-voices)).
   externa; a cavidade e o canal foram construídos por dentro e aparecem no corte frontal da aula. A pele foi
   deformada para seguir o esqueleto: polegares e dedos dos pés podem não coincidir exatamente com os ossos.
 - **Pulmões:** as superfícies foram reconstruídas a partir das árvores brônquicas e são aproximações
-  didáticas.
+  didáticas. Depois de `gerar.mjs`, rode `node scripts/modelos/ajustar-pulmoes.mjs` para mantê-las dentro da
+  caixa torácica por trás (sem isso, cobrem os colos das costelas junto à coluna).
 - **Nomes e textos:** foram gerados com apoio de IA, a partir de fontes de referência (Moore, Gray, Netter,
   Machado). Recomenda-se a revisão por um docente de anatomia antes do uso em sala.

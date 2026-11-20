@@ -12,6 +12,27 @@ const CORPO = new Box3(new Vector3(-0.34, 0, -0.15), new Vector3(0.34, 1.72, 0.1
 /** Depois de o usuário soltar, a rotação "viva" do corpo volta após este tempo (ms). */
 const PAUSA_APOS_INTERACAO = 6000
 
+/** Controles da câmera em uso (para ler/aplicar a vista ao partilhar um link). */
+let controlesAtivos: CameraControlsImpl | null = null
+/** Depois de aplicar uma vista partilhada, o corpo não gira sozinho até o usuário mexer. */
+let vistaFixada = false
+
+/** Posição e alvo da câmera: [px, py, pz, tx, ty, tz] (ou null se o 3D ainda não montou). */
+export function lerCamera(): number[] | null {
+  const c = controlesAtivos
+  if (!c) return null
+  return [...c.getPosition(new Vector3()).toArray(), ...c.getTarget(new Vector3()).toArray()]
+}
+
+/** Leva a câmera a uma vista salva (ex.: aberta por um link partilhado). */
+export function aplicarCamera(v: number[]) {
+  const c = controlesAtivos
+  if (!c || v.length !== 6 || v.some((n) => !Number.isFinite(n))) return
+  vistaFixada = true
+  void c.setFocalOffset(0, 0, 0, false)
+  void c.setLookAt(v[0], v[1], v[2], v[3], v[4], v[5], true)
+}
+
 interface Margens {
   topo: number
   base: number
@@ -56,6 +77,12 @@ function distanciaPara(camera: PerspectiveCamera, largura: number, altura: numbe
 
 export function RigCamera() {
   const controles = useRef<CameraControlsImpl>(null)
+  useEffect(() => {
+    controlesAtivos = controles.current
+    return () => {
+      controlesAtivos = null
+    }
+  }, [])
   const camera = useThree((s) => s.camera) as PerspectiveCamera
   const { width: largura, height: altura } = useThree((s) => s.size)
   const focoVersao = useAtlasStore((s) => s.focoVersao)
@@ -233,7 +260,11 @@ export function RigCamera() {
     const c = controles.current
     if (!c) return
     const ocioso =
-      !temSelecao && !temCorte && !emAula && performance.now() - ultimaInteracao.current > PAUSA_APOS_INTERACAO
+      !temSelecao &&
+      !temCorte &&
+      !emAula &&
+      !vistaFixada &&
+      performance.now() - ultimaInteracao.current > PAUSA_APOS_INTERACAO
     if (rotacaoAutomatica || ocioso) void c.rotate(delta * 0.22, 0, true)
   })
 
@@ -242,6 +273,7 @@ export function RigCamera() {
       ref={controles}
       makeDefault
       onStart={() => {
+        vistaFixada = false
         ultimaInteracao.current = Infinity
         useAtlasStore.getState().setHover(null)
       }}

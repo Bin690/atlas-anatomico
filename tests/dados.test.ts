@@ -68,6 +68,20 @@ describe('integridade dos dados', () => {
   })
 })
 
+describe('figuras de referência', () => {
+  it('existem em public/ e citam só estruturas existentes', async () => {
+    const { FIGURAS } = await import('../src/data/figuras')
+    const ids = new Set(lista.map((e) => e.id))
+    for (const f of FIGURAS) {
+      expect(existsSync(join(PUBLIC, f.src)), f.src).toBe(true)
+      expect(
+        f.ids.filter((id) => !ids.has(id)),
+        f.src,
+      ).toEqual([])
+    }
+  })
+})
+
 describe('voz', () => {
   it('toda estrutura tem o áudio com o nome falado', () => {
     const pasta = join(PUBLIC, 'audio', 'nomes')

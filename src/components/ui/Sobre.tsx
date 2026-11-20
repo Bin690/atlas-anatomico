@@ -107,11 +107,11 @@ export function Sobre({ aberto, fechar }: { aberto: boolean; fechar: () => void 
             </ul>
           </Secao>
 
-          <Secao titulo="Aviso">
+          <Secao titulo="Sobre os modelos">
             <p>
-              Nomes e textos foram escritos com apoio de IA a partir de obras de referência (Moore, Gray, Netter,
-              Machado) e devem ser revistos por um docente de anatomia antes do uso em sala. Peças marcadas como “Modelo
-              esquemático” (vagina, cavidade do útero e outras) não vêm de um corpo real.
+              Os modelos 3D vêm de corpos reais digitalizados. Algumas estruturas que não existem nesses conjuntos, como
+              a vagina e a cavidade do útero, são representações esquemáticas e estão indicadas no cartão de cada uma.
+              Conteúdo educativo: não substitui avaliação ou orientação médica.
             </p>
           </Secao>
 

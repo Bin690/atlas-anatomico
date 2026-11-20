@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { useCatalogo } from '../../data'
+import { ligarTexto } from '../../data/ligacoes'
+import { figuraDaEstrutura } from '../../data/figuras'
+import { FiguraAmpliada } from './FiguraReferencia'
 import { useTelaPequena } from '../../hooks/useTelaPequena'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import { dizerNome } from '../../hooks/voz'
@@ -10,7 +13,7 @@ import { IconeAlvo, IconeFechar, IconeIsolar, IconeOlho, IconeOlhoFechado, Icone
  * No celular começa compacto (só o nome); o botão de olho abre os detalhes.
  */
 export function CartaoEstrutura() {
-  const { porId, sistemaPorId, conteudo } = useCatalogo()
+  const { porId, sistemaPorId, conteudo, estruturas } = useCatalogo()
   const id = useAtlasStore((s) => s.selecionada)
   const selecionar = useAtlasStore((s) => s.selecionar)
   const focar = useAtlasStore((s) => s.focar)
@@ -23,6 +26,7 @@ export function CartaoEstrutura() {
   const telaPequena = useTelaPequena()
   // Guarda para qual estrutura os detalhes foram abertos: trocar a seleção volta ao compacto.
   const [detalhesDe, setDetalhesDe] = useState<string | null>(null)
+  const [figuraAberta, setFiguraAberta] = useState(false)
 
   const estrutura = id ? porId.get(id) : undefined
   if (!estrutura) return null
@@ -30,12 +34,35 @@ export function CartaoEstrutura() {
   const texto = conteudo[estrutura.id]
   const pai = estrutura.paiId ? porId.get(estrutura.paiId) : undefined
   const detalhes = !telaPequena || detalhesDe === estrutura.id
+  const figura = figuraDaEstrutura(estrutura.id)
 
-  const irParaPai = () => {
-    if (!pai) return
-    if (!camadas.has(pai.sistema)) alternarCamada(pai.sistema)
-    selecionar(pai.id, { focar: true })
+  /** Vai até outra estrutura: liga a camada dela, seleciona, voa e diz o nome. */
+  const irPara = (destinoId: string) => {
+    const destino = porId.get(destinoId)
+    if (!destino) return
+    if (!camadas.has(destino.sistema)) alternarCamada(destino.sistema)
+    selecionar(destino.id, { focar: true })
+    dizerNome(destino.id, destino.nome)
   }
+  const irParaPai = () => pai && irPara(pai.id)
+
+  /** Texto com os nomes de outras estruturas transformados em atalhos. */
+  const ligado = (t: string) =>
+    ligarTexto(t, estruturas, estrutura).map((trecho, k) =>
+      typeof trecho === 'string' ? (
+        trecho
+      ) : (
+        <button
+          key={k}
+          type="button"
+          onClick={() => irPara(trecho.id)}
+          title={`Ir para: ${porId.get(trecho.id)?.nome}`}
+          className="text-sky-300 underline decoration-sky-300/40 underline-offset-2 hover:decoration-sky-300"
+        >
+          {trecho.texto}
+        </button>
+      ),
+    )
 
   const acao =
     'flex flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-medium text-slate-300 transition hover:bg-white/10 hover:text-white'
@@ -114,15 +141,27 @@ export function CartaoEstrutura() {
         </p>
       )}
 
+      {detalhes && figura && (
+        <button
+          type="button"
+          onClick={() => setFiguraAberta(true)}
+          className="mx-4 mb-2 flex items-center gap-3 rounded-xl border border-borda p-1.5 pr-3 text-left text-xs text-slate-300 transition hover:border-sky-400/60 hover:text-white"
+        >
+          <img src={figura.src} alt="" className="h-10 w-20 shrink-0 rounded-lg bg-white object-contain" />
+          Ver figura de referência
+        </button>
+      )}
+      {figuraAberta && figura && <FiguraAmpliada figura={figura} fechar={() => setFiguraAberta(false)} />}
+
       {detalhes && texto && (
         <div className="min-h-0 overflow-y-auto overscroll-contain px-4 text-sm leading-relaxed">
-          <p className="text-slate-200">{texto.descricao}</p>
+          <p className="text-slate-200">{ligado(texto.descricao)}</p>
           {texto.ficha && Object.keys(texto.ficha).length > 0 && (
             <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 rounded-xl bg-white/[0.03] p-3 text-[13px]">
               {Object.entries(texto.ficha).map(([rotulo, valor]) => (
                 <div key={rotulo} className="contents">
                   <dt className="font-medium text-slate-400">{rotulo}</dt>
-                  <dd className="text-slate-200">{valor}</dd>
+                  <dd className="text-slate-200">{ligado(valor)}</dd>
                 </div>
               ))}
             </dl>

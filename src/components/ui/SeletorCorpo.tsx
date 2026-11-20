@@ -16,7 +16,7 @@ export function SeletorCorpo() {
     <div
       role="radiogroup"
       aria-label="Corpo exibido"
-      className="pointer-events-auto mt-2 inline-flex rounded-full border border-borda bg-superficie/80 p-0.5 backdrop-blur"
+      className="pointer-events-auto inline-flex rounded-full border border-borda bg-superficie/80 p-0.5 backdrop-blur"
     >
       {OPCOES.map((o) => {
         const ativo = sexo === o.sexo

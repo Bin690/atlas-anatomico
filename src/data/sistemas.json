@@ -84,7 +84,7 @@
     "id": "pulmoes",
     "nome": "Pulmões",
     "cor": "#e3a1a4",
-    "modelo": "/models/pulmoes.glb?v=794d5868d5",
+    "modelo": "/models/pulmoes.glb?v=83fc8793b3",
     "visivelPorPadrao": true,
     "total": 5,
     "raioX": true

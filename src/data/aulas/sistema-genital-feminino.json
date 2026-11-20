@@ -66,7 +66,8 @@
         "VHF_ovarian_ligament_L",
         "VHF_vagina"
       ],
-      "vista": [0, 0.1, 1]
+      "vista": [0, 0.1, 1],
+      "figura": "/figuras/sistema-reprodutor-feminino.svg"
     },
     {
       "titulo": "Útero",
@@ -149,7 +150,8 @@
         "posicao": -0.7691,
         "inverter": false,
         "normal": [0, -0.849, 0.527]
-      }
+      },
+      "figura": "/figuras/sistema-reprodutor-feminino.svg"
     },
     {
       "titulo": "Tubas uterinas",

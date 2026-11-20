@@ -75,6 +75,15 @@ export const IconeOlho = (p: SVGProps<SVGSVGElement>) => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 )
+/** Três pontos ligados: partilhar. */
+export const IconePartilhar = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <circle cx="18" cy="5" r="2.5" />
+    <circle cx="6" cy="12" r="2.5" />
+    <circle cx="18" cy="19" r="2.5" />
+    <path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4" />
+  </svg>
+)
 /** Círculo com "i": informações (Sobre). */
 export const IconeInfo = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}>

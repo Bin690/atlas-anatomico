@@ -56,9 +56,6 @@ export function PainelAulas() {
             </button>
           </li>
         ))}
-        <li className="px-1 pt-1 text-[11px] text-slate-500">
-          Novas aulas: plexo braquial, trígonos do pescoço, polígono de Willis…
-        </li>
       </ul>
     </section>
   )

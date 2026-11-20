@@ -40,6 +40,8 @@ interface Base {
 }
 
 let cacheBase: Promise<Base> | null = null
+/** Dados já carregados (para consultas síncronas depois da primeira carga). */
+let baseCarregada: Base | null = null
 const catalogos = new Map<Sexo, Catalogo>()
 
 function carregarBase(): Promise<Base> {
@@ -55,7 +57,8 @@ function carregarBase(): Promise<Base> {
       feminino.camadas[e.sistema] || masculinas.has(e.id) ? { ...e, sexo: 'masculino' as const } : e,
     )
     const femininas = feminino.estruturas.map((e) => ({ ...e, sexo: 'feminino' as const }))
-    return { sistemas, estruturas: [...marcadas, ...femininas], conteudo, feminino }
+    baseCarregada = { sistemas, estruturas: [...marcadas, ...femininas], conteudo, feminino }
+    return baseCarregada
   })
   return cacheBase
 }
@@ -91,6 +94,11 @@ function catalogoDe(base: Base, sexo: Sexo): Catalogo {
 }
 
 /** Pré-carrega os dados (ex.: antes de montar a interface). */
+/** Catálogo de um corpo, se os dados já foram carregados (ex.: validar ids de um link partilhado). */
+export function catalogoDoCorpo(sexo: Sexo): Catalogo | null {
+  return baseCarregada ? catalogoDe(baseCarregada, sexo) : null
+}
+
 export function carregarCatalogo(): Promise<Catalogo> {
   return carregarBase().then((base) => catalogoDe(base, useAtlasStore.getState().sexo))
 }

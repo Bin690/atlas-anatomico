@@ -2,14 +2,20 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useCatalogo } from '../data'
 import { desempenhoPorSistema, lerProgresso, pendentes, registrarResposta } from '../data/progresso'
 import { gerarPerguntas, type Pergunta } from '../data/quiz'
+import { dizerNome } from '../hooks/voz'
 import { useAtlasStore } from '../store/useAtlasStore'
 import type { Estrutura } from '../types/atlas'
+import { IconeSom } from './ui/Icones'
 import { SeloPro } from './ui/Pro'
 
 const TOTAL = 10
 
-/** identificar: a estrutura aparece destacada e o aluno escolhe o nome. localizar: o aluno toca na estrutura pedida. */
-type Modo = 'identificar' | 'localizar'
+/**
+ * identificar: a estrutura aparece destacada e o aluno escolhe o nome.
+ * localizar: o aluno lê o nome e toca na estrutura.
+ * ouvir: o aluno ouve o nome (sem vê-lo escrito) e toca na estrutura.
+ */
+type Modo = 'identificar' | 'localizar' | 'ouvir'
 
 type Jogo = {
   tipo: 'jogando'
@@ -36,10 +42,12 @@ function prepararCena(p: Pergunta, modo: Modo) {
     useAtlasStore.setState({ regiaoFoco: null, quizAguardandoToque: false, quizToque: null })
     s.selecionar(p.alvo.id, { focar: true })
   } else {
-    // "Encontre": enquadra a região ao redor, sem destacar a resposta
+    // "Encontre" e "Ouça": enquadra a região ao redor, sem destacar a resposta
     useAtlasStore.setState({ regiaoFoco: p.alvo.id, quizAguardandoToque: true, quizToque: null })
     s.selecionar(null)
     s.focar()
+    // a voz toca mesmo com o alto-falante do topo desligado: aqui ela é a pergunta
+    if (modo === 'ouvir') dizerNome(p.alvo.id, p.alvo.nome, { forcar: true })
   }
 }
 
@@ -96,8 +104,8 @@ export function QuizPanel() {
     useAtlasStore.setState({ quizAguardandoToque: false })
     const st = useAtlasStore.getState()
     st.definirQuiz(true, true)
-    // No modo "Encontre", revela a resposta certa no modelo
-    if (fase.modo === 'localizar') st.selecionar(p.alvo.id, { focar: !certo })
+    // Nos modos de tocar, revela a resposta certa no modelo
+    if (fase.modo !== 'identificar') st.selecionar(p.alvo.id, { focar: !certo })
     setFase({
       ...fase,
       resposta: id,
@@ -108,7 +116,7 @@ export function QuizPanel() {
 
   // Toque no modelo durante o modo "Encontre a estrutura"
   useEffect(() => {
-    if (quizToque && fase.tipo === 'jogando' && fase.modo === 'localizar' && !fase.resposta) responder(quizToque.id)
+    if (quizToque && fase.tipo === 'jogando' && fase.modo !== 'identificar' && !fase.resposta) responder(quizToque.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quizToque])
 
@@ -140,25 +148,29 @@ export function QuizPanel() {
         <h2 className="text-lg font-semibold text-white">Teste seus conhecimentos</h2>
 
         <p className="mt-4 text-xs font-semibold tracking-wide text-slate-400 uppercase">Modo</p>
-        <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Modo do quiz">
+        <div className="mt-2 grid gap-2 sm:grid-cols-3" role="radiogroup" aria-label="Modo do quiz">
           {(
             [
-              ['identificar', 'Qual é esta estrutura?', 'Escolha o nome entre 4 opções'],
-              ['localizar', 'Encontre a estrutura', 'Toque nela no modelo 3D'],
+              ['identificar', 'Qual é esta estrutura?', 'Escolha o nome entre 4 opções', null],
+              [
+                'localizar',
+                'Encontre a estrutura',
+                'Leia o nome e toque nela no modelo 3D',
+                'O quiz "Encontre a estrutura"',
+              ],
+              ['ouvir', 'Ouça e encontre', 'Ouça o nome e toque nela no modelo 3D', 'O quiz "Ouça e encontre"'],
             ] as const
-          ).map(([id, titulo, dica]) => (
+          ).map(([id, titulo, dica, recursoPro]) => (
             <button
               key={id}
               type="button"
               role="radio"
               aria-checked={modo === id}
-              onClick={() =>
-                id === 'localizar' ? exigirPro('O quiz "Encontre a estrutura"', () => setModo(id)) : setModo(id)
-              }
+              onClick={() => (recursoPro ? exigirPro(recursoPro, () => setModo(id)) : setModo(id))}
               className={`rounded-xl border p-3 text-left transition ${modo === id ? 'border-sky-400 bg-sky-400/15' : 'border-borda hover:border-slate-500'}`}
             >
               <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
-                {titulo} {id === 'localizar' && !premium && <SeloPro />}
+                {titulo} {recursoPro && !premium && <SeloPro />}
               </span>
               <span className="mt-0.5 block text-[11px] text-slate-400">{dica}</span>
             </button>
@@ -305,9 +317,21 @@ export function QuizPanel() {
             })}
           </div>
         </>
+      ) : fase.modo === 'ouvir' && !fase.resposta ? (
+        <>
+          <h2 className="mt-3 font-semibold text-white">Ouça o nome e toque na estrutura no modelo 3D</h2>
+          <button
+            type="button"
+            onClick={() => dizerNome(p.alvo.id, p.alvo.nome, { forcar: true })}
+            className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-xl border border-sky-400/50 bg-sky-400/10 font-medium text-sky-200 transition hover:bg-sky-400/20"
+          >
+            <IconeSom /> Ouvir de novo
+          </button>
+          <p className="mt-2 text-[11px] text-slate-400">Gire e aproxime o modelo à vontade antes de tocar.</p>
+        </>
       ) : (
         <>
-          <p className="mt-3 text-xs text-slate-400">Toque no modelo 3D:</p>
+          <p className="mt-3 text-xs text-slate-400">{fase.modo === 'ouvir' ? 'Era:' : 'Toque no modelo 3D:'}</p>
           <h2 className="text-lg leading-snug font-semibold text-white">{p.alvo.nome}</h2>
           {!fase.resposta && (
             <p className="mt-1 text-[11px] text-slate-400">Gire e aproxime o modelo à vontade antes de tocar.</p>
@@ -318,9 +342,9 @@ export function QuizPanel() {
       {fase.resposta && (
         <div className="mt-3 min-h-0 overflow-y-auto text-sm" aria-live="polite">
           <p className={`font-semibold ${acertou ? 'text-emerald-300' : 'text-rose-300'}`}>
-            {acertou ? 'Correto!' : fase.modo === 'localizar' ? `Você tocou: ${tocada?.nome}` : `Era: ${p.alvo.nome}`}
+            {acertou ? 'Correto!' : fase.modo !== 'identificar' ? `Você tocou: ${tocada?.nome}` : `Era: ${p.alvo.nome}`}
           </p>
-          {!acertou && fase.modo === 'localizar' && (
+          {!acertou && fase.modo !== 'identificar' && (
             <p className="text-slate-300">A estrutura certa está destacada em azul no modelo.</p>
           )}
           {texto && <p className="mt-1 text-slate-300">{texto.descricao}</p>}

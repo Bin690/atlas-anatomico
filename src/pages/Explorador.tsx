@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { Toolbar } from '../components/Toolbar'
 import { CartaoEstrutura } from '../components/ui/CartaoEstrutura'
 import { DicaHover } from '../components/ui/DicaHover'
-import { IconeAulas, IconeBusca, IconeInfo, IconeSemSom, IconeSom } from '../components/ui/Icones'
+import { IconeAulas, IconeBusca, IconeInfo, IconePartilhar, IconeSemSom, IconeSom } from '../components/ui/Icones'
+import { aplicarVistaDoLink, partilharVista } from '../hooks/compartilhar'
 import { Sobre } from '../components/ui/Sobre'
 import { pararVoz } from '../hooks/voz'
 import { PainelBusca } from '../components/ui/PainelBusca'
@@ -77,6 +78,24 @@ function PainelAtual({ painel }: { painel: string }) {
 
 export default function Explorador() {
   const { estruturas } = useCatalogo()
+  const [aviso, setAviso] = useState<string | null>(null)
+
+  // Link partilhado: aplica a vista uma vez e limpa o endereço
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    if (aplicarVistaDoLink(params)) history.replaceState(null, '', location.pathname)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  useEffect(() => {
+    if (!aviso) return
+    const t = setTimeout(() => setAviso(null), 2500)
+    return () => clearTimeout(t)
+  }, [aviso])
+  const partilhar = async () => {
+    const r = await partilharVista('Atlas Anatômico 3D')
+    if (r === 'copiado') setAviso('Link da vista copiado')
+    else if (r === 'falhou') setAviso('Não foi possível copiar o link')
+  }
   const painel = useAtlasStore((s) => s.painel)
   const selecionada = useAtlasStore((s) => s.selecionada)
   const abrirPainel = useAtlasStore((s) => s.abrirPainel)
@@ -111,21 +130,22 @@ export default function Explorador() {
       <header className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-4">
         <div>
           <p className="text-[11px] font-medium tracking-wide text-sky-400 uppercase">Atlas Anatômico 3D</p>
-          <div className="flex items-center gap-1">
-            <h1 className="text-lg leading-tight font-bold text-white sm:text-xl">Corpo humano</h1>
+          <h1 className="text-lg leading-tight font-bold whitespace-nowrap text-white sm:text-xl">Corpo humano</h1>
+          {/* ⓘ na linha do seletor: ao lado do título não cabia em celulares estreitos */}
+          <div className="mt-2 flex items-center gap-1.5">
+            <SeletorCorpo />
             <button
               type="button"
               onClick={() => setSobreAberto(true)}
               aria-label="Sobre o atlas: como usar e créditos"
               title="Sobre o atlas: como usar e créditos"
-              className="pointer-events-auto grid size-8 place-items-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-white"
+              className="pointer-events-auto grid size-10 place-items-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-white"
             >
-              <IconeInfo className="size-[18px]" />
+              <IconeInfo className="size-5" />
             </button>
           </div>
-          <SeletorCorpo />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => {
@@ -135,16 +155,25 @@ export default function Explorador() {
             aria-pressed={voz}
             aria-label={voz ? 'Voz ligada: diz o nome da peça tocada' : 'Voz desligada'}
             title={voz ? 'Voz ligada: diz o nome da peça tocada' : 'Voz desligada'}
-            className="pointer-events-auto grid size-11 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
+            className="pointer-events-auto grid size-10 place-items-center sm:size-11 rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
           >
             {voz ? <IconeSom /> : <IconeSemSom />}
+          </button>
+          <button
+            type="button"
+            onClick={() => void partilhar()}
+            aria-label="Partilhar esta vista"
+            title="Partilhar esta vista (link com câmera, camadas e corte)"
+            className="pointer-events-auto grid size-10 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white sm:size-11"
+          >
+            <IconePartilhar />
           </button>
           <button
             type="button"
             onClick={() => abrirPainel('aulas')}
             aria-label="Aulas guiadas"
             title="Aulas guiadas"
-            className="pointer-events-auto grid size-11 place-items-center rounded-full border border-amber-400/40 bg-superficie/80 text-amber-200 backdrop-blur transition hover:border-amber-300 hover:text-white"
+            className="pointer-events-auto grid size-10 place-items-center sm:size-11 rounded-full border border-amber-400/40 bg-superficie/80 text-amber-200 backdrop-blur transition hover:border-amber-300 hover:text-white"
           >
             <IconeAulas />
           </button>
@@ -155,7 +184,7 @@ export default function Explorador() {
               onClick={() => abrirPainel('busca')}
               aria-label={`Buscar entre ${estruturas.length} estruturas`}
               title={`Buscar entre ${estruturas.length} estruturas (atalho: /)`}
-              className="pointer-events-auto grid size-11 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
+              className="pointer-events-auto grid size-10 place-items-center sm:size-11 rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
             >
               <IconeBusca />
             </button>
@@ -164,6 +193,11 @@ export default function Explorador() {
       </header>
 
       <CarregandoCamada />
+      {aviso && (
+        <output className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 rounded-full bg-emerald-500/90 px-4 py-2 text-sm font-medium text-slate-950 shadow-lg">
+          {aviso}
+        </output>
+      )}
       {!painel && !selecionada && <DicaInicial />}
 
       {/* Painel de camadas ou busca: folha inferior no celular, coluna à esquerda no desktop */}

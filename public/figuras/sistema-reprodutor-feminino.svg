@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 560" role="img" aria-labelledby="titulo" xmlns:c2pa="http://c2pa.org/manifest">
+  <title id="titulo">Sistema reprodutor feminino: vista em corte e vista externa</title>
+  <defs>
+    <!-- Volume -->
+    <radialGradient id="gCorpo" cx="38%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#F8C3BB"/><stop offset=".55" stop-color="#E8918C"/><stop offset="1" stop-color="#C4636A"/>
+    </radialGradient>
+    <linearGradient id="gVagina" x1="0" x2="1">
+      <stop offset="0" stop-color="#C9696D"/><stop offset=".4" stop-color="#EDA19B"/><stop offset=".65" stop-color="#E8928D"/><stop offset="1" stop-color="#BF5E66"/>
+    </linearGradient>
+    <linearGradient id="gTuba" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F3ABA4"/><stop offset="1" stop-color="#D3767A"/>
+    </linearGradient>
+    <radialGradient id="gOvario" cx="40%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#FAD3CD"/><stop offset=".6" stop-color="#EDA5A3"/><stop offset="1" stop-color="#CC7682"/>
+    </radialGradient>
+    <radialGradient id="gFoliculo" cx="35%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#FFE6E1"/><stop offset="1" stop-color="#E49AA0"/>
+    </radialGradient>
+    <radialGradient id="gColo" cx="45%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#F6B9B2"/><stop offset="1" stop-color="#D47A7C"/>
+    </radialGradient>
+
+    <!-- Textura de tecido -->
+    <filter id="pele" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="4" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .55  0 0 0 0 .22  0 0 0 0 .26  0 0 0 .32 -.04" result="t"/>
+      <feComposite in="t" in2="SourceGraphic" operator="in" result="tt"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="tt"/></feMerge>
+    </filter>
+    <filter id="musculo" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="turbulence" baseFrequency=".09 .16" numOctaves="3" seed="9" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .6  0 0 0 0 .25  0 0 0 0 .28  0 0 0 .9 -.25" result="t"/>
+      <feComposite in="t" in2="SourceGraphic" operator="in" result="tt"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="tt"/></feMerge>
+    </filter>
+    <filter id="sombra" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#5A1E2A" flood-opacity=".25"/>
+    </filter>
+
+    <!-- Contornos -->
+    <path id="contornoUtero" d="M-78 162C-80 136 80 136 78 162C86 216 74 270 24 302L-24 302C-74 270-86 216-78 162Z"/>
+    <path id="contornoVagina" d="M-23 296C-40 318-44 346-40 400C-36 442-27 466-23 486L23 486C27 466 36 442 40 400C44 346 40 318 23 296Z"/>
+    <path id="luzVagina" d="M-15 316C-27 338-29 362-27 400C-25 440-18 465-15 483L15 483C18 465 25 440 27 400C29 362 27 338 15 316Z"/>
+    <path id="cavidade" d="M-46 176Q0 168 46 176L8 284Q0 290-8 284Z"/>
+    <clipPath id="clipUtero"><use href="#contornoUtero"/></clipPath>
+    <clipPath id="clipLuz"><use href="#luzVagina"/></clipPath>
+    <clipPath id="clipOvario"><ellipse cx="180" cy="214" rx="40" ry="24" transform="rotate(-14 180 214)"/></clipPath>
+
+    <!-- Fímbrias -->
+    <g id="fimbrias" stroke="#D9767C" stroke-width="3.2" stroke-linecap="round" fill="none">
+      <path d="M232 188q-6 18-20 32"/><path d="M236 190q-2 20-12 36"/><path d="M240 190q3 20-2 38"/>
+      <path d="M244 188q8 16 6 36"/><path d="M228 186q-12 12-28 22"/><path d="M248 184q12 10 14 28"/>
+      <path d="M234 189q-10 16-26 26" stroke="#E58C8E"/><path d="M242 189q4 18 4 34" stroke="#E58C8E"/>
+    </g>
+
+    <!-- Anexo (tuba + ovário + ligamento), lado direito do observador -->
+    <g id="anexo">
+      <path d="M70 196Q108 206 144 213" stroke="#D27A7D" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <path d="M74 160C118 150 150 122 190 110C226 99 254 114 254 142C254 164 242 178 232 188" stroke="url(#gTuba)" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <path d="M150 124C170 115 180 112 192 110" stroke="url(#gTuba)" stroke-width="13" stroke-linecap="round" fill="none"/>
+      <path d="M192 110C226 99 254 114 254 142C254 164 242 178 232 188" stroke="url(#gTuba)" stroke-width="16" stroke-linecap="round" fill="none"/>
+      <path d="M196 108C222 101 246 110 249 132" stroke="#FAD0C9" stroke-width="3" stroke-linecap="round" fill="none" opacity=".45"/>
+      <path d="M222 182Q236 196 252 182L246 176Q236 186 226 176Z" fill="#E58A8C"/>
+      <use href="#fimbrias"/>
+    </g>
+    <g id="ovarioExterno" filter="url(#pele)">
+      <ellipse cx="180" cy="214" rx="40" ry="24" transform="rotate(-14 180 214)" fill="url(#gOvario)"/>
+      <g clip-path="url(#clipOvario)" fill="url(#gFoliculo)" stroke="#D08A93" stroke-width=".8">
+        <circle cx="152" cy="216" r="9"/><circle cx="166" cy="206" r="10"/><circle cx="184" cy="200" r="9"/><circle cx="200" cy="198" r="8"/>
+        <circle cx="214" cy="204" r="8"/><circle cx="160" cy="228" r="9"/><circle cx="176" cy="222" r="10"/><circle cx="194" cy="214" r="10"/>
+        <circle cx="210" cy="218" r="8"/><circle cx="178" cy="237" r="8"/><circle cx="196" cy="230" r="8"/><circle cx="144" cy="206" r="7"/>
+      </g>
+    </g>
+  </defs>
+
+  <!-- ===================== VISTA EM CORTE ===================== -->
+  <g id="vista-corte" transform="translate(270 0)">
+    <g filter="url(#sombra)">
+      <g data-nome="Tuba uterina direita"><use href="#anexo" transform="scale(-1 1)"/></g>
+      <g data-nome="Ovário direito"><use href="#ovarioExterno" transform="scale(-1 1)"/></g>
+      <g data-nome="Tuba uterina esquerda">
+        <use href="#anexo"/>
+        <path d="M80 158C120 148 150 122 190 110C226 99 252 114 252 142C252 162 242 176 234 186" stroke="#B9505F" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      </g>
+      <!-- Ovário esquerdo em corte, com folículos em várias fases -->
+      <g data-nome="Ovário esquerdo (corte)">
+        <ellipse cx="180" cy="214" rx="40" ry="24" transform="rotate(-14 180 214)" fill="#F6D6D3" stroke="#D88E98" stroke-width="2.5"/>
+        <g clip-path="url(#clipOvario)" fill="none" stroke="#C77E9E" stroke-width="1.2">
+          <circle cx="152" cy="214" r="4"/><circle cx="160" cy="226" r="3"/><circle cx="208" cy="220" r="4.5"/><circle cx="212" cy="204" r="3"/>
+          <circle cx="196" cy="226" r="7"/><circle cx="196" cy="226" r="3" fill="#E9B7CF"/>
+          <circle cx="164" cy="206" r="8"/><circle cx="164" cy="206" r="4.5" fill="#EFC5D8"/><circle cx="161" cy="203" r="1.6" fill="#C77E9E"/>
+        </g>
+        <circle cx="184" cy="208" r="9" fill="#F2C94C" stroke="#D49D1E" stroke-width="1.6"/>
+        <circle cx="184" cy="208" r="4" fill="#F8E08A"/>
+      </g>
+
+      <!-- Vagina em corte -->
+      <g data-nome="Vagina">
+        <use href="#contornoVagina" fill="url(#gVagina)" filter="url(#pele)"/>
+        <use href="#luzVagina" fill="#CF6878"/>
+        <g clip-path="url(#clipLuz)" fill="none" stroke-linecap="round">
+          <g stroke="#EBA3A6" stroke-width="2.4" opacity=".85">
+            <path d="M-30 338q30 6 60 0"/><path d="M-30 349q30 6 60 0"/><path d="M-30 360q30 6 60 0"/><path d="M-30 371q30 6 60 0"/>
+            <path d="M-30 382q30 6 60 0"/><path d="M-30 393q30 6 60 0"/><path d="M-30 404q30 6 60 0"/><path d="M-30 415q30 6 60 0"/>
+            <path d="M-30 426q30 6 60 0"/><path d="M-30 437q30 6 60 0"/><path d="M-30 448q30 6 60 0"/><path d="M-30 459q30 6 60 0"/>
+            <path d="M-30 470q30 6 60 0"/>
+          </g>
+          <path d="M0 316V486" stroke="#A9445A" stroke-width="2" opacity=".5"/>
+        </g>
+        <ellipse cx="0" cy="486" rx="23" ry="5" fill="#A9465A"/>
+      </g>
+
+      <!-- Útero em corte -->
+      <g data-nome="Útero">
+        <use href="#contornoUtero" fill="#E08F8A" filter="url(#musculo)"/>
+        <g clip-path="url(#clipUtero)">
+          <path d="M-90 150H90V168Q0 160-90 168Z" fill="#F2B4AB" filter="url(#pele)"/>
+          <path d="M-90 168Q0 160 90 168" stroke="#C86B70" stroke-width="1.5" fill="none"/>
+          <use href="#contornoUtero" fill="none" stroke="#F4BBB2" stroke-width="7"/>
+        </g>
+        <!-- Endométrio e cavidade -->
+        <use href="#cavidade" fill="none" stroke="#E07AA0" stroke-width="12" stroke-linejoin="round"/>
+        <use href="#cavidade" fill="#B74661" stroke="#C9567A" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M-30 186L-4 262M30 186L4 262" stroke="#D3628B" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+        <!-- Canal cervical -->
+        <path d="M0 286V312" stroke="#B74661" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <!-- Colo projetado na vagina -->
+      <g data-nome="Colo do útero">
+        <path d="M-21 300C-23 318-14 334 0 336C14 334 23 318 21 300Z" fill="url(#gColo)" filter="url(#pele)"/>
+        <path d="M0 302Q-4 316 0 330" stroke="#B74661" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <ellipse cx="0" cy="333" rx="4" ry="2" fill="#9E3B52"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===================== VISTA EXTERNA ===================== -->
+  <g id="vista-externa" transform="translate(810 0)">
+    <g filter="url(#sombra)">
+      <g data-nome="Tuba uterina direita"><use href="#anexo" transform="scale(-1 1)"/></g>
+      <g data-nome="Ovário direito"><use href="#ovarioExterno" transform="scale(-1 1)"/></g>
+      <g data-nome="Tuba uterina esquerda"><use href="#anexo"/></g>
+      <g data-nome="Ovário esquerdo"><use href="#ovarioExterno"/></g>
+      <g data-nome="Vagina">
+        <use href="#contornoVagina" fill="url(#gVagina)" filter="url(#pele)"/>
+        <ellipse cx="0" cy="486" rx="23" ry="5" fill="#B4505F"/>
+      </g>
+      <g data-nome="Útero">
+        <use href="#contornoUtero" fill="url(#gCorpo)" filter="url(#pele)"/>
+        <path d="M-50 160Q-10 150 30 156" stroke="#FCD9D2" stroke-width="8" stroke-linecap="round" fill="none" opacity=".45"/>
+        <path d="M-22 302Q0 310 22 302" stroke="#B85A63" stroke-width="2.5" fill="none" opacity=".6"/>
+      </g>
+    </g>
+  </g>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTplODQ1Yjg1MC0wNWY5LTRlZTAtOTM4NC02YzE2NmI3NTU3OGUAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaN4vHoTyPWyYsiQ6IWb+giQAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpjMzY5YTcwMy1mNjI4LTQ5MDEtYTdhYi1iNDZkNTQzMTY0MDVscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNozqv2tW/DLX8oMGMKAIfg7QAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggjAoykIGz9ax2mA3zXcO7ZyRFp+EimefXzlzgiWPkLRikZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaE2gL898mZBcvJJturAi/TYAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIB/tWAs7HMbTKYxCVlKJL+6clIvSBEKT2ZusavVZbEYqZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GSfAZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmU4NDViODUwLTA1ZjktNGVlMC05Mzg0LTZjMTY2Yjc1NTc4ZS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjEzZDhkNmFjLWM5NjUtNDU2MS1iMGIyLWZkODM4NjhjYTM0ZHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCCMCjKQgbP1rHaYDfNdw7tnJEWn4SKZ59fOXOCJY+QtGKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggZtr575t/NH2w0wzpKzHILE8HWk8lbuLgL05rquvZW/qiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggat6gzRXCBVD6Slxx21dZAAib8lUSMg+Kkr8o8EZoV+R0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQFGgEDw2RusmkBxZ54BlhL2Eh20HxYjDKhPK5opWqzjAeKxphu4Oa2eKu/4X87nilQw/MD7en3euC++t8foFLhA=</c2pa:manifest></metadata></svg>

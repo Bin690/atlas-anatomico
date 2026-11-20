@@ -4,6 +4,8 @@ import { BotaoVoltar } from '../components/BotaoVoltar'
 import { SeloPro } from '../components/ui/Pro'
 import { useCatalogo } from '../data'
 import { aulaPorId } from '../data/aulas'
+import { figuraPorSrc } from '../data/figuras'
+import { MiniaturaFigura } from '../components/ui/FiguraReferencia'
 import { useAtlasStore } from '../store/useAtlasStore'
 import type { PassoAula, Sexo } from '../types/atlas'
 import NaoEncontrado from './NaoEncontrado'
@@ -135,6 +137,7 @@ export default function AulaView() {
             <h2 className="mt-3 text-lg leading-snug font-semibold text-white">{passo.titulo}</h2>
             <div className="mt-2 min-h-0 overflow-y-auto" aria-live="polite">
               <p className="text-sm leading-relaxed text-slate-200">{passo.texto}</p>
+              {figuraPorSrc(passo.figura) && <MiniaturaFigura figura={figuraPorSrc(passo.figura)!} />}
               {/* No celular, os nomes ficam nesta legenda e o modelo mostra só os números */}
               {!!passo.destaques?.length && (
                 <ol className="mt-3 space-y-1 sm:hidden" aria-label="Estruturas destacadas">
