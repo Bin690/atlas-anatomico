@@ -45,7 +45,11 @@ export const mantido = (p: Vector3) => !ativo || PLANO.distanceToPoint(p) >= 0
  * Primeira interseção "real" do raio: numa camada interativa e visível, em uma peça visível,
  * e do lado mantido pelo corte (o raycast do Three não respeita planos de corte).
  */
-export function primeiraIntersecao(intersecoes: Intersection<Object3D>[], ignorarTranslucidas = false) {
+export function primeiraIntersecao(
+  intersecoes: Intersection<Object3D>[],
+  ignorarTranslucidas = false,
+  alvoId?: string,
+) {
   for (const i of intersecoes) {
     const o = i.object as Object3D & {
       isBatchedMesh?: boolean
@@ -54,6 +58,9 @@ export function primeiraIntersecao(intersecoes: Intersection<Object3D>[], ignora
     }
     if (!o.isBatchedMesh || !o.visible || o.userData.naoInterativo) continue
     if (ignorarTranslucidas && o.material?.transparent && (o.material.opacity ?? 1) < 0.5) continue
+    // A pele de vidro não esconde o que está dentro, exceto quando é ela a peça procurada (ex.: vulva)
+    if (ignorarTranslucidas && o.userData.vidro && (i.batchId === undefined || o.userData.ids?.[i.batchId] !== alvoId))
+      continue
     if (i.batchId !== undefined && o.getVisibleAt && !o.getVisibleAt(i.batchId)) continue
     if (!mantido(i.point)) continue
     return i
@@ -83,10 +90,10 @@ const direcao = new Vector3()
  * Qual estrutura a câmera vê primeiro ao olhar para um ponto (camadas translúcidas do raio-X e a pele
  * não contam como obstáculo). Retorna o id e o ponto atingido, ou null.
  */
-export function estruturaVisivelEm(origem: Vector3, alvo: Vector3) {
+export function estruturaVisivelEm(origem: Vector3, alvo: Vector3, alvoId?: string) {
   raycaster.set(origem, direcao.copy(alvo).sub(origem).normalize())
   const visiveis = [...camadasMontadas].filter((o) => o.visible)
-  const hit = primeiraIntersecao(raycaster.intersectObjects(visiveis, false), true)
+  const hit = primeiraIntersecao(raycaster.intersectObjects(visiveis, false), true, alvoId)
   if (!hit || hit.batchId === undefined) return null
   const ids = hit.object.userData.ids as string[] | undefined
   return ids ? { id: ids[hit.batchId], ponto: hit.point } : null
@@ -107,13 +114,13 @@ export class VisibilidadeEstavel {
   }
 
   atualizar(id: string, camera: Vector3, candidatos: Vector3[]) {
-    if (this.ponto && estruturaVisivelEm(camera, this.ponto)?.id === id) {
+    if (this.ponto && estruturaVisivelEm(camera, this.ponto, id)?.id === id) {
       this.falhas = 0
       return
     }
     const ordenados = [...candidatos].sort((a, b) => a.distanceToSquared(camera) - b.distanceToSquared(camera))
     for (const c of ordenados) {
-      const hit = estruturaVisivelEm(camera, c)
+      const hit = estruturaVisivelEm(camera, c, id)
       if (hit?.id === id) {
         this.ponto = hit.ponto.clone()
         this.falhas = 0

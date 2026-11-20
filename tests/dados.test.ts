@@ -3,11 +3,15 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import conteudo from '../src/data/conteudo.json'
 import estruturas from '../src/data/estruturas.json'
+import feminino from '../src/data/feminino.json'
 import sistemas from '../src/data/sistemas.json'
 import { readdirSync, readFileSync } from 'node:fs'
 import type { Conteudo, Estrutura, Sistema } from '../src/types/atlas'
 
-const lista = estruturas as Estrutura[]
+const masculino = estruturas as Estrutura[]
+const femininas = feminino.estruturas as Estrutura[]
+/** Todas as estruturas dos dois corpos. */
+const lista = [...masculino, ...femininas]
 const camadas = sistemas as Sistema[]
 const textos = conteudo as Record<string, Conteudo>
 const PUBLIC = join(__dirname, '..', 'public')
@@ -23,7 +27,7 @@ describe('integridade dos dados', () => {
   })
 
   it('a contagem de cada camada bate com o catálogo', () => {
-    for (const s of camadas) expect(lista.filter((e) => e.sistema === s.id).length, s.id).toBe(s.total)
+    for (const s of camadas) expect(masculino.filter((e) => e.sistema === s.id).length, s.id).toBe(s.total)
   })
 
   it('toda estrutura tem conteúdo didático com descrição', () => {
@@ -41,8 +45,11 @@ describe('integridade dos dados', () => {
   })
 
   it('todos os modelos .glb existem em public/', () => {
-    const arquivos = camadas.flatMap((s) => [s.modelo, s.modeloLeve].filter(Boolean) as string[])
-    expect(arquivos.filter((a) => !existsSync(join(PUBLIC, a)))).toEqual([])
+    const arquivos = [
+      ...camadas.flatMap((s) => [s.modelo, s.modeloLeve].filter(Boolean) as string[]),
+      ...Object.values(feminino.camadas).map((c) => c.modelo),
+    ]
+    expect(arquivos.filter((a) => !existsSync(join(PUBLIC, a.split('?')[0])))).toEqual([])
   })
 
   it('aulas guiadas só usam estruturas e camadas existentes', () => {
@@ -58,5 +65,24 @@ describe('integridade dos dados', () => {
           expect(ids.has(id), `${arquivo}: ${id}`).toBe(true)
       }
     }
+  })
+})
+
+describe('corpo feminino', () => {
+  it('só troca camadas que existem, com a contagem certa', () => {
+    const ids = new Set(camadas.map((s) => s.id))
+    for (const [id, c] of Object.entries(feminino.camadas)) {
+      expect(ids.has(id), id).toBe(true)
+      expect(femininas.filter((e) => e.sistema === id).length, id).toBe(c.total)
+    }
+  })
+
+  it('toda estrutura feminina está numa camada que troca de modelo', () => {
+    expect(femininas.filter((e) => !(e.sistema in feminino.camadas)).map((e) => e.nome)).toEqual([])
+  })
+
+  it('as estruturas só masculinas existem no catálogo', () => {
+    const ids = new Set(masculino.map((e) => e.id))
+    expect(feminino.somenteMasculino.filter((id) => !ids.has(id))).toEqual([])
   })
 })

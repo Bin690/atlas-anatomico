@@ -75,6 +75,12 @@ export const IconeOlho = (p: SVGProps<SVGSVGElement>) => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 )
+/** Setas em cruz: mover (deslocar) a vista. */
+export const IconeMover = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" />
+  </svg>
+)
 export const IconeCorte = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}>
     <rect x="5" y="3" width="14" height="18" rx="3" opacity={0.5} />

@@ -1,0 +1,336 @@
+{
+  "camadas": {
+    "pele": {
+      "modelo": "/models/pele-feminina.glb?v=d5fbfc1f6e",
+      "total": 6,
+      "tocaveis": ["VHF_labium_majus_R", "VHF_labium_majus_L", "VHF_mons_pubis", "VHF_fat_R", "VHF_fat_L"]
+    },
+    "genital": {
+      "modelo": "/models/genital-feminino.glb?v=9ec700b44f",
+      "total": 38
+    }
+  },
+  "estruturas": [
+    {
+      "id": "VHF_ampulla_of_uterine_tube_R",
+      "nome": "Ampola da tuba uterina direita",
+      "en": "ampulla of uterine tube, right",
+      "sistema": "genital",
+      "pai": "Tuba uterina direita"
+    },
+    {
+      "id": "VHF_ampulla_of_uterine_tube_L",
+      "nome": "Ampola da tuba uterina esquerda",
+      "en": "ampulla of uterine tube, left",
+      "sistema": "genital",
+      "pai": "Tuba uterina esquerda"
+    },
+    {
+      "id": "VHF_areola_R",
+      "nome": "Aréola direita",
+      "en": "areola, right",
+      "sistema": "genital",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_areola_L",
+      "nome": "Aréola esquerda",
+      "en": "areola, left",
+      "sistema": "genital",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_cervix",
+      "nome": "Colo do útero",
+      "en": "cervix",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_cornua",
+      "nome": "Cornos do útero",
+      "en": "cornua",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_body_of_uterus",
+      "nome": "Corpo do útero",
+      "en": "body of uterus",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_main_lactiferous_ducts_R",
+      "nome": "Ductos lactíferos da mama direita",
+      "en": "main lactiferous ducts, right",
+      "sistema": "genital",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_main_lactiferous_ducts_L",
+      "nome": "Ductos lactíferos da mama esquerda",
+      "en": "main lactiferous ducts, left",
+      "sistema": "genital",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_fibria_of_uterine_tube_R",
+      "nome": "Fímbrias da tuba uterina direita",
+      "en": "fimbria of uterine tube, right",
+      "sistema": "genital",
+      "pai": "Tuba uterina direita"
+    },
+    {
+      "id": "VHF_fibria_of_uterine_tube_L",
+      "nome": "Fímbrias da tuba uterina esquerda",
+      "en": "fimbria of uterine tube, left",
+      "sistema": "genital",
+      "pai": "Tuba uterina esquerda"
+    },
+    {
+      "id": "VHF_fundus_of_uterus",
+      "nome": "Fundo do útero",
+      "en": "fundus of uterus",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_uterine_tube_infundibulum_R",
+      "nome": "Infundíbulo da tuba uterina direita",
+      "en": "uterine tube infundibulum, right",
+      "sistema": "genital",
+      "pai": "Tuba uterina direita"
+    },
+    {
+      "id": "VHF_uterine_tube_infundibulum_L",
+      "nome": "Infundíbulo da tuba uterina esquerda",
+      "en": "uterine tube infundibulum, left",
+      "sistema": "genital",
+      "pai": "Tuba uterina esquerda"
+    },
+    {
+      "id": "VHF_isthmus_of_fallopian_tube_R",
+      "nome": "Istmo da tuba uterina direita",
+      "en": "isthmus of fallopian tube, right",
+      "sistema": "genital",
+      "pai": "Tuba uterina direita"
+    },
+    {
+      "id": "VHF_isthmus_of_fallopian_tube_L",
+      "nome": "Istmo da tuba uterina esquerda",
+      "en": "isthmus of fallopian tube, left",
+      "sistema": "genital",
+      "pai": "Tuba uterina esquerda"
+    },
+    {
+      "id": "VHF_cervicovaginal_junction",
+      "nome": "Junção cervicovaginal",
+      "en": "cervicovaginal junction",
+      "sistema": "genital",
+      "pai": "Colo do útero",
+      "paiId": "VHF_cervix"
+    },
+    {
+      "id": "VHF_labium_majus_R",
+      "nome": "Lábio maior direito",
+      "en": "Labium majus, right",
+      "sistema": "pele",
+      "pai": "Pudendo feminino (vulva)"
+    },
+    {
+      "id": "VHF_labium_majus_L",
+      "nome": "Lábio maior esquerdo",
+      "en": "Labium majus, left",
+      "sistema": "pele",
+      "pai": "Pudendo feminino (vulva)"
+    },
+    {
+      "id": "VHF_ovarian_ligament_R",
+      "nome": "Ligamento próprio do ovário direito",
+      "en": "Ovarian ligament, right",
+      "sistema": "genital",
+      "esquematico": true
+    },
+    {
+      "id": "VHF_ovarian_ligament_L",
+      "nome": "Ligamento próprio do ovário esquerdo",
+      "en": "Ovarian ligament, left",
+      "sistema": "genital",
+      "esquematico": true
+    },
+    {
+      "id": "VHF_suspensory_ligaments_R",
+      "nome": "Ligamentos suspensores da mama direita",
+      "en": "suspensory ligaments, right",
+      "sistema": "genital",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_suspensory_ligaments_L",
+      "nome": "Ligamentos suspensores da mama esquerda",
+      "en": "suspensory ligaments, left",
+      "sistema": "genital",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_mammary_lobes_R",
+      "nome": "Lobos da glândula mamária direita",
+      "en": "mammary lobes, right",
+      "sistema": "genital",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_mammary_lobes_L",
+      "nome": "Lobos da glândula mamária esquerda",
+      "en": "mammary lobes, left",
+      "sistema": "genital",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_mons_pubis",
+      "nome": "Monte do púbis",
+      "en": "Mons pubis",
+      "sistema": "pele",
+      "pai": "Pudendo feminino (vulva)"
+    },
+    {
+      "id": "VHF_external_cervical_os",
+      "nome": "Óstio do útero (óstio externo)",
+      "en": "external cervical os",
+      "sistema": "genital",
+      "pai": "Colo do útero",
+      "paiId": "VHF_cervix"
+    },
+    {
+      "id": "VHF_internal_cervical_os",
+      "nome": "Óstio interno do colo do útero",
+      "en": "internal cervical os",
+      "sistema": "genital",
+      "pai": "Colo do útero",
+      "paiId": "VHF_cervix"
+    },
+    {
+      "id": "VHF_abdominal_ostium_of_uterine_tube",
+      "nome": "Óstios uterinos das tubas",
+      "en": "uterine ostium of uterine tube",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_right_ovary",
+      "nome": "Ovário direito",
+      "en": "right ovary",
+      "sistema": "genital"
+    },
+    {
+      "id": "VHF_left_ovary",
+      "nome": "Ovário esquerdo",
+      "en": "left ovary",
+      "sistema": "genital"
+    },
+    {
+      "id": "VHF_nipple_R",
+      "nome": "Papila mamária direita",
+      "en": "nipple, right",
+      "sistema": "genital",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_nipple_L",
+      "nome": "Papila mamária esquerda",
+      "en": "nipple, left",
+      "sistema": "genital",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_anterior_wall_of_uterus",
+      "nome": "Parede anterior do útero",
+      "en": "anterior wall of uterus",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_posterior_wall_of_uterus",
+      "nome": "Parede posterior do útero",
+      "en": "posterior wall of uterus",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_skin",
+      "nome": "Pele",
+      "en": "Skin",
+      "sistema": "pele"
+    },
+    {
+      "id": "VHF_lower_uterine_segment",
+      "nome": "Segmento inferior do útero",
+      "en": "lower uterine segment",
+      "sistema": "genital",
+      "pai": "Útero"
+    },
+    {
+      "id": "VHF_main_lactiferous_sinuses_R",
+      "nome": "Seios lactíferos da mama direita",
+      "en": "main lactiferous sinuses, right",
+      "sistema": "genital",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_main_lactiferous_sinuses_L",
+      "nome": "Seios lactíferos da mama esquerda",
+      "en": "main lactiferous sinuses, left",
+      "sistema": "genital",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_fat_R",
+      "nome": "Tecido adiposo da mama direita",
+      "en": "adipose tissue of breast, right",
+      "sistema": "pele",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_fat_L",
+      "nome": "Tecido adiposo da mama esquerda",
+      "en": "adipose tissue of breast, left",
+      "sistema": "pele",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_areolar_tubercles_R",
+      "nome": "Tubérculos areolares da mama direita",
+      "en": "areolar tubercles, right",
+      "sistema": "genital",
+      "pai": "Mama direita"
+    },
+    {
+      "id": "VHF_areolar_tubercles_L",
+      "nome": "Tubérculos areolares da mama esquerda",
+      "en": "areolar tubercles, left",
+      "sistema": "genital",
+      "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_vagina",
+      "nome": "Vagina",
+      "en": "Vagina",
+      "sistema": "genital",
+      "esquematico": true
+    }
+  ],
+  "somenteMasculino": [
+    "FMA20818",
+    "FMA20819",
+    "FMA14759",
+    "FMA14760",
+    "FMA19667",
+    "FMA21354",
+    "FMA21385",
+    "FMA21384",
+    "FMA21386",
+    "FMA14341",
+    "FMA14345"
+  ]
+}

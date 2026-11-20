@@ -14,6 +14,7 @@ import {
   type Mesh,
   type Object3D,
 } from 'three'
+import { useCatalogo } from '../../data'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import type { Sistema } from '../../types/atlas'
 import { atualizarPlano, camadasMontadas, intersecaoReal, PLANO } from './corte'
@@ -162,6 +163,8 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
   const destaques = useAtlasStore((s) => s.destaques)
   const selecionar = useAtlasStore((s) => s.selecionar)
   const setHover = useAtlasStore((s) => s.setHover)
+  // Camadas comuns aos dois corpos (ex.: urinário) podem ter peças de um só corpo (uretra masculina)
+  const { doOutroCorpo } = useCatalogo()
 
   // Registro global (para foco e rótulos)
   useLayoutEffect(() => {
@@ -180,18 +183,34 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
   // Sem dispose() ao desmontar: as camadas ficam carregadas durante todo o uso, e no StrictMode
   // (dev) a desmontagem simulada descartaria a malha ainda em uso, quebrando a renderização.
 
-  // Camadas não interativas (pele) não capturam toques, para não bloquear o que está dentro
+  // Camadas não interativas (pele) não capturam toques, para não bloquear o que está dentro;
+  // as peças "tocáveis" dela (vulva na pele feminina) continuam respondendo
   useEffect(() => {
-    if (sistema.interativo === false) {
+    malha.userData.vidro = sistema.estilo === 'vidro'
+    if (sistema.interativo !== false) return
+    const tocaveis = new Set(sistema.tocaveis)
+    if (!tocaveis.size) {
       malha.raycast = () => {}
       malha.userData.naoInterativo = true
+      return
     }
-  }, [malha, sistema.interativo])
+    malha.raycast = (raycaster, intersecoes) => {
+      const antes = intersecoes.length
+      BatchedMesh.prototype.raycast.call(malha, raycaster, intersecoes)
+      for (let k = intersecoes.length - 1; k >= antes; k--) {
+        const batchId = intersecoes[k].batchId
+        if (batchId === undefined || !tocaveis.has(ids[batchId])) intersecoes.splice(k, 1)
+      }
+    }
+  }, [malha, ids, sistema.interativo, sistema.tocaveis, sistema.estilo])
+  const naoTocavel = sistema.interativo === false && !sistema.tocaveis?.length
 
-  // Visibilidade por estrutura (ocultar / isolar)
+  // Visibilidade por estrutura (ocultar / isolar / outro corpo)
   useEffect(() => {
-    ids.forEach((id, i) => malha.setVisibleAt(i, !ocultas.has(id) && (!isoladas || isoladas.has(id))))
-  }, [malha, ids, ocultas, isoladas])
+    ids.forEach((id, i) =>
+      malha.setVisibleAt(i, !doOutroCorpo.has(id) && !ocultas.has(id) && (!isoladas || isoladas.has(id))),
+    )
+  }, [malha, ids, ocultas, isoladas, doOutroCorpo])
 
   // Cores: atualiza só as instâncias que mudaram de estado
   const anteriores = useRef<string[]>([])
@@ -244,7 +263,7 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
       object={malha}
       visible={visivel}
       onPointerMove={(e: ThreeEvent<PointerEvent>) => {
-        if (sistema.interativo === false || useAtlasStore.getState().modoQuiz) return
+        if (naoTocavel || useAtlasStore.getState().modoQuiz) return
         if (e.pointerType !== 'mouse') return
         const alvo = idDoEvento(e)
         if (!alvo) return // outra camada (ou nada) é a primeira de verdade

@@ -5,7 +5,7 @@ import { SeloPro } from '../components/ui/Pro'
 import { useCatalogo } from '../data'
 import { aulaPorId } from '../data/aulas'
 import { useAtlasStore } from '../store/useAtlasStore'
-import type { PassoAula } from '../types/atlas'
+import type { PassoAula, Sexo } from '../types/atlas'
 import NaoEncontrado from './NaoEncontrado'
 
 /** Aplica um passo da aula ao 3D: camadas, raio-X, corte, isolamento, destaques e câmera. */
@@ -36,10 +36,13 @@ export default function AulaView() {
   const { porId } = useCatalogo()
 
   // Entra no modo aula guardando o estado do atlas, e restaura ao sair
-  const anterior = useRef<{ camadas: string[]; raioX: boolean } | null>(null)
+  const anterior = useRef<{ camadas: string[]; raioX: boolean; sexo: Sexo } | null>(null)
+  const sexoAula = aula?.sexo
   useEffect(() => {
     const s = useAtlasStore.getState()
-    anterior.current = { camadas: [...s.camadas], raioX: s.raioX }
+    anterior.current = { camadas: [...s.camadas], raioX: s.raioX, sexo: s.sexo }
+    // Aula de um corpo específico (ex.: sistema genital feminino): troca o corpo e volta ao sair
+    if (sexoAula) s.definirSexo(sexoAula, { lembrar: false })
     s.abrirPainel(null)
     useAtlasStore.setState({ emAula: true })
     return () => {
@@ -56,10 +59,11 @@ export default function AulaView() {
       if (anterior.current) {
         st.definirCamadas(anterior.current.camadas)
         st.definirRaioX(anterior.current.raioX)
+        st.definirSexo(anterior.current.sexo, { lembrar: false })
       }
       st.selecionar(null, { focar: true })
     }
-  }, [])
+  }, [sexoAula])
 
   const bloqueada = !!aula?.premium && !premium
   useEffect(() => {

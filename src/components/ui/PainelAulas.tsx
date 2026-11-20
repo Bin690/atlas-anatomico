@@ -43,6 +43,11 @@ export function PainelAulas() {
                     GRÁTIS
                   </span>
                 )}
+                {a.sexo === 'feminino' && (
+                  <span className="rounded bg-pink-400/15 px-1.5 py-0.5 text-[9px] font-bold text-pink-200">
+                    CORPO FEMININO
+                  </span>
+                )}
               </span>
               <span className="mt-1 block text-xs text-slate-300">{a.resumo}</span>
               <span className="mt-1 block text-[11px] text-slate-500">

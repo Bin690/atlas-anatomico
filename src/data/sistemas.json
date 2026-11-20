@@ -3,7 +3,7 @@
     "id": "pele",
     "nome": "Pele e anexos",
     "cor": "#e2b49b",
-    "modelo": "/models/pele.glb",
+    "modelo": "/models/pele.glb?v=f82c3e39e0",
     "visivelPorPadrao": true,
     "total": 4,
     "estilo": "vidro",
@@ -13,8 +13,8 @@
     "id": "esqueleto",
     "nome": "Esqueleto",
     "cor": "#e6dcc6",
-    "modelo": "/models/esqueleto.glb",
-    "modeloLeve": "/models/esqueleto-leve.glb",
+    "modelo": "/models/esqueleto.glb?v=312bd982c1",
+    "modeloLeve": "/models/esqueleto-leve.glb?v=47815b36d9",
     "visivelPorPadrao": true,
     "total": 203,
     "raioX": true
@@ -23,7 +23,7 @@
     "id": "articulacoes",
     "nome": "Articulações, cartilagens e ligamentos",
     "cor": "#b9cfd8",
-    "modelo": "/models/articulacoes.glb",
+    "modelo": "/models/articulacoes.glb?v=c48913bdf0",
     "visivelPorPadrao": true,
     "total": 74
   },
@@ -31,8 +31,8 @@
     "id": "musculos",
     "nome": "Músculos",
     "cor": "#b5443d",
-    "modelo": "/models/musculos.glb",
-    "modeloLeve": "/models/musculos-leve.glb",
+    "modelo": "/models/musculos.glb?v=38b85cdf6d",
+    "modeloLeve": "/models/musculos-leve.glb?v=c9e55c955f",
     "visivelPorPadrao": false,
     "total": 408,
     "raioX": true
@@ -41,8 +41,8 @@
     "id": "nervoso",
     "nome": "Sistema nervoso",
     "cor": "#f2c94c",
-    "modelo": "/models/nervoso.glb",
-    "modeloLeve": "/models/nervoso-leve.glb",
+    "modelo": "/models/nervoso.glb?v=4267a88c1a",
+    "modeloLeve": "/models/nervoso-leve.glb?v=4fcb5cc919",
     "visivelPorPadrao": false,
     "total": 127
   },
@@ -50,7 +50,7 @@
     "id": "olhos",
     "nome": "Olhos e orelhas",
     "cor": "#8fb8d8",
-    "modelo": "/models/olhos.glb",
+    "modelo": "/models/olhos.glb?v=b3da414e1b",
     "visivelPorPadrao": false,
     "total": 36
   },
@@ -58,7 +58,7 @@
     "id": "coracao",
     "nome": "Coração",
     "cor": "#a32f37",
-    "modelo": "/models/coracao.glb",
+    "modelo": "/models/coracao.glb?v=e8c83cfc0e",
     "visivelPorPadrao": true,
     "total": 23
   },
@@ -66,8 +66,8 @@
     "id": "arterias",
     "nome": "Artérias",
     "cor": "#d23c3c",
-    "modelo": "/models/arterias.glb",
-    "modeloLeve": "/models/arterias-leve.glb",
+    "modelo": "/models/arterias.glb?v=1e1165ff56",
+    "modeloLeve": "/models/arterias-leve.glb?v=c9cb05e2c6",
     "visivelPorPadrao": false,
     "total": 423
   },
@@ -75,8 +75,8 @@
     "id": "veias",
     "nome": "Veias",
     "cor": "#3d63c4",
-    "modelo": "/models/veias.glb",
-    "modeloLeve": "/models/veias-leve.glb",
+    "modelo": "/models/veias.glb?v=4243038b93",
+    "modeloLeve": "/models/veias-leve.glb?v=c65f70d9c4",
     "visivelPorPadrao": false,
     "total": 217
   },
@@ -84,7 +84,7 @@
     "id": "pulmoes",
     "nome": "Pulmões",
     "cor": "#e3a1a4",
-    "modelo": "/models/pulmoes.glb",
+    "modelo": "/models/pulmoes.glb?v=794d5868d5",
     "visivelPorPadrao": true,
     "total": 5,
     "raioX": true
@@ -93,7 +93,7 @@
     "id": "respiratorio",
     "nome": "Vias respiratórias",
     "cor": "#d9cfc0",
-    "modelo": "/models/respiratorio.glb",
+    "modelo": "/models/respiratorio.glb?v=a8458cd9dc",
     "visivelPorPadrao": true,
     "total": 36
   },
@@ -101,7 +101,7 @@
     "id": "digestorio",
     "nome": "Sistema digestório",
     "cor": "#c98a6b",
-    "modelo": "/models/digestorio.glb",
+    "modelo": "/models/digestorio.glb?v=9733d4f777",
     "visivelPorPadrao": true,
     "total": 82
   },
@@ -109,7 +109,7 @@
     "id": "urinario",
     "nome": "Sistema urinário",
     "cor": "#9b4a3c",
-    "modelo": "/models/urinario.glb",
+    "modelo": "/models/urinario.glb?v=4fb8ddbc02",
     "visivelPorPadrao": true,
     "total": 6
   },
@@ -117,7 +117,7 @@
     "id": "genital",
     "nome": "Sistema genital",
     "cor": "#c78c86",
-    "modelo": "/models/genital.glb",
+    "modelo": "/models/genital.glb?v=25263290c4",
     "visivelPorPadrao": true,
     "total": 12
   },
@@ -125,7 +125,7 @@
     "id": "endocrino",
     "nome": "Glândulas endócrinas",
     "cor": "#d8a24a",
-    "modelo": "/models/endocrino.glb",
+    "modelo": "/models/endocrino.glb?v=997ba46a7f",
     "visivelPorPadrao": true,
     "total": 4
   },
@@ -133,7 +133,7 @@
     "id": "linfatico",
     "nome": "Sistema linfático (baço e timo)",
     "cor": "#8e4a6a",
-    "modelo": "/models/linfatico.glb",
+    "modelo": "/models/linfatico.glb?v=61e928f143",
     "visivelPorPadrao": true,
     "total": 3
   }

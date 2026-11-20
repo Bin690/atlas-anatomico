@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Vec3 } from '../types/atlas'
+import type { Sexo, Vec3 } from '../types/atlas'
 
 export type Painel = 'camadas' | 'busca' | 'cortes' | 'aulas' | null
 
@@ -13,6 +13,8 @@ export interface Corte {
 }
 
 interface AtlasState {
+  /** Corpo exibido (masculino ou feminino), lembrado no aparelho. */
+  sexo: Sexo
   /** Estrutura selecionada (toque, busca ou quiz). */
   selecionada: string | null
   /** Ponto tocado na superfície (para ancorar o rótulo); null = centro da estrutura. */
@@ -28,6 +30,8 @@ interface AtlasState {
   /** Modo raio-X: camadas externas ficam translúcidas. */
   raioX: boolean
   rotacaoAutomatica: boolean
+  /** Arrastar com um dedo / botão esquerdo desloca a vista em vez de girar. */
+  modoMover: boolean
   /** Incrementado para pedir à câmera que enquadre a seleção (ou o corpo, se nada selecionado). */
   focoVersao: number
   /** A câmera pediu foco numa estrutura cuja camada ainda está carregando. */
@@ -58,6 +62,11 @@ interface AtlasState {
   /** Recurso PRO que o usuário tentou abrir sem assinatura (mostra a tela de assinatura). */
   paywall: string | null
 
+  /**
+   * Troca o corpo; limpa a seleção e o isolamento, que podem citar estruturas do outro corpo.
+   * `lembrar: false` não grava no aparelho (troca temporária, ex.: durante uma aula).
+   */
+  definirSexo: (sexo: Sexo, opcoes?: { lembrar?: boolean }) => void
   selecionar: (id: string | null, opcoes?: { focar?: boolean; ponto?: Vec3 }) => void
   setHover: (id: string | null) => void
   alternarCamada: (id: string) => void
@@ -67,6 +76,7 @@ interface AtlasState {
   mostrarTudo: () => void
   alternarRaioX: () => void
   alternarRotacao: () => void
+  alternarMover: () => void
   focar: () => void
   abrirPainel: (p: Painel) => void
   definirQuiz: (modo: boolean, revelado?: boolean) => void
@@ -78,7 +88,24 @@ interface AtlasState {
   fecharPaywall: () => void
 }
 
+const CHAVE_SEXO = 'atlas3d:sexo'
+
 export const useAtlasStore = create<AtlasState>()((set, get) => ({
+  sexo: (() => {
+    try {
+      return localStorage.getItem(CHAVE_SEXO) === 'feminino' ? 'feminino' : 'masculino'
+    } catch {
+      return 'masculino'
+    }
+  })(),
+  definirSexo: (sexo, { lembrar = true } = {}) => {
+    try {
+      if (lembrar) localStorage.setItem(CHAVE_SEXO, sexo)
+    } catch {
+      // sem armazenamento: vale só nesta sessão
+    }
+    set((s) => (s.sexo === sexo ? s : { sexo, selecionada: null, pontoSelecao: null, hover: null, isoladas: null }))
+  },
   selecionada: null,
   pontoSelecao: null,
   hover: null,
@@ -87,6 +114,7 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
   isoladas: null,
   raioX: false,
   rotacaoAutomatica: false,
+  modoMover: false,
   focoVersao: 0,
   focoPendente: false,
   painel: null,
@@ -133,6 +161,7 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
   mostrarTudo: () => set({ ocultas: new Set(), isoladas: null }),
   alternarRaioX: () => set((s) => ({ raioX: !s.raioX })),
   alternarRotacao: () => set((s) => ({ rotacaoAutomatica: !s.rotacaoAutomatica })),
+  alternarMover: () => set((s) => ({ modoMover: !s.modoMover })),
   focar: () => set((s) => ({ focoVersao: s.focoVersao + 1 })),
   abrirPainel: (painel) => set((s) => ({ painel: s.painel === painel ? null : painel })),
   definirQuiz: (modoQuiz, quizRevelado = false) => set({ modoQuiz, quizRevelado, hover: null }),

@@ -25,6 +25,7 @@ import { classificar, COR_ESTRUTURA, SISTEMAS } from './sistemas.mjs'
 import { calcularNormais, reconstruirLobos, volumePorFatias } from './superficie.mjs'
 import { traduzirOsso } from './ossos.mjs'
 import { desconhecidas, traduzir } from './traducao.mjs'
+import { versionarDados } from './versionar.mjs'
 
 const RAIZ = new URL('../..', import.meta.url).pathname
 const SAIDA = join(RAIZ, 'public/models')
@@ -252,6 +253,7 @@ estruturasSaida.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { numeric: 
 writeFileSync(join(DADOS, 'sistemas.json'), JSON.stringify(sistemasSaida, null, 2) + '\n')
 writeFileSync(join(DADOS, 'estruturas.json'), JSON.stringify(estruturasSaida) + '\n')
 console.log(`✓ ${estruturasSaida.length} estruturas no catálogo`)
+versionarDados()
 if (desconhecidas.size) console.warn('! Palavras sem tradução:', [...desconhecidas.keys()].join(', '))
 
 // Conteúdo didático inicial (ossos) — só se ainda não existir, para não sobrescrever edições

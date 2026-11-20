@@ -13127,5 +13127,390 @@
     "ficha": {
       "Localização": "Ângulo superomedial da órbita (fóvea troclear do frontal)"
     }
+  },
+  "VHF_ampulla_of_uterine_tube_R": {
+    "descricao": "Parte mais longa e larga da tuba uterina, com mucosa muito pregueada. É onde normalmente ocorre a fecundação.",
+    "correlacaoClinica": "É o local mais comum de gravidez ectópica, que pode romper a tuba e causar hemorragia intra-abdominal.",
+    "ficha": {
+      "Localização": "Entre o infundíbulo e o istmo, na margem superior do ligamento largo",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas",
+      "Função": "Local da fecundação"
+    }
+  },
+  "VHF_ampulla_of_uterine_tube_L": {
+    "descricao": "Parte mais longa e larga da tuba uterina, com mucosa muito pregueada. É onde normalmente ocorre a fecundação.",
+    "correlacaoClinica": "É o local mais comum de gravidez ectópica, que pode romper a tuba e causar hemorragia intra-abdominal.",
+    "ficha": {
+      "Localização": "Entre o infundíbulo e o istmo, na margem superior do ligamento largo",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas",
+      "Função": "Local da fecundação"
+    }
+  },
+  "VHF_areola_R": {
+    "descricao": "Área circular pigmentada ao redor da papila mamária, com glândulas sebáceas, sudoríparas e areolares.",
+    "correlacaoClinica": "Escurece na gestação. Eczema ou ferida persistente na aréola e na papila pode ser doença de Paget da mama.",
+    "ficha": {
+      "Localização": "Ao redor da papila mamária"
+    }
+  },
+  "VHF_areola_L": {
+    "descricao": "Área circular pigmentada ao redor da papila mamária, com glândulas sebáceas, sudoríparas e areolares.",
+    "correlacaoClinica": "Escurece na gestação. Eczema ou ferida persistente na aréola e na papila pode ser doença de Paget da mama.",
+    "ficha": {
+      "Localização": "Ao redor da papila mamária"
+    }
+  },
+  "VHF_cervix": {
+    "descricao": "Parte inferior, cilíndrica e mais fibrosa do útero. A sua porção vaginal projeta-se na vagina, e o canal cervical liga a cavidade do útero à vagina.",
+    "correlacaoClinica": "O câncer do colo do útero, ligado ao HPV, começa na zona de transformação e pode ser rastreado pelo exame citopatológico (Papanicolau). O ureter passa cerca de 2 cm lateral ao colo, sob a artéria uterina, e corre risco na histerectomia.",
+    "ficha": {
+      "Localização": "Parte supravaginal na pelve; parte vaginal no fundo da vagina",
+      "Irrigação": "Ramos cervicais (descendentes) das artérias uterinas",
+      "Drenagem venosa": "Plexo venoso uterovaginal → veias ilíacas internas",
+      "Inervação": "Plexo uterovaginal",
+      "Função": "Barreira entre a vagina e a cavidade uterina; dilata-se no parto"
+    }
+  },
+  "VHF_cornua": {
+    "descricao": "Ângulos superolaterais do útero, onde cada tuba uterina atravessa a parede uterina (parte uterina ou intramural da tuba).",
+    "correlacaoClinica": "A gravidez ectópica na porção intersticial (cornual) da tuba, envolta pelo miométrio, pode romper tardiamente e causar hemorragia grave.",
+    "ficha": {
+      "Localização": "Ângulos laterais do fundo do útero",
+      "Irrigação": "Artérias uterinas (ramos das ilíacas internas), anastomosadas com as ováricas",
+      "Drenagem venosa": "Plexo venoso uterino → veias ilíacas internas",
+      "Inervação": "Plexo uterovaginal (do plexo hipogástrico inferior)"
+    }
+  },
+  "VHF_body_of_uterus": {
+    "descricao": "Dois terços superiores do útero, entre o fundo e o istmo. A parede tem três camadas: perimétrio (serosa), miométrio (músculo liso) e endométrio, onde o embrião se implanta.",
+    "correlacaoClinica": "Os leiomiomas (miomas) são tumores benignos do miométrio e uma causa frequente de sangramento uterino aumentado e de dor pélvica.",
+    "ficha": {
+      "Localização": "Pelve menor, entre a bexiga (à frente) e o reto (atrás); em geral antevertido e antefletido",
+      "Irrigação": "Artérias uterinas (ramos das ilíacas internas), anastomosadas com as ováricas",
+      "Drenagem venosa": "Plexo venoso uterino → veias ilíacas internas",
+      "Inervação": "Plexo uterovaginal (do plexo hipogástrico inferior)",
+      "Função": "Implantação do embrião, desenvolvimento da gestação e expulsão do feto no parto"
+    }
+  },
+  "VHF_main_lactiferous_ducts_R": {
+    "descricao": "Ductos que levam o leite de cada lobo da glândula mamária até a papila, onde se abrem por óstios próprios.",
+    "correlacaoClinica": "O papiloma intraductal é a causa mais comum de secreção com sangue pela papila.",
+    "ficha": {
+      "Localização": "Da glândula mamária até a papila"
+    }
+  },
+  "VHF_main_lactiferous_ducts_L": {
+    "descricao": "Ductos que levam o leite de cada lobo da glândula mamária até a papila, onde se abrem por óstios próprios.",
+    "correlacaoClinica": "O papiloma intraductal é a causa mais comum de secreção com sangue pela papila.",
+    "ficha": {
+      "Localização": "Da glândula mamária até a papila"
+    }
+  },
+  "VHF_fibria_of_uterine_tube_R": {
+    "descricao": "Projeções em forma de dedos na margem do infundíbulo, que envolvem o ovário na ovulação e captam o oócito. Uma delas, a fímbria ovárica, prende-se ao ovário.",
+    "correlacaoClinica": "Muitos carcinomas serosos de alto grau, antes considerados do ovário, parecem começar no epitélio das fímbrias, o que motiva a retirada profilática das tubas em algumas cirurgias.",
+    "ficha": {
+      "Localização": "Margem do infundíbulo da tuba uterina",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas"
+    }
+  },
+  "VHF_fibria_of_uterine_tube_L": {
+    "descricao": "Projeções em forma de dedos na margem do infundíbulo, que envolvem o ovário na ovulação e captam o oócito. Uma delas, a fímbria ovárica, prende-se ao ovário.",
+    "correlacaoClinica": "Muitos carcinomas serosos de alto grau, antes considerados do ovário, parecem começar no epitélio das fímbrias, o que motiva a retirada profilática das tubas em algumas cirurgias.",
+    "ficha": {
+      "Localização": "Margem do infundíbulo da tuba uterina",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas"
+    }
+  },
+  "VHF_fundus_of_uterus": {
+    "descricao": "Parte arredondada do útero situada acima dos pontos de entrada das tubas uterinas.",
+    "correlacaoClinica": "Na gestação, a altura do fundo uterino medida a partir da sínfise púbica acompanha a idade gestacional: por volta de 20 semanas, o fundo chega à altura do umbigo.",
+    "ficha": {
+      "Localização": "Pelve, acima dos óstios uterinos das tubas",
+      "Irrigação": "Artérias uterinas (ramos das ilíacas internas), anastomosadas com as ováricas",
+      "Drenagem venosa": "Plexo venoso uterino → veias ilíacas internas",
+      "Inervação": "Plexo uterovaginal (do plexo hipogástrico inferior)"
+    }
+  },
+  "VHF_uterine_tube_infundibulum_R": {
+    "descricao": "Extremidade lateral, em forma de funil, da tuba uterina. Abre-se na cavidade peritoneal (óstio abdominal) junto ao ovário.",
+    "correlacaoClinica": "Como a tuba se abre para o peritônio, ela é uma via de passagem de infecções do trato genital para a pelve (doença inflamatória pélvica).",
+    "ficha": {
+      "Localização": "Junto ao polo superior do ovário",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas"
+    }
+  },
+  "VHF_uterine_tube_infundibulum_L": {
+    "descricao": "Extremidade lateral, em forma de funil, da tuba uterina. Abre-se na cavidade peritoneal (óstio abdominal) junto ao ovário.",
+    "correlacaoClinica": "Como a tuba se abre para o peritônio, ela é uma via de passagem de infecções do trato genital para a pelve (doença inflamatória pélvica).",
+    "ficha": {
+      "Localização": "Junto ao polo superior do ovário",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas"
+    }
+  },
+  "VHF_isthmus_of_fallopian_tube_R": {
+    "descricao": "Segmento estreito e de parede muscular espessa da tuba uterina, entre a ampola e a parte uterina (intramural).",
+    "correlacaoClinica": "É o local habitual da laqueadura tubária. A gravidez ectópica no istmo tende a romper mais cedo, porque a luz é estreita.",
+    "ficha": {
+      "Localização": "Junto ao corno do útero",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas"
+    }
+  },
+  "VHF_isthmus_of_fallopian_tube_L": {
+    "descricao": "Segmento estreito e de parede muscular espessa da tuba uterina, entre a ampola e a parte uterina (intramural).",
+    "correlacaoClinica": "É o local habitual da laqueadura tubária. A gravidez ectópica no istmo tende a romper mais cedo, porque a luz é estreita.",
+    "ficha": {
+      "Localização": "Junto ao corno do útero",
+      "Irrigação": "Ramos tubários das artérias uterina e ovárica",
+      "Drenagem venosa": "Veias uterinas e ováricas"
+    }
+  },
+  "VHF_cervicovaginal_junction": {
+    "descricao": "Região onde a parte vaginal do colo do útero encontra a parede da vagina. Ao redor do colo, delimita os fórnices da vagina (anterior, posterior e laterais).",
+    "correlacaoClinica": "O fórnice posterior, o mais profundo, fica junto da escavação retouterina e dá acesso à cavidade peritoneal (culdocentese).",
+    "ficha": {
+      "Localização": "Fundo da vagina, ao redor do colo do útero"
+    }
+  },
+  "VHF_suspensory_ligaments_R": {
+    "descricao": "Faixas de tecido conjuntivo (ligamentos de Cooper) que vão da fáscia profunda até a derme. Sustentam a glândula e dividem-na em compartimentos.",
+    "correlacaoClinica": "Um tumor que repuxa esses ligamentos retrai a pele e forma covinhas, sinal de alerta no exame físico da mama.",
+    "ficha": {
+      "Localização": "Entre a fáscia peitoral e a pele da mama"
+    }
+  },
+  "VHF_suspensory_ligaments_L": {
+    "descricao": "Faixas de tecido conjuntivo (ligamentos de Cooper) que vão da fáscia profunda até a derme. Sustentam a glândula e dividem-na em compartimentos.",
+    "correlacaoClinica": "Um tumor que repuxa esses ligamentos retrai a pele e forma covinhas, sinal de alerta no exame físico da mama.",
+    "ficha": {
+      "Localização": "Entre a fáscia peitoral e a pele da mama"
+    }
+  },
+  "VHF_mammary_lobes_R": {
+    "descricao": "Cerca de 15 a 20 lobos de tecido glandular dispostos como raios ao redor da papila, cada um drenado por um ducto lactífero. Os seus lóbulos produzem leite na lactação.",
+    "correlacaoClinica": "A maioria dos cânceres de mama nasce na unidade ductolobular terminal. O quadrante superolateral, com mais tecido glandular, é o mais acometido.",
+    "ficha": {
+      "Localização": "Sobre os músculos peitoral maior e serrátil anterior, do 2º ao 6º arco costal",
+      "Irrigação": "Ramos perfurantes da artéria torácica interna, artéria torácica lateral e intercostais posteriores",
+      "Drenagem linfática": "Cerca de 75% para os linfonodos axilares; o restante para os paraesternais",
+      "Inervação": "Ramos cutâneos anteriores e laterais dos nervos intercostais 4 a 6",
+      "Função": "Produção de leite"
+    }
+  },
+  "VHF_mammary_lobes_L": {
+    "descricao": "Cerca de 15 a 20 lobos de tecido glandular dispostos como raios ao redor da papila, cada um drenado por um ducto lactífero. Os seus lóbulos produzem leite na lactação.",
+    "correlacaoClinica": "A maioria dos cânceres de mama nasce na unidade ductolobular terminal. O quadrante superolateral, com mais tecido glandular, é o mais acometido.",
+    "ficha": {
+      "Localização": "Sobre os músculos peitoral maior e serrátil anterior, do 2º ao 6º arco costal",
+      "Irrigação": "Ramos perfurantes da artéria torácica interna, artéria torácica lateral e intercostais posteriores",
+      "Drenagem linfática": "Cerca de 75% para os linfonodos axilares; o restante para os paraesternais",
+      "Inervação": "Ramos cutâneos anteriores e laterais dos nervos intercostais 4 a 6",
+      "Função": "Produção de leite"
+    }
+  },
+  "VHF_external_cervical_os": {
+    "descricao": "Abertura do canal do colo na vagina: é puntiforme na mulher que nunca teve parto vaginal e torna-se uma fenda transversal depois dele.",
+    "correlacaoClinica": "É por ali que se coleta o material do exame de Papanicolau e que passa o dispositivo intrauterino (DIU) na inserção.",
+    "ficha": {
+      "Localização": "Centro da parte vaginal do colo do útero"
+    }
+  },
+  "VHF_internal_cervical_os": {
+    "descricao": "Abertura superior do canal do colo, onde ele se continua com a cavidade do corpo do útero, na altura do istmo.",
+    "correlacaoClinica": "Na insuficiência istmocervical, o óstio interno abre-se precocemente e sem contrações, podendo causar perda gestacional no segundo trimestre.",
+    "ficha": {
+      "Localização": "Junção do colo com o istmo do útero"
+    }
+  },
+  "VHF_abdominal_ostium_of_uterine_tube": {
+    "descricao": "Aberturas, uma em cada corno do útero, pelas quais a luz da tuba uterina comunica com a cavidade uterina (óstios uterinos das tubas).",
+    "correlacaoClinica": "A oclusão das tubas junto aos óstios, por laqueadura ou por cicatrizes de infecção, impede o encontro do oócito com os espermatozoides e é causa de infertilidade.",
+    "ficha": {
+      "Localização": "Cornos do útero"
+    }
+  },
+  "VHF_right_ovary": {
+    "descricao": "Gônada feminina ovoide, situada na fossa ovárica da parede lateral da pelve e presa ao ligamento largo pelo mesovário. Produz os oócitos e os hormônios estrogênio e progesterona.",
+    "correlacaoClinica": "A torção do ovário, em geral sobre um cisto ou tumor, causa dor pélvica súbita e é emergência cirúrgica. A dor ovárica pode irradiar para a face medial da coxa pelo nervo obturatório, vizinho da fossa ovárica.",
+    "ficha": {
+      "Localização": "Fossa ovárica, entre os vasos ilíacos externos e internos",
+      "Irrigação": "Artéria ovárica (ramo da aorta abdominal) e ramo ovárico da artéria uterina",
+      "Drenagem venosa": "Veia ovárica (direita → veia cava inferior; esquerda → veia renal esquerda)",
+      "Inervação": "Plexo ovárico",
+      "Função": "Ovogênese e produção de estrogênio e progesterona"
+    }
+  },
+  "VHF_left_ovary": {
+    "descricao": "Gônada feminina ovoide, situada na fossa ovárica da parede lateral da pelve e presa ao ligamento largo pelo mesovário. Produz os oócitos e os hormônios estrogênio e progesterona.",
+    "correlacaoClinica": "A torção do ovário, em geral sobre um cisto ou tumor, causa dor pélvica súbita e é emergência cirúrgica. A dor ovárica pode irradiar para a face medial da coxa pelo nervo obturatório, vizinho da fossa ovárica.",
+    "ficha": {
+      "Localização": "Fossa ovárica, entre os vasos ilíacos externos e internos",
+      "Irrigação": "Artéria ovárica (ramo da aorta abdominal) e ramo ovárico da artéria uterina",
+      "Drenagem venosa": "Veia ovárica (direita → veia cava inferior; esquerda → veia renal esquerda)",
+      "Inervação": "Plexo ovárico",
+      "Função": "Ovogênese e produção de estrogênio e progesterona"
+    }
+  },
+  "VHF_nipple_R": {
+    "descricao": "Projeção cônica no centro da aréola, onde se abrem os ductos lactíferos. Tem músculo liso que a torna ereta.",
+    "correlacaoClinica": "Retração recente da papila ou saída de secreção com sangue por um só ducto exigem investigação de câncer de mama.",
+    "ficha": {
+      "Localização": "Em geral no 4º espaço intercostal, na linha medioclavicular (varia com o volume da mama)",
+      "Inervação": "Ramo cutâneo lateral do 4º nervo intercostal"
+    }
+  },
+  "VHF_nipple_L": {
+    "descricao": "Projeção cônica no centro da aréola, onde se abrem os ductos lactíferos. Tem músculo liso que a torna ereta.",
+    "correlacaoClinica": "Retração recente da papila ou saída de secreção com sangue por um só ducto exigem investigação de câncer de mama.",
+    "ficha": {
+      "Localização": "Em geral no 4º espaço intercostal, na linha medioclavicular (varia com o volume da mama)",
+      "Inervação": "Ramo cutâneo lateral do 4º nervo intercostal"
+    }
+  },
+  "VHF_anterior_wall_of_uterus": {
+    "descricao": "Face vesical do útero, voltada para a bexiga urinária e separada dela pela escavação vesicouterina.",
+    "correlacaoClinica": "Na cesariana, a incisão costuma ser feita no segmento inferior da parede anterior, depois de rebater a prega peritoneal vesicouterina.",
+    "ficha": {
+      "Relações": "Bexiga urinária e escavação vesicouterina",
+      "Irrigação": "Artérias uterinas (ramos das ilíacas internas), anastomosadas com as ováricas",
+      "Drenagem venosa": "Plexo venoso uterino → veias ilíacas internas",
+      "Inervação": "Plexo uterovaginal (do plexo hipogástrico inferior)"
+    }
+  },
+  "VHF_posterior_wall_of_uterus": {
+    "descricao": "Face intestinal do útero, voltada para o reto e coberta por peritônio que desce até a escavação retouterina (fundo de saco de Douglas).",
+    "correlacaoClinica": "A escavação retouterina é o ponto mais baixo da cavidade peritoneal na mulher: sangue ou pus que se acumulam ali podem ser puncionados pelo fórnice posterior da vagina (culdocentese).",
+    "ficha": {
+      "Relações": "Reto, colo sigmoide e escavação retouterina",
+      "Irrigação": "Artérias uterinas (ramos das ilíacas internas), anastomosadas com as ováricas",
+      "Drenagem venosa": "Plexo venoso uterino → veias ilíacas internas",
+      "Inervação": "Plexo uterovaginal (do plexo hipogástrico inferior)"
+    }
+  },
+  "VHF_skin": {
+    "descricao": "Maior órgão do corpo, formado pela epiderme (epitélio estratificado queratinizado) e pela derme (tecido conjuntivo), sobre a tela subcutânea. No corpo feminino, a tela subcutânea é em geral mais espessa nos quadris, nas coxas e nas mamas.",
+    "correlacaoClinica": "A extensão das queimaduras é estimada pela regra dos nove (Wallace), essencial para a reposição volêmica.",
+    "ficha": {
+      "Camadas": "Epiderme e derme",
+      "Função": "Proteção, termorregulação, sensibilidade e síntese de vitamina D"
+    }
+  },
+  "VHF_lower_uterine_segment": {
+    "descricao": "Região do istmo do útero, entre o corpo e o colo. Na gestação, alonga-se e afina para formar o segmento inferior.",
+    "correlacaoClinica": "É o local preferido para a incisão da cesariana, com menos sangramento e menor risco de ruptura em gestações futuras. A placenta prévia implanta-se sobre ele.",
+    "ficha": {
+      "Localização": "Entre o corpo e o colo do útero, na altura do óstio interno",
+      "Irrigação": "Artérias uterinas (ramos das ilíacas internas), anastomosadas com as ováricas",
+      "Drenagem venosa": "Plexo venoso uterino → veias ilíacas internas",
+      "Inervação": "Plexo uterovaginal (do plexo hipogástrico inferior)"
+    }
+  },
+  "VHF_main_lactiferous_sinuses_R": {
+    "descricao": "Dilatações dos ductos lactíferos logo abaixo da aréola, onde o leite se acumula antes de sair pela papila.",
+    "correlacaoClinica": "Na amamentação, o bebê deve abocanhar a aréola, e não só a papila: assim comprime a região dos seios lactíferos e evita fissuras.",
+    "ficha": {
+      "Localização": "Sob a aréola"
+    }
+  },
+  "VHF_main_lactiferous_sinuses_L": {
+    "descricao": "Dilatações dos ductos lactíferos logo abaixo da aréola, onde o leite se acumula antes de sair pela papila.",
+    "correlacaoClinica": "Na amamentação, o bebê deve abocanhar a aréola, e não só a papila: assim comprime a região dos seios lactíferos e evita fissuras.",
+    "ficha": {
+      "Localização": "Sob a aréola"
+    }
+  },
+  "VHF_fat_R": {
+    "descricao": "Gordura que envolve e se mistura com a glândula mamária e que responde pela maior parte do volume e do contorno da mama.",
+    "correlacaoClinica": "A proporção entre gordura e tecido glandular define a densidade da mama: em mamas densas, a mamografia é menos sensível.",
+    "ficha": {
+      "Localização": "Sobre os músculos peitoral maior e serrátil anterior, do 2º ao 6º arco costal",
+      "Irrigação": "Ramos perfurantes da artéria torácica interna, artéria torácica lateral e intercostais posteriores",
+      "Drenagem linfática": "Cerca de 75% para os linfonodos axilares; o restante para os paraesternais"
+    }
+  },
+  "VHF_fat_L": {
+    "descricao": "Gordura que envolve e se mistura com a glândula mamária e que responde pela maior parte do volume e do contorno da mama.",
+    "correlacaoClinica": "A proporção entre gordura e tecido glandular define a densidade da mama: em mamas densas, a mamografia é menos sensível.",
+    "ficha": {
+      "Localização": "Sobre os músculos peitoral maior e serrátil anterior, do 2º ao 6º arco costal",
+      "Irrigação": "Ramos perfurantes da artéria torácica interna, artéria torácica lateral e intercostais posteriores",
+      "Drenagem linfática": "Cerca de 75% para os linfonodos axilares; o restante para os paraesternais"
+    }
+  },
+  "VHF_areolar_tubercles_R": {
+    "descricao": "Pequenas elevações na aréola, formadas pelas glândulas areolares (de Montgomery), que lubrificam e protegem a aréola e a papila.",
+    "correlacaoClinica": "Ficam maiores e mais visíveis na gestação. Podem inflamar ou formar pequenos cistos.",
+    "ficha": {
+      "Localização": "Aréola"
+    }
+  },
+  "VHF_areolar_tubercles_L": {
+    "descricao": "Pequenas elevações na aréola, formadas pelas glândulas areolares (de Montgomery), que lubrificam e protegem a aréola e a papila.",
+    "correlacaoClinica": "Ficam maiores e mais visíveis na gestação. Podem inflamar ou formar pequenos cistos.",
+    "ficha": {
+      "Localização": "Aréola"
+    }
+  },
+  "VHF_labium_majus_R": {
+    "descricao": "Prega de pele com tecido adiposo que limita lateralmente a rima do pudendo. Une-se à outra na comissura anterior (junto ao monte do púbis) e na comissura posterior (junto ao períneo). Correspondem embriologicamente ao escroto.",
+    "correlacaoClinica": "Um abaulamento doloroso na parte posterior do lábio maior costuma ser cisto ou abscesso da glândula vestibular maior (de Bartholin). O ligamento redondo do útero termina no lábio maior, por onde também pode descer uma hérnia inguinal.",
+    "ficha": {
+      "Localização": "De cada lado da rima do pudendo, do monte do púbis ao períneo",
+      "Irrigação": "Artérias pudendas externas (da femoral) e ramos labiais posteriores da pudenda interna",
+      "Inervação": "Nervo ilioinguinal (parte anterior) e nervo pudendo (parte posterior)"
+    }
+  },
+  "VHF_labium_majus_L": {
+    "descricao": "Prega de pele com tecido adiposo que limita lateralmente a rima do pudendo. Une-se à outra na comissura anterior (junto ao monte do púbis) e na comissura posterior (junto ao períneo). Correspondem embriologicamente ao escroto.",
+    "correlacaoClinica": "Um abaulamento doloroso na parte posterior do lábio maior costuma ser cisto ou abscesso da glândula vestibular maior (de Bartholin). O ligamento redondo do útero termina no lábio maior, por onde também pode descer uma hérnia inguinal.",
+    "ficha": {
+      "Localização": "De cada lado da rima do pudendo, do monte do púbis ao períneo",
+      "Irrigação": "Artérias pudendas externas (da femoral) e ramos labiais posteriores da pudenda interna",
+      "Inervação": "Nervo ilioinguinal (parte anterior) e nervo pudendo (parte posterior)"
+    }
+  },
+  "VHF_mons_pubis": {
+    "descricao": "Elevação arredondada de tecido adiposo sobre a sínfise púbica, coberta de pelos após a puberdade. É a parte mais anterior do pudendo feminino (vulva).",
+    "correlacaoClinica": "Na palpação abdominal, a sínfise púbica sob o monte do púbis é o ponto de referência para medir a altura do fundo uterino na gestação.",
+    "ficha": {
+      "Localização": "À frente da sínfise púbica, acima dos lábios maiores",
+      "Inervação": "Nervos ílio-hipogástrico e ilioinguinal"
+    }
+  },
+  "VHF_ovarian_ligament_R": {
+    "descricao": "Cordão fibromuscular, dentro do ligamento largo, que vai do polo uterino do ovário até o ângulo lateral do útero, logo abaixo e atrás da entrada da tuba uterina.",
+    "correlacaoClinica": "Na torção do ovário, o ovário gira sobre o eixo formado por este ligamento e pelo ligamento suspensor do ovário, que leva os vasos ováricos.",
+    "ficha": {
+      "Localização": "Ligamento largo, entre o ovário e o ângulo do útero",
+      "Origem embrionária": "Parte superior do gubernáculo (a inferior forma o ligamento redondo do útero)",
+      "Modelo": "Esquemático: o conjunto de referência usado (HuBMAP) não inclui os ligamentos"
+    }
+  },
+  "VHF_ovarian_ligament_L": {
+    "descricao": "Cordão fibromuscular, dentro do ligamento largo, que vai do polo uterino do ovário até o ângulo lateral do útero, logo abaixo e atrás da entrada da tuba uterina.",
+    "correlacaoClinica": "Na torção do ovário, o ovário gira sobre o eixo formado por este ligamento e pelo ligamento suspensor do ovário, que leva os vasos ováricos.",
+    "ficha": {
+      "Localização": "Ligamento largo, entre o ovário e o ângulo do útero",
+      "Origem embrionária": "Parte superior do gubernáculo (a inferior forma o ligamento redondo do útero)",
+      "Modelo": "Esquemático: o conjunto de referência usado (HuBMAP) não inclui os ligamentos"
+    }
+  },
+  "VHF_vagina": {
+    "descricao": "Canal fibromuscular de 7 a 9 cm que vai do colo do útero ao vestíbulo da vulva. Fica entre a bexiga e a uretra, à frente, e o reto, atrás. Em repouso, as paredes anterior e posterior encostam-se uma na outra.",
+    "correlacaoClinica": "O fórnice posterior fica junto da escavação retouterina: no toque vaginal permite palpar a pelve, e na culdocentese permite puncionar coleções de sangue ou pus.",
+    "ficha": {
+      "Irrigação": "Artéria vaginal e ramos vaginais das artérias uterina, retal média e pudenda interna",
+      "Drenagem venosa": "Plexo venoso vaginal → veias ilíacas internas",
+      "Inervação": "Parte superior: plexo uterovaginal (visceral); quarto inferior: nervo perineal profundo, ramo do pudendo (somático)",
+      "Função": "Canal do parto, saída do fluxo menstrual e órgão da cópula",
+      "Modelo": "Esquemático: o conjunto de referência usado (HuBMAP) não inclui a vagina"
+    }
   }
 }

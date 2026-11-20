@@ -4,6 +4,9 @@
  */
 export type Vec3 = [number, number, number]
 
+/** Corpo exibido: o esqueleto e a maior parte dos órgãos são comuns; pele e sistema genital mudam. */
+export type Sexo = 'masculino' | 'feminino'
+
 /** Camada do explorador (sistema do corpo), com um .glb próprio em public/models/. */
 export interface Sistema {
   id: string
@@ -22,6 +25,8 @@ export interface Sistema {
   estilo?: 'vidro'
   /** false: não captura toques (não bloqueia o que está dentro). */
   interativo?: boolean
+  /** Numa camada não interativa, estas peças ainda respondem ao toque (ex.: a vulva na pele feminina). */
+  tocaveis?: string[]
   /** Fica translúcida no modo raio-X. */
   raioX?: boolean
 }
@@ -40,6 +45,10 @@ export interface Estrutura {
   pai?: string
   /** Id da estrutura-mãe, se ela também existir no modelo. */
   paiId?: string
+  /** Só existe neste corpo (ausente = comum aos dois). */
+  sexo?: Sexo
+  /** Modelo construído de forma esquemática (não vem de um corpo real). */
+  esquematico?: boolean
 }
 
 /** Conteúdo didático escrito à mão, opcional, por id de estrutura. */
@@ -75,6 +84,8 @@ export interface Aula {
   duracaoMin: number
   /** Exige assinatura PRO. */
   premium: boolean
+  /** Corpo em que a aula acontece (ausente = o que estiver escolhido). */
+  sexo?: Sexo
   ordem: number
   passos: PassoAula[]
 }

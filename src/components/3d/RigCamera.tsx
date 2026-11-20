@@ -64,11 +64,53 @@ export function RigCamera() {
   const temPainel = useAtlasStore((s) => s.painel !== null)
   const pontoSelecao = useAtlasStore((s) => s.pontoSelecao)
   const temCorte = useAtlasStore((s) => s.corte !== null)
+  // Nas aulas cada passo escolhe a vista: girar sozinho desfaria o enquadramento
+  const emAula = useAtlasStore((s) => s.emAula)
   const ultimaInteracao = useRef(-Infinity)
   /** Distância de destino do último voo (o reenquadramento deve usá-la, não a distância atual). */
   const ultimoVoo = useRef({ distancia: 0, quando: -Infinity })
 
-  // Gestos: arrastar = girar; pinça/scroll = zoom (em direção ao cursor); dois dedos/botão direito = mover
+  // Gestos: arrastar = girar; pinça/scroll = zoom (em direção ao cursor); dois dedos/botão direito = mover.
+  // Com o modo "Mover" (ou Shift pressionado), arrastar com um dedo / botão esquerdo também desloca a vista.
+  const modoMover = useAtlasStore((s) => s.modoMover)
+  useEffect(() => {
+    const c = controles.current
+    if (!c) return
+    const aplicar = (mover: boolean) => {
+      c.mouseButtons.left = mover ? ACTION.TRUCK : ACTION.ROTATE
+      c.touches.one = mover ? ACTION.TOUCH_TRUCK : ACTION.TOUCH_ROTATE
+    }
+    aplicar(modoMover)
+    const tecla = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') aplicar(e.type === 'keydown' || modoMover)
+    }
+    window.addEventListener('keydown', tecla)
+    window.addEventListener('keyup', tecla)
+    return () => {
+      window.removeEventListener('keydown', tecla)
+      window.removeEventListener('keyup', tecla)
+    }
+  }, [modoMover])
+
+  // Setas do teclado deslocam a vista (exceto nas aulas, onde as setas trocam de passo)
+  useEffect(() => {
+    const tecla = (e: KeyboardEvent) => {
+      const c = controles.current
+      const alvo = e.target as HTMLElement | null
+      if (!c || useAtlasStore.getState().emAula || alvo?.tagName === 'INPUT' || alvo?.tagName === 'TEXTAREA') return
+      const passo = c.distance * 0.06
+      const delta = { ArrowLeft: [-passo, 0], ArrowRight: [passo, 0], ArrowUp: [0, passo], ArrowDown: [0, -passo] }[
+        e.key
+      ]
+      if (!delta) return
+      e.preventDefault()
+      ultimaInteracao.current = performance.now()
+      void c.truck(delta[0], -delta[1], true)
+    }
+    window.addEventListener('keydown', tecla)
+    return () => window.removeEventListener('keydown', tecla)
+  }, [])
+
   useEffect(() => {
     const c = controles.current
     if (!c) return
@@ -190,7 +232,8 @@ export function RigCamera() {
   useFrame((_, delta) => {
     const c = controles.current
     if (!c) return
-    const ocioso = !temSelecao && !temCorte && performance.now() - ultimaInteracao.current > PAUSA_APOS_INTERACAO
+    const ocioso =
+      !temSelecao && !temCorte && !emAula && performance.now() - ultimaInteracao.current > PAUSA_APOS_INTERACAO
     if (rotacaoAutomatica || ocioso) void c.rotate(delta * 0.22, 0, true)
   })
 

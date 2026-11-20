@@ -8,6 +8,7 @@ import { PainelBusca } from '../components/ui/PainelBusca'
 import { PainelCamadas } from '../components/ui/PainelCamadas'
 import { PainelCortes } from '../components/ui/PainelCortes'
 import { PainelAulas } from '../components/ui/PainelAulas'
+import { SeletorCorpo } from '../components/ui/SeletorCorpo'
 import { useCatalogo } from '../data'
 import { useAtlasStore } from '../store/useAtlasStore'
 
@@ -73,10 +74,11 @@ export default function Explorador() {
 
   return (
     <main className="relative h-full">
-      <header className="absolute inset-x-0 top-0 flex items-center justify-between gap-3 p-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-4">
+      <header className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-4">
         <div>
           <p className="text-[11px] font-medium tracking-wide text-sky-400 uppercase">Atlas Anatômico 3D</p>
           <h1 className="text-lg leading-tight font-bold text-white sm:text-xl">Corpo humano</h1>
+          <SeletorCorpo />
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -86,18 +88,21 @@ export default function Explorador() {
           >
             Aulas
           </button>
-          <button
-            type="button"
-            onClick={() => abrirPainel('busca')}
-            className="pointer-events-auto flex min-h-11 items-center gap-2 rounded-full border border-borda bg-superficie/80 px-4 text-sm text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
-          >
-            <IconeBusca className="size-4" />
-            <span className="hidden sm:inline">Buscar entre {estruturas.length} estruturas</span>
-            <span className="sm:hidden">Buscar</span>
-            <kbd className="ml-2 hidden rounded border border-slate-600 px-1.5 text-[10px] text-slate-400 lg:inline">
-              /
-            </kbd>
-          </button>
+          {/* Com o painel de busca aberto, o campo dele já é a busca: o botão ficaria duplicado */}
+          {painel !== 'busca' && (
+            <button
+              type="button"
+              onClick={() => abrirPainel('busca')}
+              className="pointer-events-auto flex min-h-11 items-center gap-2 rounded-full border border-borda bg-superficie/80 px-4 text-sm text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
+            >
+              <IconeBusca className="size-4" />
+              <span className="hidden sm:inline">Buscar entre {estruturas.length} estruturas</span>
+              <span className="sm:hidden">Buscar</span>
+              <kbd className="ml-2 hidden rounded border border-slate-600 px-1.5 text-[10px] text-slate-400 lg:inline">
+                /
+              </kbd>
+            </button>
+          )}
         </div>
       </header>
 
@@ -107,7 +112,7 @@ export default function Explorador() {
       {/* Painel de camadas ou busca: folha inferior no celular, coluna à esquerda no desktop */}
       {painel && (
         <aside
-          className={`${folha} flex flex-col overflow-hidden rounded-2xl border border-borda bg-superficie/95 shadow-2xl backdrop-blur sm:top-20 sm:left-4 sm:w-[340px]`}
+          className={`${folha} flex flex-col overflow-hidden rounded-2xl border border-borda bg-superficie/95 shadow-2xl backdrop-blur sm:top-32 sm:left-4 sm:w-[340px]`}
         >
           <PainelAtual painel={painel} />
         </aside>
@@ -136,7 +141,16 @@ export default function Explorador() {
         >
           BodyParts3D
         </a>
-        , © The Database Center for Life Science, CC BY 4.0 (adaptados).
+        , © The Database Center for Life Science, CC BY 4.0 (adaptados). Corpo feminino:{' '}
+        <a
+          href="https://humanatlas.io/3d-reference-library"
+          target="_blank"
+          rel="noreferrer"
+          className="underline underline-offset-2 hover:text-slate-300"
+        >
+          HuBMAP Human Reference Atlas
+        </a>
+        , CC BY 4.0 (adaptados).
       </p>
 
       <DicaHover />

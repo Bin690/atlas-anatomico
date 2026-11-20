@@ -72,7 +72,8 @@ function Camadas() {
       {sistemas
         .filter((s) => carregadas.has(s.id))
         .map((s) => (
-          <Suspense key={s.id} fallback={null}>
+          // A chave inclui o modelo: ao trocar de corpo, a camada é remontada com o .glb do outro corpo
+          <Suspense key={`${s.id}:${s.modelo}`} fallback={null}>
             <CamadaProgressiva
               sistema={s}
               visivel={camadas.has(s.id)}

@@ -11,6 +11,9 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
 - **Toque em qualquer peça:** destaque, rótulo 3D e card com nome (Terminologia Anatômica), nome original em
   inglês, estrutura-mãe ("Faz parte de"), descrição, ficha técnica (ex.: origem, inserção, inervação e ação) e
   correlação clínica.
+- **Corpo masculino ou feminino:** o seletor Homem | Mulher, abaixo do título, troca a pele e o sistema
+  genital (útero, tubas uterinas, ovários, vagina, mamas, monte do púbis e lábios maiores). A aula guiada
+  "Sistema genital feminino" mostra esses órgãos isolados, de frente e de lado. A escolha fica guardada no aparelho.
 - **Busca** em português ou inglês, sem precisar de acentos (`/` ou Ctrl/⌘+K).
 - **Ferramentas:**
   - camadas que se ligam e desligam;
@@ -81,7 +84,13 @@ scripts/modelos/          gerador dos modelos e do catálogo
 - **Modelos e nomes:** são gerados a partir do BodyParts3D pelo script `scripts/modelos/gerar.mjs`. O passo
   a passo está em [scripts/modelos/README.md](scripts/modelos/README.md). Não edite `sistemas.json` nem
   `estruturas.json` à mão: rode o gerador de novo.
-- **Conteúdo didático:** fica em `src/data/conteudo.json`, com a chave sendo o id FMA da estrutura.
+- **Corpo feminino:** `scripts/modelos/feminino.mjs` gera `public/models/pele-feminina.glb`,
+  `public/models/genital-feminino.glb` e `src/data/feminino.json` a partir dos órgãos de referência do
+  HuBMAP. Rode `node scripts/modelos/feminino.mjs <pasta>` com os `.glb` listados no topo do script. Ele precisa
+  dos modelos masculinos já gerados, porque encaixa a pelve feminina na pelve do atlas e deforma a pele
+  feminina para vestir o esqueleto. Os ids das estruturas femininas começam com `VHF_`.
+- **Conteúdo didático:** fica em `src/data/conteudo.json`, com a chave sendo o id FMA da estrutura (ou o id
+  `VHF_` das estruturas femininas).
 
 ```jsonc
 "FMA37686": {   // Cabeça longa do músculo bíceps braquial direito
@@ -107,9 +116,22 @@ Os modelos 3D são do **BodyParts3D**, © The Database Center for Life Science, 
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Foram adaptados: simplificados, convertidos para
 glTF e, no caso dos pulmões, com superfícies reconstruídas. O crédito aparece no app.
 
+O corpo feminino (pele, útero, tubas uterinas, ovários e mamas) vem dos órgãos de referência 3D do
+**HuBMAP Human Reference Atlas** (Visible Human Female), de K. Browne e H. Schlehlein, sob licença
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Foram adaptados: reposicionados, com a pele deformada
+para seguir o esqueleto do atlas, simplificados e comprimidos.
+
 ## Limitações conhecidas
 
 - **Estruturas ausentes no BodyParts3D:** cóccix, ossículos da orelha e alguns músculos (ex.: reto do abdome).
+- **Corpo feminino:** só a pele, os órgãos genitais internos e as mamas são femininos. O esqueleto
+  (incluindo a pelve, mais estreita que a feminina), os músculos e os demais órgãos continuam sendo os do
+  modelo masculino. O conjunto do HuBMAP não tem vagina, ligamentos nem órgãos genitais externos: a vagina
+  e os ligamentos próprios dos ovários são modelos esquemáticos (marcados assim no app), o monte do púbis e os
+  lábios maiores foram recortados da própria pele da doadora, e lábios menores e clitóris não existem. A bexiga
+  continua sendo a masculina, que não tem o mesmo formato da feminina. O útero do HuBMAP é só a parede
+  externa, por isso não mostra a cavidade uterina nem o canal do colo. A pele foi
+  deformada para seguir o esqueleto: polegares e dedos dos pés podem não coincidir exatamente com os ossos.
 - **Pulmões:** as superfícies foram reconstruídas a partir das árvores brônquicas e são aproximações
   didáticas.
 - **Nomes e textos:** foram gerados com apoio de IA, a partir de fontes de referência (Moore, Gray, Netter,

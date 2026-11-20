@@ -5,7 +5,7 @@ import { IconeFechar } from './Icones'
 
 /** Liga/desliga os sistemas do corpo (camadas), como num atlas em camadas. */
 export function PainelCamadas() {
-  const { sistemas } = useCatalogo()
+  const { sistemas, sexo, modelos } = useCatalogo()
   const camadas = useAtlasStore((s) => s.camadas)
   const alternarCamada = useAtlasStore((s) => s.alternarCamada)
   const definirCamadas = useAtlasStore((s) => s.definirCamadas)
@@ -15,7 +15,7 @@ export function PainelCamadas() {
   const isoladas = useAtlasStore((s) => s.isoladas)
   const mostrarTudo = useAtlasStore((s) => s.mostrarTudo)
   const abrirPainel = useAtlasStore((s) => s.abrirPainel)
-  const { estado: offline, baixar } = useOffline(sistemas)
+  const { estado: offline, baixar } = useOffline(modelos)
 
   return (
     <section aria-label="Camadas do corpo" className="flex max-h-full min-h-0 flex-col">
@@ -30,6 +30,13 @@ export function PainelCamadas() {
           <IconeFechar />
         </button>
       </header>
+
+      {sexo === 'feminino' && (
+        <p className="border-b border-borda px-4 py-2.5 text-xs leading-relaxed text-slate-400">
+          <strong className="font-medium text-slate-300">Corpo feminino:</strong> pele, órgãos genitais e mamas são de
+          uma doadora real (Visible Human). Esqueleto, músculos e os demais órgãos ainda vêm do modelo masculino.
+        </p>
+      )}
 
       <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
         {sistemas.map((s) => {
