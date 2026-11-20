@@ -103,10 +103,15 @@ const fmt = (p) => `(${p.map((x) => x.toFixed(3)).join(', ')})`
 /** Pontos de uma lista de malhas. */
 function pontos(malhas) {
   const out = []
-  for (const m of malhas) for (let i = 0; i < m.posicoes.length; i += 3) out.push([m.posicoes[i], m.posicoes[i + 1], m.posicoes[i + 2]])
+  for (const m of malhas)
+    for (let i = 0; i < m.posicoes.length; i += 3) out.push([m.posicoes[i], m.posicoes[i + 1], m.posicoes[i + 2]])
   return out
 }
-const media = (pts) => mul(pts.reduce((s, p) => add(s, p), [0, 0, 0]), 1 / pts.length)
+const media = (pts) =>
+  mul(
+    pts.reduce((s, p) => add(s, p), [0, 0, 0]),
+    1 / pts.length,
+  )
 /** Média dos 3% de pontos mais altos e mais baixos (extremidades de um osso longo). */
 function pontas(pts) {
   const ord = [...pts].sort((a, b) => b[1] - a[1])
@@ -462,7 +467,8 @@ const pesos = (lado) => {
   for (let i = 0; i < nV; i++) {
     const [x, y] = [P[3 * i], P[3 * i + 1]]
     if (fixoB[i] && valB[i] === 1) fixoP[i] = 1
-    else if (foraDoTronco(i) && y > yQuadril - 0.15) fixoP[i] = 1 // mãos e antebraços ao lado do quadril
+    else if (foraDoTronco(i) && y > yQuadril - 0.15)
+      fixoP[i] = 1 // mãos e antebraços ao lado do quadril
     else if (y < yQuadril - 0.13) {
       fixoP[i] = 1
       valP[i] = Math.sign(x) === sinal ? 1 : 0
@@ -499,7 +505,9 @@ const larguraMao = (() => {
   const dM = unit(sub(pontaDedosM, punhoM))
   const f = eixoLargura(ptsF, W, dF)
   const m = eixoLargura(ptsM, punhoM, dM)
-  console.log(`Palma: largura F ${f.largura.toFixed(3)} m, M (ossos) ${m.largura.toFixed(3)} m, ${ptsF.length}/${ptsM.length} pontos`)
+  console.log(
+    `Palma: largura F ${f.largura.toFixed(3)} m, M (ossos) ${m.largura.toFixed(3)} m, ${ptsF.length}/${ptsM.length} pontos`,
+  )
   return { eixoF: f.eixo, larguraF: f.largura, eixoM: m.eixo, larguraM: m.largura + 0.02 }
 })()
 const LARGURA_BRACO = [null, null, larguraMao]
@@ -510,7 +518,8 @@ const bracoE = cadeia(bracoF.map(espelhar), bracoM.map(espelhar), 0.035, RAIO_BR
 const pernaD = cadeia(pernaF, pernaM, 0.05, RAIO_PERNA)
 const pernaE = cadeia(pernaF.map(espelhar), pernaM.map(espelhar), 0.05, RAIO_PERNA)
 // Peso da cabeça: 0 abaixo do pescoço, 1 acima do queixo; some nos ombros
-const pesoCabeca = (p) => smooth(p[1], cabecaF.topo - 0.31, cabecaF.topo - 0.21) * (1 - smooth(Math.abs(p[0]), 0.09, 0.15))
+const pesoCabeca = (p) =>
+  smooth(p[1], cabecaF.topo - 0.31, cabecaF.topo - 0.21) * (1 - smooth(Math.abs(p[0]), 0.09, 0.15))
 
 const Pd = new Float32Array(P.length)
 for (let i = 0; i < nV; i++) {
@@ -544,7 +553,8 @@ for (let i = 0; i < nV; i++) {
 const distanciaMama = await (async () => {
   const pts = []
   for (const arq of ['3d-vh-f-mammary-gland-r.glb', '3d-vh-f-mammary-gland-l.glb'])
-    for (const m of transladar(await hubmap(arq))) if (/_fat_/.test(m.nome)) pts.push(...pontos([m]).filter((_, k) => k % 7 === 0))
+    for (const m of transladar(await hubmap(arq)))
+      if (/_fat_/.test(m.nome)) pts.push(...pontos([m]).filter((_, k) => k % 7 === 0))
   const CEL = 0.03
   const grade = new Map()
   for (const p of pts) {
@@ -643,7 +653,9 @@ function ajustarAoAtlas(peso, dentro, fora, suavizacao = 12, rotulo = 'Braços e
   const proximo = (p) => {
     let melhor = null
     let d = Infinity
-    const [gx, gy, gz] = chave(...p).split(',').map(Number)
+    const [gx, gy, gz] = chave(...p)
+      .split(',')
+      .map(Number)
     for (let x = gx - 2; x <= gx + 2; x++)
       for (let y = gy - 2; y <= gy + 2; y++)
         for (let z = gz - 2; z <= gz + 2; z++)
@@ -700,7 +712,9 @@ function ajustarAoAtlas(peso, dentro, fora, suavizacao = 12, rotulo = 'Braços e
     movidos++
     soma += m
   }
-  console.log(`${rotulo}: ${movidos} vértices ajustados à pele do atlas (média ${((soma / Math.max(1, movidos)) * 100).toFixed(1)} cm)`)
+  console.log(
+    `${rotulo}: ${movidos} vértices ajustados à pele do atlas (média ${((soma / Math.max(1, movidos)) * 100).toFixed(1)} cm)`,
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -725,7 +739,10 @@ async function gravar(nome, itens, alvo, erro) {
   const materiais = new Map()
   const material = (cor) => {
     if (!materiais.has(cor))
-      materiais.set(cor, doc.createMaterial(cor).setBaseColorFactor(corLinear(cor)).setRoughnessFactor(0.55).setMetallicFactor(0))
+      materiais.set(
+        cor,
+        doc.createMaterial(cor).setBaseColorFactor(corLinear(cor)).setRoughnessFactor(0.55).setMetallicFactor(0),
+      )
     return materiais.get(cor)
   }
   let triAntes = 0
@@ -762,7 +779,9 @@ async function gravar(nome, itens, alvo, erro) {
     .registerExtensions([EXTMeshoptCompression, KHRMeshQuantization])
     .registerDependencies({ 'meshopt.encoder': MeshoptEncoder })
     .write(arquivo, doc)
-  console.log(`✓ ${nome.padEnd(17)} ${String(itens.length).padStart(3)} estruturas  ${triAntes} → ${tri} tri  ${Math.round(readFileSync(arquivo).length / 1024)} KB`)
+  console.log(
+    `✓ ${nome.padEnd(17)} ${String(itens.length).padStart(3)} estruturas  ${triAntes} → ${tri} tri  ${Math.round(readFileSync(arquivo).length / 1024)} KB`,
+  )
 }
 
 /**
@@ -823,7 +842,12 @@ function trocarMaos() {
     for (let i = 0; i < nV; i++) if (pesoBraco[i] > 0.5 && s(vF(i)) > -0.06) regiaoF.push(i)
     // Atlas: mão + antebraço até 6 cm antes do punho
     const sementeM = maisProximo(nM, vM, ponta)
-    const regiaoM = inundar(sementeM, vizM, (j) => s(vM(j)), (x) => x > -0.06)
+    const regiaoM = inundar(
+      sementeM,
+      vizM,
+      (j) => s(vM(j)),
+      (x) => x > -0.06,
+    )
     // Perfil do punho do atlas: raio da pele em cada ângulo em volta do eixo, perto do corte
     const u1 = unit(cross(eixo, [0, 0, 1]))
     const u2 = cross(eixo, u1)
@@ -841,7 +865,8 @@ function trocarMaos() {
       raiosBin[angulo(radial)].push(norma(radial))
     }
     const perfil = raiosBin.map((rs) => (rs.length ? rs.sort((a, b) => a - b)[Math.floor(rs.length / 2)] : null))
-    for (let k = 0; k < BINS; k++) // preenche ângulos sem vértice com o vizinho mais próximo
+    for (let k = 0; k < BINS; k++)
+      // preenche ângulos sem vértice com o vizinho mais próximo
       if (perfil[k] === null)
         for (let d = 1; d < BINS && perfil[k] === null; d++)
           perfil[k] = perfil[(k + d) % BINS] ?? perfil[(k - d + BINS) % BINS]
@@ -877,10 +902,11 @@ function trocarMaos() {
     for (let t = 0; t < IM.length; t += 3) {
       const tri = [IM[t], IM[t + 1], IM[t + 2]]
       // triângulos depois do corte, com ~1 cm de sobreposição na faixa já ajustada (fecha a emenda)
-      if (tri.every((v) => regiaoM.has(v) && s(vM(v)) > -0.012))
-        extras.push(...tri.map(vM))
+      if (tri.every((v) => regiaoM.has(v) && s(vM(v)) > -0.012)) extras.push(...tri.map(vM))
     }
-    console.log(`  mão ${sinal < 0 ? 'direita' : 'esquerda'}: ${removidos} vértices removidos, ${ajustados} ajustados no punho`)
+    console.log(
+      `  mão ${sinal < 0 ? 'direita' : 'esquerda'}: ${removidos} vértices removidos, ${ajustados} ajustados no punho`,
+    )
   }
   // Monta: pele feminina sem as mãos + mãos do atlas. Perto dos punhos, descarta triângulos esticados
   // (aresta > 2,5 cm; a malha tem ~5 mm): são abas criadas pelo ajuste da faixa
@@ -922,7 +948,12 @@ function recortarVulva() {
     [-1, k, 0, x0 - 0.845 * k], //  x <= x0 + k·(y − 0,845)
     [1, k, 0, x0 - 0.845 * k], // −x <= x0 + k·(y − 0,845)
   ]
-  const LABIO = [[0, 1, 0, -0.795], [0, -1, 0, 0.845], [0, 0, 1, 0.065], [0, 0, -1, 0.06]]
+  const LABIO = [
+    [0, 1, 0, -0.795],
+    [0, -1, 0, 0.845],
+    [0, 0, 1, 0.065],
+    [0, 0, -1, 0.06],
+  ]
   const REGIOES = {
     monte: { planos: [[0, 1, 0, -0.845], [0, -1, 0, 0.925], [0, 0, 1, -0.03], ...largura(0.03, 0.6)], nz: 0.35 },
     // Lábios: continuam da ponta do monte (3 cm de cada lado) e afinam para trás, rumo ao períneo
@@ -1156,8 +1187,8 @@ function relevoOvario(posicoes, indices) {
   for (let i = 0; i < n; i++) {
     let h = 0
     centros.forEach((c, k) => {
-      const raio = 0.0019 + 0.0007 * ((k * 37) % 5) / 4
-      const altura = 0.0011 + 0.0006 * ((k * 53) % 7) / 6
+      const raio = 0.0019 + (0.0007 * ((k * 37) % 5)) / 4
+      const altura = 0.0011 + (0.0006 * ((k * 53) % 7)) / 6
       // cúpula de topo arredondado e borda íngreme (expoente 6): folículos separados por sulcos
       h = Math.max(h, altura * Math.exp(-((norma(sub(v(i), v(c))) / raio) ** 6)))
     })
@@ -1187,7 +1218,8 @@ function pecasEsquematicas() {
   let vestibulo = null
   for (let i = 0; i < nV; i++) {
     const [x, y, z] = [Pd[3 * i], Pd[3 * i + 1], Pd[3 * i + 2]]
-    if (Math.abs(x) < 0.004 && y < 0.84 && z > -0.045 && z < 0.0 && (!vestibulo || y > vestibulo[1])) vestibulo = [x, y, z]
+    if (Math.abs(x) < 0.004 && y < 0.84 && z > -0.045 && z < 0.0 && (!vestibulo || y > vestibulo[1]))
+      vestibulo = [x, y, z]
   }
   const ostio = add(vestibulo, [0, 0.004, 0])
   const fornice = centro(malhaPorBase.get('cervicovaginal_junction'))
@@ -1209,8 +1241,11 @@ function pecasEsquematicas() {
     const w = smooth(t, tFornice, 1)
     return [(base[0] + (raioColo[0] - base[0]) * w) * fator[0], (base[1] + (raioColo[1] - base[1]) * w) * fator[1]]
   }
-  const vagina = tubo(curvaVagina, (t) => secao(t, [1, 1]), 28)
-  console.log(`  vagina: óstio ${fmt(ostio)} → fórnice ${fmt(fornice)}, ${(norma(sub(fornice, ostio)) * 100).toFixed(1)} cm`)
+  // tampada nas pontas: a de cima fica dentro do colo; a de baixo fecha a entrada (sem anel aberto à mostra)
+  const vagina = tubo(curvaVagina, (t) => secao(t, [1, 1]), 28, true)
+  console.log(
+    `  vagina: óstio ${fmt(ostio)} → fórnice ${fmt(fornice)}, ${(norma(sub(fornice, ostio)) * 100).toFixed(1)} cm`,
+  )
 
   const ligamento = (lado) => {
     const sinal = lado === 'R' ? -1 : 1
@@ -1268,7 +1303,9 @@ function pecasEsquematicas() {
     24,
     true,
   )
-  console.log(`  cavidade do útero: ${((alturaFundo - 0.012) * 100).toFixed(1)} cm de altura, ${(meiaLargura * 200).toFixed(1)} cm de largura`)
+  console.log(
+    `  cavidade do útero: ${((alturaFundo - 0.012) * 100).toFixed(1)} cm de altura, ${(meiaLargura * 200).toFixed(1)} cm de largura`,
+  )
 
   const COR_VAGINA = '#e3908c'
   const COR_LIGAMENTO = '#ebc4b6'
@@ -1278,8 +1315,20 @@ function pecasEsquematicas() {
     { id: 'VHF_vaginal_rugae', nome: 'Rugas da vagina', en: 'Vaginal rugae', malha: rugas, cor: COR_MUCOSA },
     { id: 'VHF_uterine_cavity', nome: 'Cavidade do útero', en: 'Uterine cavity', malha: cavidade, cor: COR_MUCOSA },
     { id: 'VHF_cervical_canal', nome: 'Canal do colo do útero', en: 'Cervical canal', malha: canal, cor: COR_MUCOSA },
-    { id: 'VHF_ovarian_ligament_R', nome: 'Ligamento próprio do ovário direito', en: 'Ovarian ligament, right', malha: ligamento('R'), cor: COR_LIGAMENTO },
-    { id: 'VHF_ovarian_ligament_L', nome: 'Ligamento próprio do ovário esquerdo', en: 'Ovarian ligament, left', malha: ligamento('L'), cor: COR_LIGAMENTO },
+    {
+      id: 'VHF_ovarian_ligament_R',
+      nome: 'Ligamento próprio do ovário direito',
+      en: 'Ovarian ligament, right',
+      malha: ligamento('R'),
+      cor: COR_LIGAMENTO,
+    },
+    {
+      id: 'VHF_ovarian_ligament_L',
+      nome: 'Ligamento próprio do ovário esquerdo',
+      en: 'Ovarian ligament, left',
+      malha: ligamento('L'),
+      cor: COR_LIGAMENTO,
+    },
   ].map((p) => ({
     estrutura: { id: p.id, nome: p.nome, en: p.en, sistema: 'genital', esquematico: true },
     malha: { id: p.id, ...p.malha, cor: p.cor },
@@ -1288,7 +1337,10 @@ function pecasEsquematicas() {
 
 const itens = []
 const gorduraMama = []
-const saidaEstruturas = [{ id: 'VHF_skin', nome: 'Pele', en: 'Skin', sistema: 'pele' }, ...vulva.map((v) => v.estrutura)]
+const saidaEstruturas = [
+  { id: 'VHF_skin', nome: 'Pele', en: 'Skin', sistema: 'pele' },
+  ...vulva.map((v) => v.estrutura),
+]
 const malhaPorBase = new Map() // "cornua", "right_ovary"… -> pontos (para as peças esquemáticas)
 
 // Ovário sob as fímbrias: no HuBMAP o ovário e a tuba são peças separadas, e as fímbrias ficavam ~9 mm
@@ -1307,7 +1359,9 @@ for (const [lado, arq] of [
   const ordem = [...ovario].sort((a, b) => b[1] - a[1])
   const topo = media(ordem.slice(0, Math.max(3, Math.floor(ordem.length * 0.05))))
   ajusteOvario[lado] = [funil[0] - topo[0], cx.min[1] + 0.003 - topo[1], funil[2] - topo[2]]
-  console.log(`  ovário ${lado === 'R' ? 'direito' : 'esquerdo'} deslocado ${fmt(ajusteOvario[lado])} m para ficar sob as fímbrias`)
+  console.log(
+    `  ovário ${lado === 'R' ? 'direito' : 'esquerdo'} deslocado ${fmt(ajusteOvario[lado])} m para ficar sob as fímbrias`,
+  )
 }
 
 for (const arq of ARQUIVOS) {
@@ -1332,16 +1386,25 @@ for (const arq of ARQUIVOS) {
       .replace(/^fibria/, 'fimbria')
       .replace(/^fat$/, 'adipose tissue of breast')
       .replace(/^abdominal ostium/, 'uterine ostium')
-    const e = { id, nome: sufixo(nome[0]), en: `${en}${lado ? (lado === 'R' ? ', right' : ', left') : ''}`, sistema: 'genital' }
+    const e = {
+      id,
+      nome: sufixo(nome[0]),
+      en: `${en}${lado ? (lado === 'R' ? ', right' : ', left') : ''}`,
+      sistema: 'genital',
+    }
     if (nome[1]) e.pai = sufixo(nome[1])
     saidaEstruturas.push(e)
     // Orçamento de triângulos: peças grandes da mama ganham mais detalhe
-    const alvoItem = /^(fat|mammary_lobes|suspensory_ligaments)$/.test(base) ? 5000 : /duct|sinus|wall|ampulla/.test(base) ? 3000 : 1500
+    const alvoItem = /^(fat|mammary_lobes|suspensory_ligaments)$/.test(base)
+      ? 5000
+      : /duct|sinus|wall|ampulla/.test(base)
+        ? 3000
+        : 1500
     // O tecido adiposo da mama vai para a pele de vidro (tocável): opaco, ele escondia a glândula e
     // parecia colado por cima dos músculos
     if (base === 'fat') {
       e.sistema = 'pele'
-      gorduraMama.push({ id, posicoes: m.posicoes, indices: m.indices, cor: '#e8c49a', alvo: 5000, erro: 0.01 })
+      gorduraMama.push({ id, posicoes: m.posicoes, indices: m.indices, cor: '#e6b39c', alvo: 5000, erro: 0.01 }) // tom de pele: na pele de vidro (semi-opaca) lê-se como a mama
     } else if (/ovary/.test(base)) {
       itens.push({ id, ...relevoOvario(m.posicoes, m.indices), cor: corDe(base), alvo: 6000, erro: 0.002 })
     } else itens.push({ id, posicoes: m.posicoes, indices: m.indices, cor: corDe(base), alvo: alvoItem })
@@ -1354,11 +1417,7 @@ for (const p of pecasEsquematicas()) {
 await gravar('genital-feminino', itens, 1500, 0.01)
 await gravar(
   'pele-feminina',
-  [
-    { id: 'VHF_skin', ...peleFinal, cor: '#e2b49b' },
-    ...vulva.map((v) => ({ ...v.malha, alvo: 2500 })),
-    ...gorduraMama,
-  ],
+  [{ id: 'VHF_skin', ...peleFinal, cor: '#e2b49b' }, ...vulva.map((v) => ({ ...v.malha, alvo: 2500 })), ...gorduraMama],
   55000,
   0.0004,
 )
@@ -1378,6 +1437,12 @@ writeFileSync(
           modelo: '/models/pele-feminina.glb',
           total: contar('pele'),
           tocaveis: saidaEstruturas.filter((e) => e.sistema === 'pele' && e.id !== 'VHF_skin').map((e) => e.id),
+          // Solidez na pele de vidro: mamas bem cheias; vulva mais suave, para o recorte não marcar
+          solidez: Object.fromEntries(
+            saidaEstruturas
+              .filter((e) => e.sistema === 'pele' && e.id !== 'VHF_skin')
+              .map((e) => [e.id, /^VHF_fat_/.test(e.id) ? 0.85 : 0.45]),
+          ),
         },
         genital: { modelo: '/models/genital-feminino.glb', total: contar('genital') },
       },

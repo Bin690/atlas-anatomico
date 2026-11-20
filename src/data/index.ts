@@ -26,7 +26,7 @@ export interface Catalogo {
 
 interface Feminino {
   /** Camadas que trocam de modelo no corpo feminino. */
-  camadas: Record<string, { modelo: string; total: number; tocaveis?: string[] }>
+  camadas: Record<string, { modelo: string; total: number; tocaveis?: string[]; solidez?: Record<string, number> }>
   estruturas: Estrutura[]
   /** Estruturas de camadas comuns que só existem no corpo masculino. */
   somenteMasculino: string[]
@@ -70,7 +70,14 @@ function catalogoDe(base: Base, sexo: Sexo): Catalogo {
   const sistemas = base.sistemas.map((s) => {
     const variante = sexo === 'feminino' ? base.feminino.camadas[s.id] : undefined
     return variante
-      ? { ...s, modelo: variante.modelo, modeloLeve: undefined, total: variante.total, tocaveis: variante.tocaveis }
+      ? {
+          ...s,
+          modelo: variante.modelo,
+          modeloLeve: undefined,
+          total: variante.total,
+          tocaveis: variante.tocaveis,
+          solidez: variante.solidez,
+        }
       : s
   })
   const estruturas = base.estruturas.filter((e) => !e.sexo || e.sexo === sexo)

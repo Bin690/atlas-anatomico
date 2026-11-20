@@ -118,7 +118,7 @@ export function PainelCortes() {
             </p>
           </>
         ) : (
-          <p className="mt-4 text-sm text-slate-400">
+          <p className="mt-3 text-xs leading-relaxed text-slate-400">
             Escolha um plano para “fatiar” o corpo e ver as estruturas em secção.
           </p>
         )}

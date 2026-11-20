@@ -10,6 +10,7 @@ import {
   Matrix4,
   MeshStandardMaterial,
   Vector3,
+  Vector4,
   type BufferGeometry,
   type Mesh,
   type Object3D,
@@ -81,7 +82,15 @@ function materialVidro() {
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <opaque_fragment>',
       `float fresnel = pow(1.0 - abs(dot(normalize(normal), normalize(vViewPosition))), 2.4);
-       diffuseColor.a = 0.06 + fresnel * 0.55;
+       float vidro = 0.06 + fresnel * 0.55;
+       // "Solidez" por peça vem no alfa da cor da instância (1 = vidro comum; menor = mais sólida):
+       // mamas e vulva ficam com volume visível sem esconder de todo o que está dentro
+       #ifdef USE_COLOR_ALPHA
+         float solidez = 1.0 - vColor.a;
+       #else
+         float solidez = 0.0;
+       #endif
+       diffuseColor.a = mix(vidro, 0.72, solidez);
        #include <opaque_fragment>`,
     )
   }
@@ -188,6 +197,14 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
   // as peças "tocáveis" dela (vulva na pele feminina) continuam respondendo
   useEffect(() => {
     malha.userData.vidro = sistema.estilo === 'vidro'
+    // Na pele de vidro, algumas peças (mamas, vulva) ficam semi-opacas: alfa da instância = 1 − solidez
+    if (sistema.estilo === 'vidro')
+      for (const [id, solidez] of Object.entries(sistema.solidez ?? {})) {
+        const i = indice.get(id)
+        if (i === undefined) continue
+        const c = corBase[i]
+        malha.setColorAt(i, new Vector4(c.r, c.g, c.b, 1 - solidez))
+      }
     if (sistema.interativo !== false) return
     const tocaveis = new Set(sistema.tocaveis)
     if (!tocaveis.size) {
@@ -203,7 +220,7 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
         if (batchId === undefined || !tocaveis.has(ids[batchId])) intersecoes.splice(k, 1)
       }
     }
-  }, [malha, ids, sistema.interativo, sistema.tocaveis, sistema.estilo])
+  }, [malha, ids, indice, corBase, sistema.interativo, sistema.tocaveis, sistema.solidez, sistema.estilo])
   const naoTocavel = sistema.interativo === false && !sistema.tocaveis?.length
 
   // Visibilidade por estrutura (ocultar / isolar / outro corpo)

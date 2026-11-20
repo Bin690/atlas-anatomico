@@ -1,12 +1,19 @@
 {
   "camadas": {
     "pele": {
-      "modelo": "/models/pele-feminina.glb?v=11b9c802a9",
+      "modelo": "/models/pele-feminina.glb?v=bbb0d1ed70",
       "total": 6,
-      "tocaveis": ["VHF_labium_majus_R", "VHF_labium_majus_L", "VHF_mons_pubis", "VHF_fat_R", "VHF_fat_L"]
+      "tocaveis": ["VHF_labium_majus_R", "VHF_labium_majus_L", "VHF_mons_pubis", "VHF_fat_R", "VHF_fat_L"],
+      "solidez": {
+        "VHF_labium_majus_R": 0.45,
+        "VHF_labium_majus_L": 0.45,
+        "VHF_mons_pubis": 0.45,
+        "VHF_fat_R": 0.85,
+        "VHF_fat_L": 0.85
+      }
     },
     "genital": {
-      "modelo": "/models/genital-feminino.glb?v=2a5544f192",
+      "modelo": "/models/genital-feminino.glb?v=1793bb34a7",
       "total": 40
     }
   },

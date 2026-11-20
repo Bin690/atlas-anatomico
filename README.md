@@ -13,7 +13,8 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
   correlação clínica.
 - **Corpo masculino ou feminino:** o seletor Homem | Mulher, abaixo do título, troca a pele e o sistema
   genital (útero, tubas uterinas, ovários, vagina, mamas, monte do púbis e lábios maiores). A aula guiada
-  "Sistema genital feminino" mostra esses órgãos isolados, de frente e de lado. A escolha fica guardada no aparelho.
+  "♀ Sistema genital" mostra esses órgãos isolados, de frente e de lado; a aula "♂ Sistema genital" faz o
+  mesmo com o sistema genital masculino. A escolha fica guardada no aparelho.
 - **Voz:** ao tocar numa peça, uma voz masculina diz o nome dela (botão de alto-falante no topo liga e
   desliga; no cartão, o alto-falante repete). No quiz a voz fica muda, para não entregar a resposta.
 - **Ligações entre estruturas:** no cartão, nomes de outras peças citados na descrição e na ficha (origem,

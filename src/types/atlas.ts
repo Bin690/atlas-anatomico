@@ -27,6 +27,8 @@ export interface Sistema {
   interativo?: boolean
   /** Numa camada não interativa, estas peças ainda respondem ao toque (ex.: a vulva na pele feminina). */
   tocaveis?: string[]
+  /** Na pele de vidro: peças mais sólidas (0 = vidro comum, 1 = quase opaca), ex.: mamas e vulva. */
+  solidez?: Record<string, number>
   /** Fica translúcida no modo raio-X. */
   raioX?: boolean
 }

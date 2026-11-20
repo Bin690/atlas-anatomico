@@ -43,10 +43,10 @@ export function PainelBusca() {
 
       <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-1.5" aria-live="polite">
         {termoAdiado && !resultados.length && (
-          <li className="p-4 text-center text-sm text-slate-400">Nenhuma estrutura encontrada.</li>
+          <li className="p-4 text-center text-xs text-slate-400">Nenhuma estrutura encontrada.</li>
         )}
         {!termoAdiado && (
-          <li className="p-4 text-sm text-slate-400">
+          <li className="p-4 text-xs leading-relaxed text-slate-400">
             Digite em português ou inglês: <em className="text-slate-300">fêmur</em>,{' '}
             <em className="text-slate-300">aorta</em>, <em className="text-slate-300">bíceps</em>,{' '}
             <em className="text-slate-300">giro pré-central</em>…

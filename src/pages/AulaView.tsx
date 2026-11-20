@@ -3,12 +3,13 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { BotaoVoltar } from '../components/BotaoVoltar'
 import { SeloPro } from '../components/ui/Pro'
 import { useCatalogo } from '../data'
-import { aulaPorId } from '../data/aulas'
+import { aulaPorId, variantesDe } from '../data/aulas'
 import { figuraPorSrc } from '../data/figuras'
 import { MiniaturaFigura } from '../components/ui/FiguraReferencia'
 import { useAtlasStore } from '../store/useAtlasStore'
 import type { PassoAula, Sexo } from '../types/atlas'
 import NaoEncontrado from './NaoEncontrado'
+import { BotoesVersao, SimboloSexo } from '../components/ui/SeletorCorpo'
 
 /** Aplica um passo da aula ao 3D: camadas, raio-X, corte, isolamento, destaques e câmera. */
 function aplicarPasso(p: PassoAula) {
@@ -28,8 +29,13 @@ function aplicarPasso(p: PassoAula) {
   s.focar()
 }
 
+/** Remonta a aula ao trocar de id (ex.: versão ♂ ↔ ♀), recomeçando do primeiro passo. */
 export default function AulaView() {
   const { id } = useParams()
+  return <ConteudoAula key={id} id={id} />
+}
+
+function ConteudoAula({ id }: { id: string | undefined }) {
   const aula = aulaPorId(id)
   const navigate = useNavigate()
   const premium = useAtlasStore((s) => s.premium)
@@ -86,6 +92,7 @@ export default function AulaView() {
   if (!aula) return <NaoEncontrado />
 
   const passo = aula.passos[indice]
+  const variantes = variantesDe(aula)
   const ultimo = indice === aula.passos.length - 1
   const cartao = 'pointer-events-auto rounded-2xl border border-borda bg-superficie/95 p-4 shadow-2xl backdrop-blur'
 
@@ -95,8 +102,18 @@ export default function AulaView() {
         <BotaoVoltar texto="Voltar ao atlas" />
         <div className="min-w-0">
           <p className="text-[11px] font-medium tracking-wide text-amber-300 uppercase">Aula guiada</p>
-          <h1 className="truncate text-lg leading-tight font-bold text-white">{aula.titulo}</h1>
+          <h1 className="flex items-center gap-1.5 truncate text-lg leading-tight font-bold text-white">
+            {aula.sexo && variantes.length < 2 && <SimboloSexo sexo={aula.sexo} />}
+            {aula.titulo}
+          </h1>
         </div>
+        {variantes.length > 1 && (
+          <BotoesVersao
+            sexos={variantes.map((v) => v.sexo!)}
+            atual={aula.sexo}
+            escolher={(sexo) => navigate(`/aula/${variantes.find((v) => v.sexo === sexo)!.id}`, { replace: true })}
+          />
+        )}
       </header>
 
       <div className="absolute inset-x-2 bottom-2 max-h-[45vh] pb-[env(safe-area-inset-bottom)] sm:inset-x-auto sm:top-20 sm:right-4 sm:bottom-auto sm:max-h-[calc(100%-6rem)] sm:w-[380px]">
