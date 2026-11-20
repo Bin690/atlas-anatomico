@@ -5,7 +5,8 @@ import type { Vec3 } from '../../types/atlas'
 /** Moldura translúcida mostrando onde está o plano de corte (não captura toques). */
 export function IndicadorCorte() {
   const corte = useAtlasStore((s) => s.corte)
-  if (!corte) return null
+  // Cortes de orientação livre (aulas) não têm moldura: ela é desenhada só nos planos do corpo
+  if (!corte || corte.normal) return null
 
   const p = corte.posicao
   let posicao: Vec3

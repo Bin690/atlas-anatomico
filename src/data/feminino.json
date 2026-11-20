@@ -1,13 +1,13 @@
 {
   "camadas": {
     "pele": {
-      "modelo": "/models/pele-feminina.glb?v=d5fbfc1f6e",
+      "modelo": "/models/pele-feminina.glb?v=11b9c802a9",
       "total": 6,
       "tocaveis": ["VHF_labium_majus_R", "VHF_labium_majus_L", "VHF_mons_pubis", "VHF_fat_R", "VHF_fat_L"]
     },
     "genital": {
-      "modelo": "/models/genital-feminino.glb?v=9ec700b44f",
-      "total": 38
+      "modelo": "/models/genital-feminino.glb?v=cdd9509d75",
+      "total": 41
     }
   },
   "estruturas": [
@@ -38,6 +38,20 @@
       "en": "areola, left",
       "sistema": "genital",
       "pai": "Mama esquerda"
+    },
+    {
+      "id": "VHF_cervical_canal",
+      "nome": "Canal do colo do útero",
+      "en": "Cervical canal",
+      "sistema": "genital",
+      "esquematico": true
+    },
+    {
+      "id": "VHF_uterine_cavity",
+      "nome": "Cavidade do útero",
+      "en": "Uterine cavity",
+      "sistema": "genital",
+      "esquematico": true
     },
     {
       "id": "VHF_cervix",
@@ -262,6 +276,13 @@
       "nome": "Pele",
       "en": "Skin",
       "sistema": "pele"
+    },
+    {
+      "id": "VHF_vaginal_rugae",
+      "nome": "Rugas da vagina",
+      "en": "Vaginal rugae",
+      "sistema": "genital",
+      "esquematico": true
     },
     {
       "id": "VHF_lower_uterine_segment",

@@ -569,8 +569,23 @@ const pesoOmbroBraco = (i) => {
   const longeDaMama = smooth(distanciaMama(p), 0.005, 0.035)
   return Math.max(braco, cintura) * longeDaMama
 }
-// Três passagens: cada uma é suavizada (sem espinhos) e a seguinte corrige o que a suavização diluiu
-for (let passada = 0; passada < 3; passada++) ajustarAoAtlas(pesoOmbroBraco, 0.001, 0.005)
+// Três passagens: cada uma é suavizada (sem espinhos) e a seguinte corrige o que a suavização diluiu.
+// Suavização forte (60): o braço fica do tamanho certo sem copiar o relevo muscular da pele masculina
+for (let passada = 0; passada < 3; passada++) ajustarAoAtlas(pesoOmbroBraco, 0.001, 0.005, 60)
+
+// Barriga: a doadora tinha o abdome ~4 cm à frente da pele do atlas. Entre o púbis e as mamas, a frente
+// da barriga passa a ficar até 8 mm por fora da pele do atlas. Flancos e costas não mudam (mexer neles
+// marcava a cintura e deixava uma linha no alto das nádegas). Monte do púbis, quadris e mamas também não.
+const pesoBarriga = (i) => {
+  const p = [Pd[3 * i], Pd[3 * i + 1], Pd[3 * i + 2]]
+  if (wD.braco[i] + wE.braco[i] > 0.3) return 0
+  const faixa = smooth(p[1], 0.92, 1.02) * (1 - smooth(p[1], 1.15, 1.3))
+  const frente = smooth(p[2], -0.005, 0.045) * (1 - smooth(Math.abs(p[0]), 0.08, 0.15))
+  return faixa * frente * smooth(distanciaMama(p), 0.005, 0.035)
+}
+// Suavização forte (80 iterações): a barriga recua como um todo e mantém a superfície lisa da doadora,
+// sem copiar o relevo dos abdominais da pele masculina
+for (let passada = 0; passada < 3; passada++) ajustarAoAtlas(pesoBarriga, 0.002, 0.008, 80, 'Barriga')
 
 /** Ponto mais próximo de p no triângulo abc (Ericson, Real-Time Collision Detection). */
 function pontoNoTriangulo(p, a, b, c) {
@@ -602,7 +617,7 @@ function pontoNoTriangulo(p, a, b, c) {
  * Mantém a pele feminina (onde peso(i) > 0) a uma distância entre `dentro` e `fora` da pele do atlas,
  * medida na normal do triângulo mais próximo. Peso 1 = ajuste completo.
  */
-function ajustarAoAtlas(peso, dentro, fora) {
+function ajustarAoAtlas(peso, dentro, fora, suavizacao = 12, rotulo = 'Braços e ombros') {
   const pele = porNome(peleM, new RegExp(`^${idPorEn.get('skin')}$`))[0]
   const PM = pele.posicoes
   const IM = pele.indices
@@ -664,7 +679,7 @@ function ajustarAoAtlas(peso, dentro, fora) {
     afetados.add(a.i)
     for (const j of vizinhos[a.i]) afetados.add(j)
   }
-  for (let it = 0; it < 12; it++) {
+  for (let it = 0; it < suavizacao; it++) {
     const novo = Float32Array.from(D)
     for (const i of afetados) {
       const nb = vizinhos[i]
@@ -685,7 +700,7 @@ function ajustarAoAtlas(peso, dentro, fora) {
     movidos++
     soma += m
   }
-  console.log(`Braços e ombros: ${movidos} vértices ajustados à pele do atlas (média ${((soma / Math.max(1, movidos)) * 100).toFixed(1)} cm)`)
+  console.log(`${rotulo}: ${movidos} vértices ajustados à pele do atlas (média ${((soma / Math.max(1, movidos)) * 100).toFixed(1)} cm)`)
 }
 
 // ---------------------------------------------------------------------------
@@ -1012,10 +1027,10 @@ const NOMES = {
   suspensory_ligaments: ['Ligamentos suspensores da mama', 'Mama'],
 }
 const COR = {
-  uterus: '#c47a76',
-  cervix: '#d79a92',
-  ovary: '#e4c2a8',
-  tube: '#d8958c',
+  uterus: '#e0807f',
+  cervix: '#e4938f',
+  ovary: '#f0cfc0',
+  tube: '#e2827f',
   fat: '#efd39b',
   lobes: '#e3a49c',
   ducts: '#f0c7b9',
@@ -1046,7 +1061,7 @@ const ARQUIVOS = [
  * Tubo ao longo de uma curva (lista de pontos), com seção elíptica: `raios(t)` -> [lateral, ântero-posterior].
  * O eixo lateral é o x do corpo; as pontas ficam abertas.
  */
-function tubo(curva, raios, segmentos = 24) {
+function tubo(curva, raios, segmentos = 24, tampar = false) {
   const pos = []
   const ind = []
   for (let i = 0; i < curva.length; i++) {
@@ -1054,9 +1069,9 @@ function tubo(curva, raios, segmentos = 24) {
     const tan = unit(sub(curva[Math.min(i + 1, curva.length - 1)], curva[Math.max(i - 1, 0)]))
     const lat = unit(sub([1, 0, 0], mul(tan, tan[0])))
     const ap = cross(tan, lat)
-    const [ra, rb] = raios(t)
     for (let k = 0; k < segmentos; k++) {
       const ang = (2 * Math.PI * k) / segmentos
+      const [ra, rb] = raios(t, ang)
       pos.push(...add(curva[i], add(mul(lat, ra * Math.cos(ang)), mul(ap, rb * Math.sin(ang)))))
     }
   }
@@ -1064,9 +1079,91 @@ function tubo(curva, raios, segmentos = 24) {
     for (let k = 0; k < segmentos; k++) {
       const a = i * segmentos + k
       const b = i * segmentos + ((k + 1) % segmentos)
-      ind.push(a, a + segmentos, b, b, a + segmentos, b + segmentos)
+      ind.push(a, b, a + segmentos, b, b + segmentos, a + segmentos) // normais para fora do tubo
+    }
+  if (tampar)
+    for (const [anel, inverter] of [
+      [0, true],
+      [curva.length - 1, false],
+    ]) {
+      const c = pos.length / 3
+      pos.push(...curva[anel])
+      for (let k = 0; k < segmentos; k++) {
+        const a = anel * segmentos + k
+        const b = anel * segmentos + ((k + 1) % segmentos)
+        ind.push(...(inverter ? [c, b, a] : [c, a, b]))
+      }
     }
   return { posicoes: Float32Array.from(pos), indices: Uint32Array.from(ind) }
+}
+
+/**
+ * Relevo dos folículos no ovário (esquemático): subdivide a malha, suaviza e levanta pequenas
+ * cúpulas espalhadas pela superfície.
+ */
+function relevoOvario(posicoes, indices) {
+  let { posicoes: P0, indices: I0 } = soldar(posicoes, indices)
+  let pos = Array.from(P0)
+  let ind = Array.from(I0)
+  for (let passo = 0; passo < 2; passo++) {
+    const meio = new Map()
+    const novoInd = []
+    const pontoMedio = (a, b) => {
+      const ch = a < b ? `${a},${b}` : `${b},${a}`
+      if (!meio.has(ch)) {
+        meio.set(ch, pos.length / 3)
+        for (let k = 0; k < 3; k++) pos.push((pos[3 * a + k] + pos[3 * b + k]) / 2)
+      }
+      return meio.get(ch)
+    }
+    for (let t = 0; t < ind.length; t += 3) {
+      const [a, b, c] = [ind[t], ind[t + 1], ind[t + 2]]
+      const [ab, bc, ca] = [pontoMedio(a, b), pontoMedio(b, c), pontoMedio(c, a)]
+      novoInd.push(a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca)
+    }
+    ind = novoInd
+  }
+  const n = pos.length / 3
+  const viz = Array.from({ length: n }, () => new Set())
+  for (let t = 0; t < ind.length; t += 3)
+    for (let k = 0; k < 3; k++) viz[ind[t + k]].add(ind[t + ((k + 1) % 3)]).add(ind[t + ((k + 2) % 3)])
+  for (let it = 0; it < 4; it++) {
+    const novo = pos.slice()
+    for (let i = 0; i < n; i++) {
+      const nb = [...viz[i]]
+      for (let k = 0; k < 3; k++) {
+        const m = nb.reduce((s2, j) => s2 + pos[3 * j + k], 0) / nb.length
+        novo[3 * i + k] = pos[3 * i + k] * 0.5 + m * 0.5
+      }
+    }
+    pos = novo
+  }
+  const normais = calcularNormais(pos, ind)
+  // Centros dos folículos: amostragem pelo ponto mais distante (espalhados, determinístico)
+  const v = (i) => [pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]]
+  const centros = [0]
+  const dist = new Float64Array(n).fill(Infinity)
+  while (centros.length < 60) {
+    const ult = v(centros.at(-1))
+    let melhor = 0
+    for (let i = 0; i < n; i++) {
+      dist[i] = Math.min(dist[i], norma(sub(v(i), ult)))
+      if (dist[i] > dist[melhor]) melhor = i
+    }
+    centros.push(melhor)
+  }
+  const saida = pos.slice()
+  for (let i = 0; i < n; i++) {
+    let h = 0
+    centros.forEach((c, k) => {
+      const raio = 0.0014 + 0.0009 * ((k * 37) % 5) / 4
+      const altura = 0.0006 + 0.0006 * ((k * 53) % 7) / 6
+      // cúpula de topo arredondado e borda marcada (expoente 4), como os folículos da ilustração
+      h += altura * Math.exp(-((norma(sub(v(i), v(c))) / raio) ** 4))
+    })
+    for (let k = 0; k < 3; k++) saida[3 * i + k] += normais[3 * i + k] * h
+  }
+  return { posicoes: Float32Array.from(saida), indices: Uint32Array.from(ind) }
 }
 
 /** Curva de Bézier quadrática amostrada em n pontos. */
@@ -1120,10 +1217,59 @@ function pecasEsquematicas() {
     const meioL = add(lerp(polo, angulo, 0.5), [0, -0.004, 0])
     return tubo(bezier(polo, meioL, angulo, 12), () => [0.0022, 0.0022], 10)
   }
-  const COR_VAGINA = '#d3887f'
-  const COR_LIGAMENTO = '#e6cdbb'
+  // Rugas: lúmen da vagina por dentro da parede, com pregas transversais (aparecem no corte)
+  const rugas = tubo(
+    bezier(ostio, meio, fornice, 90),
+    (t) => {
+      const abobada = 1 - 0.45 * smooth(t, 0.82, 1)
+      const prega = 1 + 0.12 * Math.sin(2 * Math.PI * 16 * t) * (1 - smooth(t, 0.8, 0.9))
+      return [(0.012 + 0.006 * t) * abobada * 0.62 * prega, (0.006 + 0.008 * t ** 2) * abobada * 0.45 * prega]
+    },
+    28,
+  )
+
+  // Cavidade do útero: triângulo achatado no plano frontal do útero, do óstio interno até perto do
+  // fundo, com a borda do endométrio ondulada; e o canal do colo, fusiforme, até o óstio externo
+  const osInterno = centro(malhaPorBase.get('internal_cervical_os'))
+  const osExterno = centro(malhaPorBase.get('external_cervical_os'))
+  const fundo = malhaPorBase.get('fundus_of_uterus')
+  const eixoU = unit(sub(centro(fundo), osInterno))
+  const alturaFundo = Math.max(...fundo.map((p) => dot(sub(p, osInterno), eixoU)))
+  const topo = add(osInterno, mul(eixoU, alturaFundo - 0.012)) // ~12 mm de miométrio no fundo, que é arredondado
+  // largura pelo corpo do útero, deixando ~9 mm de miométrio de cada lado
+  const corpoU = malhaPorBase.get('body_of_uterus')
+  const meiaLargura = (Math.max(...corpoU.map((p) => p[0])) - Math.min(...corpoU.map((p) => p[0]))) / 2 - 0.009
+  const cavidade = tubo(
+    bezier(osInterno, lerp(osInterno, topo, 0.5), topo, 40),
+    (t, ang) => {
+      const borda = Math.abs(Math.cos(ang)) ** 4 // ondulação só nas bordas laterais
+      const onda = 1 + 0.07 * borda * Math.sin(2 * Math.PI * 7 * t)
+      const cantos = 1 - 0.3 * smooth(t, 0.8, 1) // cantos de cima arredondados, acompanhando o fundo
+      return [(0.0015 + meiaLargura * t ** 1.4) * onda * cantos, 0.0012 + 0.0022 * t]
+    },
+    32,
+    true,
+  )
+  const canal = tubo(
+    bezier(osExterno, lerp(osExterno, osInterno, 0.5), osInterno, 24),
+    (t, ang) => {
+      const fuso = 0.0012 + 0.0016 * Math.sin(Math.PI * t)
+      const pregas = 1 + 0.15 * Math.sin(6 * ang) // pregas palmadas
+      return [fuso * 1.3 * pregas, fuso * pregas]
+    },
+    24,
+    true,
+  )
+  console.log(`  cavidade do útero: ${((alturaFundo - 0.012) * 100).toFixed(1)} cm de altura, ${(meiaLargura * 200).toFixed(1)} cm de largura`)
+
+  const COR_VAGINA = '#e3908c'
+  const COR_LIGAMENTO = '#ebc4b6'
+  const COR_MUCOSA = '#b83a43'
   return [
     { id: 'VHF_vagina', nome: 'Vagina', en: 'Vagina', malha: vagina, cor: COR_VAGINA },
+    { id: 'VHF_vaginal_rugae', nome: 'Rugas da vagina', en: 'Vaginal rugae', malha: rugas, cor: COR_MUCOSA },
+    { id: 'VHF_uterine_cavity', nome: 'Cavidade do útero', en: 'Uterine cavity', malha: cavidade, cor: COR_MUCOSA },
+    { id: 'VHF_cervical_canal', nome: 'Canal do colo do útero', en: 'Cervical canal', malha: canal, cor: COR_MUCOSA },
     { id: 'VHF_ovarian_ligament_R', nome: 'Ligamento próprio do ovário direito', en: 'Ovarian ligament, right', malha: ligamento('R'), cor: COR_LIGAMENTO },
     { id: 'VHF_ovarian_ligament_L', nome: 'Ligamento próprio do ovário esquerdo', en: 'Ovarian ligament, left', malha: ligamento('L'), cor: COR_LIGAMENTO },
   ].map((p) => ({
@@ -1161,6 +1307,8 @@ for (const arq of ARQUIVOS) {
     if (base === 'fat') {
       e.sistema = 'pele'
       gorduraMama.push({ id, posicoes: m.posicoes, indices: m.indices, cor: '#e8c49a', alvo: 5000, erro: 0.01 })
+    } else if (/ovary/.test(base)) {
+      itens.push({ id, ...relevoOvario(m.posicoes, m.indices), cor: corDe(base), alvo: 6000, erro: 0.002 })
     } else itens.push({ id, posicoes: m.posicoes, indices: m.indices, cor: corDe(base), alvo: alvoItem })
   }
 }

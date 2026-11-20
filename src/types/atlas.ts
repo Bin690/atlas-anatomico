@@ -72,7 +72,7 @@ export interface PassoAula {
   destaques?: string[]
   /** Estruturas que a câmera deve enquadrar. */
   foco?: string[]
-  corte?: { plano: 'axial' | 'sagital' | 'coronal'; posicao: number; inverter: boolean } | null
+  corte?: { plano: 'axial' | 'sagital' | 'coronal'; posicao: number; inverter: boolean; normal?: Vec3 } | null
   /** Direção de onde a câmera olha (opcional; ex.: [-1, 0.1, 0] = vista do lado direito do paciente). */
   vista?: [number, number, number]
 }

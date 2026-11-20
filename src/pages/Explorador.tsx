@@ -1,9 +1,11 @@
 import { useProgress } from '@react-three/drei'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Toolbar } from '../components/Toolbar'
 import { CartaoEstrutura } from '../components/ui/CartaoEstrutura'
 import { DicaHover } from '../components/ui/DicaHover'
-import { IconeBusca } from '../components/ui/Icones'
+import { IconeAulas, IconeBusca, IconeInfo, IconeSemSom, IconeSom } from '../components/ui/Icones'
+import { Sobre } from '../components/ui/Sobre'
+import { pararVoz } from '../hooks/voz'
 import { PainelBusca } from '../components/ui/PainelBusca'
 import { PainelCamadas } from '../components/ui/PainelCamadas'
 import { PainelCortes } from '../components/ui/PainelCortes'
@@ -24,12 +26,40 @@ function CarregandoCamada() {
   )
 }
 
-/** Dica inicial: some de vez após a primeira seleção. */
-let dicaVista = false
+/**
+ * Dica inicial: aparece só nas primeiras visitas, some sozinha após alguns segundos ou no primeiro toque,
+ * e não volta depois de vista (fica guardado no aparelho).
+ */
+const CHAVE_DICA = 'atlas3d:dica-vista'
+const DURACAO_DICA = 8000
+let dicaVista = (() => {
+  try {
+    return localStorage.getItem(CHAVE_DICA) === '1'
+  } catch {
+    return false
+  }
+})()
 function DicaInicial() {
-  const selecionada = useAtlasStore((s) => s.selecionada)
-  if (selecionada) dicaVista = true
-  if (dicaVista) return null
+  const [visivel, setVisivel] = useState(!dicaVista)
+  useEffect(() => {
+    if (!visivel) return
+    const esconder = () => {
+      dicaVista = true
+      try {
+        localStorage.setItem(CHAVE_DICA, '1')
+      } catch {
+        // sem armazenamento: some só nesta sessão
+      }
+      setVisivel(false)
+    }
+    const timer = setTimeout(esconder, DURACAO_DICA)
+    window.addEventListener('pointerdown', esconder, { once: true })
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('pointerdown', esconder)
+    }
+  }, [visivel])
+  if (!visivel) return null
   return (
     <p className="pointer-events-none absolute bottom-24 left-1/2 w-max max-w-[90vw] -translate-x-1/2 rounded-full bg-slate-900/80 px-4 py-2 text-center text-xs text-slate-300 ring-1 ring-white/10 backdrop-blur sm:bottom-28 sm:text-sm">
       Toque em qualquer parte do corpo para ver o nome · use <strong className="text-white">Camadas</strong> para ver
@@ -51,6 +81,10 @@ export default function Explorador() {
   const selecionada = useAtlasStore((s) => s.selecionada)
   const abrirPainel = useAtlasStore((s) => s.abrirPainel)
   const selecionar = useAtlasStore((s) => s.selecionar)
+  const voz = useAtlasStore((s) => s.voz)
+  const [sobreAberto, setSobreAberto] = useState(false)
+  const fecharSobre = useCallback(() => setSobreAberto(false), [])
+  const alternarVoz = useAtlasStore((s) => s.alternarVoz)
 
   // Atalhos: "/" ou Ctrl/⌘+K abre a busca; Esc fecha painel ou seleção
   useEffect(() => {
@@ -70,37 +104,60 @@ export default function Explorador() {
   }, [abrirPainel, selecionar])
 
   const folha =
-    'pointer-events-auto absolute inset-x-2 bottom-[84px] max-h-[min(60vh,520px)] sm:inset-x-auto sm:bottom-24 sm:max-h-none'
+    'pointer-events-auto absolute inset-x-2 bottom-[84px] max-h-[min(60vh,520px)] sm:inset-x-auto sm:bottom-24'
 
   return (
     <main className="relative h-full">
       <header className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-4">
         <div>
           <p className="text-[11px] font-medium tracking-wide text-sky-400 uppercase">Atlas Anatômico 3D</p>
-          <h1 className="text-lg leading-tight font-bold text-white sm:text-xl">Corpo humano</h1>
+          <div className="flex items-center gap-1">
+            <h1 className="text-lg leading-tight font-bold text-white sm:text-xl">Corpo humano</h1>
+            <button
+              type="button"
+              onClick={() => setSobreAberto(true)}
+              aria-label="Sobre o atlas: como usar e créditos"
+              title="Sobre o atlas: como usar e créditos"
+              className="pointer-events-auto grid size-8 place-items-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-white"
+            >
+              <IconeInfo className="size-[18px]" />
+            </button>
+          </div>
           <SeletorCorpo />
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => abrirPainel('aulas')}
-            className="pointer-events-auto flex min-h-11 items-center gap-2 rounded-full border border-amber-400/40 bg-superficie/80 px-4 text-sm font-medium text-amber-200 backdrop-blur transition hover:border-amber-300 hover:text-white"
+            onClick={() => {
+              if (voz) pararVoz()
+              alternarVoz()
+            }}
+            aria-pressed={voz}
+            aria-label={voz ? 'Voz ligada: diz o nome da peça tocada' : 'Voz desligada'}
+            title={voz ? 'Voz ligada: diz o nome da peça tocada' : 'Voz desligada'}
+            className="pointer-events-auto grid size-11 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
           >
-            Aulas
+            {voz ? <IconeSom /> : <IconeSemSom />}
+          </button>
+          <button
+            type="button"
+            onClick={() => abrirPainel('aulas')}
+            aria-label="Aulas guiadas"
+            title="Aulas guiadas"
+            className="pointer-events-auto grid size-11 place-items-center rounded-full border border-amber-400/40 bg-superficie/80 text-amber-200 backdrop-blur transition hover:border-amber-300 hover:text-white"
+          >
+            <IconeAulas />
           </button>
           {/* Com o painel de busca aberto, o campo dele já é a busca: o botão ficaria duplicado */}
           {painel !== 'busca' && (
             <button
               type="button"
               onClick={() => abrirPainel('busca')}
-              className="pointer-events-auto flex min-h-11 items-center gap-2 rounded-full border border-borda bg-superficie/80 px-4 text-sm text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
+              aria-label={`Buscar entre ${estruturas.length} estruturas`}
+              title={`Buscar entre ${estruturas.length} estruturas (atalho: /)`}
+              className="pointer-events-auto grid size-11 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
             >
-              <IconeBusca className="size-4" />
-              <span className="hidden sm:inline">Buscar entre {estruturas.length} estruturas</span>
-              <span className="sm:hidden">Buscar</span>
-              <kbd className="ml-2 hidden rounded border border-slate-600 px-1.5 text-[10px] text-slate-400 lg:inline">
-                /
-              </kbd>
+              <IconeBusca />
             </button>
           )}
         </div>
@@ -112,7 +169,7 @@ export default function Explorador() {
       {/* Painel de camadas ou busca: folha inferior no celular, coluna à esquerda no desktop */}
       {painel && (
         <aside
-          className={`${folha} flex flex-col overflow-hidden rounded-2xl border border-borda bg-superficie/95 shadow-2xl backdrop-blur sm:top-32 sm:left-4 sm:w-[340px]`}
+          className={`${folha} flex flex-col overflow-hidden rounded-2xl border border-borda bg-superficie/95 shadow-2xl backdrop-blur sm:top-32 sm:bottom-auto sm:left-4 sm:max-h-[calc(100%-14rem)] sm:w-[340px]`}
         >
           <PainelAtual painel={painel} />
         </aside>
@@ -131,27 +188,7 @@ export default function Explorador() {
         <Toolbar />
       </div>
 
-      <p className="absolute bottom-3 left-4 hidden max-w-[220px] text-[10px] leading-snug text-slate-500 xl:block">
-        Modelos 3D:{' '}
-        <a
-          href="https://dbarchive.biosciencedbc.jp/en/bodyparts3d/"
-          target="_blank"
-          rel="noreferrer"
-          className="underline underline-offset-2 hover:text-slate-300"
-        >
-          BodyParts3D
-        </a>
-        , © The Database Center for Life Science, CC BY 4.0 (adaptados). Corpo feminino:{' '}
-        <a
-          href="https://humanatlas.io/3d-reference-library"
-          target="_blank"
-          rel="noreferrer"
-          className="underline underline-offset-2 hover:text-slate-300"
-        >
-          HuBMAP Human Reference Atlas
-        </a>
-        , CC BY 4.0 (adaptados).
-      </p>
+      <Sobre aberto={sobreAberto} fechar={fecharSobre} />
 
       <DicaHover />
     </main>

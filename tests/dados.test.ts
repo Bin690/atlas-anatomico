@@ -68,6 +68,13 @@ describe('integridade dos dados', () => {
   })
 })
 
+describe('voz', () => {
+  it('toda estrutura tem o áudio com o nome falado', () => {
+    const pasta = join(PUBLIC, 'audio', 'nomes')
+    expect(lista.filter((e) => !existsSync(join(pasta, `${e.id}.m4a`))).map((e) => e.nome)).toEqual([])
+  })
+})
+
 describe('corpo feminino', () => {
   it('só troca camadas que existem, com a contagem certa', () => {
     const ids = new Set(camadas.map((s) => s.id))

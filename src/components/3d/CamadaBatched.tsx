@@ -15,6 +15,7 @@ import {
   type Object3D,
 } from 'three'
 import { useCatalogo } from '../../data'
+import { dizerNome } from '../../hooks/voz'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import type { Sistema } from '../../types/atlas'
 import { atualizarPlano, camadasMontadas, intersecaoReal, PLANO } from './corte'
@@ -164,7 +165,7 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
   const selecionar = useAtlasStore((s) => s.selecionar)
   const setHover = useAtlasStore((s) => s.setHover)
   // Camadas comuns aos dois corpos (ex.: urinário) podem ter peças de um só corpo (uretra masculina)
-  const { doOutroCorpo } = useCatalogo()
+  const { doOutroCorpo, porId } = useCatalogo()
 
   // Registro global (para foco e rótulos)
   useLayoutEffect(() => {
@@ -283,6 +284,8 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
           return
         }
         selecionar(alvo.id, { ponto: alvo.ponto.toArray() })
+        const estrutura = porId.get(alvo.id)
+        if (estrutura) dizerNome(estrutura.id, estrutura.nome)
       }}
     />
   )

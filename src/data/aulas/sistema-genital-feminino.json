@@ -1,8 +1,8 @@
 {
   "id": "sistema-genital-feminino",
   "titulo": "Sistema genital feminino",
-  "resumo": "Útero, tubas uterinas, ovários e vagina: partes, relações e correlações clínicas.",
-  "duracaoMin": 5,
+  "resumo": "Útero, tubas uterinas, ovários e vagina: partes, cortes, relações e correlações clínicas.",
+  "duracaoMin": 7,
   "premium": false,
   "ordem": 6,
   "sexo": "feminino",
@@ -35,7 +35,10 @@
         "VHF_left_ovary",
         "VHF_ovarian_ligament_R",
         "VHF_ovarian_ligament_L",
-        "VHF_vagina"
+        "VHF_vagina",
+        "VHF_uterine_cavity",
+        "VHF_cervical_canal",
+        "VHF_vaginal_rugae"
       ],
       "foco": [
         "VHF_fundus_of_uterus",
@@ -93,7 +96,10 @@
         "VHF_left_ovary",
         "VHF_ovarian_ligament_R",
         "VHF_ovarian_ligament_L",
-        "VHF_vagina"
+        "VHF_vagina",
+        "VHF_uterine_cavity",
+        "VHF_cervical_canal",
+        "VHF_vaginal_rugae"
       ],
       "destaques": ["VHF_fundus_of_uterus", "VHF_body_of_uterus", "VHF_cervix"],
       "foco": [
@@ -110,6 +116,40 @@
         "VHF_abdominal_ostium_of_uterine_tube"
       ],
       "vista": [0, 0.1, 1]
+    },
+    {
+      "titulo": "Corte frontal do útero",
+      "texto": "Cortando o útero no seu plano frontal aparece a cavidade uterina: um triângulo achatado, revestido pelo endométrio, com os óstios das tubas nos ângulos de cima. Para baixo, ela se estreita no óstio interno e continua como canal do colo até o óstio externo. Em volta, a parede grossa é o miométrio. (Cavidade e canal aqui são esquemáticos.)",
+      "camadas": ["genital"],
+      "isolar": [
+        "VHF_body_of_uterus",
+        "VHF_cervix",
+        "VHF_uterine_cavity",
+        "VHF_cervical_canal",
+        "VHF_uterine_tube_infundibulum_R",
+        "VHF_fibria_of_uterine_tube_R",
+        "VHF_ampulla_of_uterine_tube_R",
+        "VHF_isthmus_of_fallopian_tube_R",
+        "VHF_uterine_tube_infundibulum_L",
+        "VHF_fibria_of_uterine_tube_L",
+        "VHF_ampulla_of_uterine_tube_L",
+        "VHF_isthmus_of_fallopian_tube_L",
+        "VHF_right_ovary",
+        "VHF_left_ovary",
+        "VHF_ovarian_ligament_R",
+        "VHF_ovarian_ligament_L",
+        "VHF_fundus_of_uterus",
+        "VHF_lower_uterine_segment"
+      ],
+      "destaques": [],
+      "foco": ["VHF_body_of_uterus", "VHF_cervix", "VHF_uterine_cavity", "VHF_cervical_canal"],
+      "vista": [0, -0.849, 0.527],
+      "corte": {
+        "plano": "coronal",
+        "posicao": -0.7691,
+        "inverter": false,
+        "normal": [0, -0.849, 0.527]
+      }
     },
     {
       "titulo": "Tubas uterinas",
@@ -139,7 +179,10 @@
         "VHF_left_ovary",
         "VHF_ovarian_ligament_R",
         "VHF_ovarian_ligament_L",
-        "VHF_vagina"
+        "VHF_vagina",
+        "VHF_uterine_cavity",
+        "VHF_cervical_canal",
+        "VHF_vaginal_rugae"
       ],
       "destaques": [
         "VHF_isthmus_of_fallopian_tube_R",
@@ -189,7 +232,10 @@
         "VHF_left_ovary",
         "VHF_ovarian_ligament_R",
         "VHF_ovarian_ligament_L",
-        "VHF_vagina"
+        "VHF_vagina",
+        "VHF_uterine_cavity",
+        "VHF_cervical_canal",
+        "VHF_vaginal_rugae"
       ],
       "destaques": ["VHF_right_ovary", "VHF_left_ovary", "VHF_ovarian_ligament_R", "VHF_ovarian_ligament_L"],
       "foco": [
@@ -229,7 +275,10 @@
         "VHF_left_ovary",
         "VHF_ovarian_ligament_R",
         "VHF_ovarian_ligament_L",
-        "VHF_vagina"
+        "VHF_vagina",
+        "VHF_uterine_cavity",
+        "VHF_cervical_canal",
+        "VHF_vaginal_rugae"
       ],
       "destaques": ["VHF_cervix", "VHF_external_cervical_os", "VHF_vagina"],
       "foco": [
@@ -247,6 +296,20 @@
         "VHF_vagina"
       ],
       "vista": [-1, 0.1, 0]
+    },
+    {
+      "titulo": "A vagina por dentro",
+      "texto": "No corte frontal da vagina se veem as rugas: pregas transversais da mucosa que permitem que ela se distenda no parto. No alto, o colo do útero se projeta no fundo da vagina, e em volta dele ficam os fórnices. (A vagina aqui é esquemática.)",
+      "camadas": ["genital"],
+      "isolar": ["VHF_cervix", "VHF_cervical_canal", "VHF_external_cervical_os", "VHF_vagina", "VHF_vaginal_rugae"],
+      "destaques": [],
+      "foco": ["VHF_vagina", "VHF_cervix"],
+      "vista": [0, 0.1, 1],
+      "corte": {
+        "plano": "coronal",
+        "posicao": -0.012,
+        "inverter": false
+      }
     },
     {
       "titulo": "Na pelve",
@@ -280,7 +343,10 @@
         "VHF_vagina",
         "FMA16586",
         "FMA16587",
-        "FMA16202"
+        "FMA16202",
+        "VHF_uterine_cavity",
+        "VHF_cervical_canal",
+        "VHF_vaginal_rugae"
       ],
       "destaques": ["VHF_body_of_uterus", "VHF_vagina"],
       "foco": [

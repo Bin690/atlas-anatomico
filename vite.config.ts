@@ -5,6 +5,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Data da build, mostrada na janela "Sobre o atlas"
+  define: { __DATA_BUILD__: JSON.stringify(new Date().toISOString().slice(0, 10)) },
   plugins: [
     react(),
     tailwindcss(),
@@ -32,6 +34,16 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         runtimeCaching: [
+          {
+            // Nome falado das estruturas: guardado conforme é ouvido, para funcionar sem internet
+            urlPattern: ({ url }) => url.pathname.startsWith('/audio/'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'voz',
+              expiration: { maxEntries: 2500 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
           {
             urlPattern: ({ url }) => url.pathname.startsWith('/models/') && url.pathname.endsWith('.glb'),
             handler: 'CacheFirst',

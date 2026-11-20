@@ -13344,7 +13344,8 @@
       "Irrigação": "Artéria ovárica (ramo da aorta abdominal) e ramo ovárico da artéria uterina",
       "Drenagem venosa": "Veia ovárica (direita → veia cava inferior; esquerda → veia renal esquerda)",
       "Inervação": "Plexo ovárico",
-      "Função": "Ovogênese e produção de estrogênio e progesterona"
+      "Função": "Ovogênese e produção de estrogênio e progesterona",
+      "Modelo": "Forma real (HuBMAP); o relevo dos folículos na superfície é esquemático"
     }
   },
   "VHF_left_ovary": {
@@ -13355,7 +13356,8 @@
       "Irrigação": "Artéria ovárica (ramo da aorta abdominal) e ramo ovárico da artéria uterina",
       "Drenagem venosa": "Veia ovárica (direita → veia cava inferior; esquerda → veia renal esquerda)",
       "Inervação": "Plexo ovárico",
-      "Função": "Ovogênese e produção de estrogênio e progesterona"
+      "Função": "Ovogênese e produção de estrogênio e progesterona",
+      "Modelo": "Forma real (HuBMAP); o relevo dos folículos na superfície é esquemático"
     }
   },
   "VHF_nipple_R": {
@@ -13510,6 +13512,30 @@
       "Drenagem venosa": "Plexo venoso vaginal → veias ilíacas internas",
       "Inervação": "Parte superior: plexo uterovaginal (visceral); quarto inferior: nervo perineal profundo, ramo do pudendo (somático)",
       "Função": "Canal do parto, saída do fluxo menstrual e órgão da cópula",
+      "Modelo": "Esquemático: o conjunto de referência usado (HuBMAP) não inclui a vagina"
+    }
+  },
+  "VHF_cervical_canal": {
+    "descricao": "Canal fusiforme que atravessa o colo do útero, do óstio interno ao óstio do útero (externo). A mucosa forma as pregas palmadas, e as glândulas produzem o muco cervical.",
+    "correlacaoClinica": "O muco cervical muda ao longo do ciclo: fino e elástico na ovulação, o que facilita a passagem dos espermatozoides; espesso na fase lútea e com anticoncepcionais de progestagênio.",
+    "ficha": {
+      "Comprimento": "Cerca de 2,5 a 3 cm",
+      "Modelo": "Esquemático: o útero do conjunto de referência (HuBMAP) é só a parede externa"
+    }
+  },
+  "VHF_uterine_cavity": {
+    "descricao": "Espaço triangular e achatado no interior do corpo do útero, revestido pelo endométrio. Os ângulos superiores recebem os óstios uterinos das tubas, e o ângulo inferior continua-se com o canal do colo pelo óstio interno.",
+    "correlacaoClinica": "O endométrio descama a cada ciclo menstrual. Sangramento depois da menopausa exige investigação de hiperplasia ou câncer do endométrio (ultrassonografia transvaginal e biópsia).",
+    "ficha": {
+      "Revestimento": "Endométrio (camadas funcional e basal)",
+      "Modelo": "Esquemático: o útero do conjunto de referência (HuBMAP) é só a parede externa"
+    }
+  },
+  "VHF_vaginal_rugae": {
+    "descricao": "Pregas transversais da mucosa da vagina, mais evidentes nas paredes anterior e posterior, que permitem que a vagina se distenda.",
+    "correlacaoClinica": "Diminuem depois da menopausa: sem estrogênio, a mucosa fica mais fina, seca e lisa (atrofia vulvovaginal), o que melhora com estrogênio tópico.",
+    "ficha": {
+      "Revestimento": "Epitélio estratificado pavimentoso não queratinizado",
       "Modelo": "Esquemático: o conjunto de referência usado (HuBMAP) não inclui a vagina"
     }
   }

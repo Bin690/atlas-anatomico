@@ -10,6 +10,11 @@ export interface Corte {
   plano: PlanoCorte
   posicao: number
   inverter: boolean
+  /**
+   * Orientação livre (aulas): o plano passa a ter esta normal, e `posicao` é a distância ao longo
+   * dela (normal · ponto). A câmera vê a face cortada do lado para onde a normal aponta.
+   */
+  normal?: Vec3
 }
 
 interface AtlasState {
@@ -32,6 +37,8 @@ interface AtlasState {
   rotacaoAutomatica: boolean
   /** Arrastar com um dedo / botão esquerdo desloca a vista em vez de girar. */
   modoMover: boolean
+  /** Dizer em voz alta o nome da peça tocada (lembrado no aparelho). */
+  voz: boolean
   /** Incrementado para pedir à câmera que enquadre a seleção (ou o corpo, se nada selecionado). */
   focoVersao: number
   /** A câmera pediu foco numa estrutura cuja camada ainda está carregando. */
@@ -77,6 +84,7 @@ interface AtlasState {
   alternarRaioX: () => void
   alternarRotacao: () => void
   alternarMover: () => void
+  alternarVoz: () => void
   focar: () => void
   abrirPainel: (p: Painel) => void
   definirQuiz: (modo: boolean, revelado?: boolean) => void
@@ -115,6 +123,13 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
   raioX: false,
   rotacaoAutomatica: false,
   modoMover: false,
+  voz: (() => {
+    try {
+      return localStorage.getItem('atlas3d:voz') !== '0'
+    } catch {
+      return true
+    }
+  })(),
   focoVersao: 0,
   focoPendente: false,
   painel: null,
@@ -162,6 +177,15 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
   alternarRaioX: () => set((s) => ({ raioX: !s.raioX })),
   alternarRotacao: () => set((s) => ({ rotacaoAutomatica: !s.rotacaoAutomatica })),
   alternarMover: () => set((s) => ({ modoMover: !s.modoMover })),
+  alternarVoz: () =>
+    set((s) => {
+      try {
+        localStorage.setItem('atlas3d:voz', s.voz ? '0' : '1')
+      } catch {
+        // sem armazenamento: vale só nesta sessão
+      }
+      return { voz: !s.voz }
+    }),
   focar: () => set((s) => ({ focoVersao: s.focoVersao + 1 })),
   abrirPainel: (painel) => set((s) => ({ painel: s.painel === painel ? null : painel })),
   definirQuiz: (modoQuiz, quizRevelado = false) => set({ modoQuiz, quizRevelado, hover: null }),

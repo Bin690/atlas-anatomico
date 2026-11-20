@@ -1,9 +1,10 @@
 import { useAtlasStore } from '../../store/useAtlasStore'
 import type { Sexo } from '../../types/atlas'
 
-const OPCOES: { sexo: Sexo; rotulo: string }[] = [
-  { sexo: 'masculino', rotulo: 'Homem' },
-  { sexo: 'feminino', rotulo: 'Mulher' },
+const OPCOES: { sexo: Sexo; rotulo: string; simbolo: string }[] = [
+  // ︎ força o símbolo de texto (sem ele, o iOS pode desenhar um emoji colorido)
+  { sexo: 'masculino', rotulo: 'Homem', simbolo: '♂︎' },
+  { sexo: 'feminino', rotulo: 'Mulher', simbolo: '♀︎' },
 ]
 
 /** Troca entre o corpo masculino e o feminino (pele, órgãos genitais e mamas mudam). */
@@ -25,12 +26,14 @@ export function SeletorCorpo() {
             type="button"
             role="radio"
             aria-checked={ativo}
+            aria-label={o.rotulo}
+            title={o.rotulo}
             onClick={() => definirSexo(o.sexo)}
-            className={`min-h-9 rounded-full px-3.5 text-xs font-medium transition ${
+            className={`grid size-9 place-items-center rounded-full text-lg leading-none font-semibold transition ${
               ativo ? 'bg-sky-400 text-slate-950' : 'text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
-            {o.rotulo}
+            <span aria-hidden>{o.simbolo}</span>
           </button>
         )
       })}

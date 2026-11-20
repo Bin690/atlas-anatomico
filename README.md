@@ -14,6 +14,8 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
 - **Corpo masculino ou feminino:** o seletor Homem | Mulher, abaixo do título, troca a pele e o sistema
   genital (útero, tubas uterinas, ovários, vagina, mamas, monte do púbis e lábios maiores). A aula guiada
   "Sistema genital feminino" mostra esses órgãos isolados, de frente e de lado. A escolha fica guardada no aparelho.
+- **Voz:** ao tocar numa peça, uma voz masculina diz o nome dela (botão de alto-falante no topo liga e
+  desliga; no cartão, o alto-falante repete). No quiz a voz fica muda, para não entregar a resposta.
 - **Busca** em português ou inglês, sem precisar de acentos (`/` ou Ctrl/⌘+K).
 - **Ferramentas:**
   - camadas que se ligam e desligam;
@@ -110,6 +112,10 @@ Para descobrir o id de uma estrutura, procure pelo nome dela em `src/data/estrut
 3. Rode o gerador. A camada aparece sozinha no app.
 4. Escreva o conteúdo em `src/data/conteudo.json`.
 
+- **Voz:** `scripts/voz/gerar_audios.py` gera `public/audio/nomes/<id>.m4a` (um arquivo por estrutura) e
+  `src/data/voz.json`, num ambiente Python com `piper-tts`: `python scripts/voz/gerar_audios.py <voz.onnx>`.
+  Rode de novo sempre que nomes de estruturas mudarem (o teste de dados avisa se faltar algum áudio).
+
 ## Créditos e licença dos modelos
 
 Os modelos 3D são do **BodyParts3D**, © The Database Center for Life Science, sob licença
@@ -121,16 +127,20 @@ O corpo feminino (pele, útero, tubas uterinas, ovários e mamas) vem dos órgã
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Foram adaptados: reposicionados, com a pele deformada
 para seguir o esqueleto do atlas, simplificados e comprimidos.
 
+A voz é a pt_BR "faber" (medium) do [Piper](https://github.com/OHF-Voice/piper1-gpl), treinada com dados
+de licença CC0 ([piper-voices](https://huggingface.co/rhasspy/piper-voices)).
+
 ## Limitações conhecidas
 
 - **Estruturas ausentes no BodyParts3D:** cóccix, ossículos da orelha e alguns músculos (ex.: reto do abdome).
 - **Corpo feminino:** só a pele, os órgãos genitais internos e as mamas são femininos. O esqueleto
   (incluindo a pelve, mais estreita que a feminina), os músculos e os demais órgãos continuam sendo os do
   modelo masculino. O conjunto do HuBMAP não tem vagina, ligamentos nem órgãos genitais externos: a vagina
-  e os ligamentos próprios dos ovários são modelos esquemáticos (marcados assim no app), o monte do púbis e os
+  e os ligamentos próprios dos ovários são modelos esquemáticos (marcados assim no app), assim como a
+  cavidade do útero, o canal do colo, as rugas da vagina e o relevo dos folículos nos ovários, o monte do púbis e os
   lábios maiores foram recortados da própria pele da doadora, e lábios menores e clitóris não existem. A bexiga
   continua sendo a masculina, que não tem o mesmo formato da feminina. O útero do HuBMAP é só a parede
-  externa, por isso não mostra a cavidade uterina nem o canal do colo. A pele foi
+  externa; a cavidade e o canal foram construídos por dentro e aparecem no corte frontal da aula. A pele foi
   deformada para seguir o esqueleto: polegares e dedos dos pés podem não coincidir exatamente com os ossos.
 - **Pulmões:** as superfícies foram reconstruídas a partir das árvores brônquicas e são aproximações
   didáticas.

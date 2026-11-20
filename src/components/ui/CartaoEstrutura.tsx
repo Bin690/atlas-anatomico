@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useCatalogo } from '../../data'
 import { useTelaPequena } from '../../hooks/useTelaPequena'
 import { useAtlasStore } from '../../store/useAtlasStore'
-import { IconeAlvo, IconeFechar, IconeIsolar, IconeOlho, IconeOlhoFechado } from './Icones'
+import { dizerNome } from '../../hooks/voz'
+import { IconeAlvo, IconeFechar, IconeIsolar, IconeOlho, IconeOlhoFechado, IconeSom } from './Icones'
 
 /**
  * Card da estrutura selecionada: nome, sistema, conteúdo didático e ações.
@@ -64,6 +65,15 @@ export function CartaoEstrutura() {
             </p>
           )}
         </div>
+        <button
+          type="button"
+          onClick={() => dizerNome(estrutura.id, estrutura.nome, { forcar: true })}
+          aria-label={`Ouvir o nome: ${estrutura.nome}`}
+          title="Ouvir o nome"
+          className="grid size-9 shrink-0 place-items-center rounded-full text-slate-300 transition hover:bg-white/10 hover:text-white"
+        >
+          <IconeSom />
+        </button>
         {telaPequena && (
           <button
             type="button"

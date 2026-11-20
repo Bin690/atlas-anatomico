@@ -25,12 +25,14 @@ export function atualizarPlano(corte: Corte | null) {
   ativo = !!corte
   if (!corte) return
   const sinal = corte.inverter ? 1 : -1
-  PLANO.normal.copy(EIXOS[corte.plano]).multiplyScalar(sinal)
+  const eixo = corte.normal ? new Vector3(...corte.normal).normalize() : EIXOS[corte.plano]
+  PLANO.normal.copy(eixo).multiplyScalar(sinal)
   PLANO.constant = -sinal * corte.posicao
 }
 
 /** Direção de onde a câmera vê a face cortada. */
 export function direcaoDaVista(corte: Corte): Vector3 {
+  if (corte.normal) return new Vector3(...corte.normal).normalize().multiplyScalar(corte.inverter ? -1 : 1)
   const d = EIXOS[corte.plano].clone().multiplyScalar(corte.inverter ? -1 : 1)
   if (corte.plano === 'axial')
     d.add(new Vector3(0, 0, 0.45)) // levemente de frente, para dar profundidade

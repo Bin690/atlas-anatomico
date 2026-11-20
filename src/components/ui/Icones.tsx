@@ -75,6 +75,35 @@ export const IconeOlho = (p: SVGProps<SVGSVGElement>) => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 )
+/** Círculo com "i": informações (Sobre). */
+export const IconeInfo = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5M12 8h.01" />
+  </svg>
+)
+/** Alto-falante com ondas: voz ligada. */
+export const IconeSom = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+    <path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" />
+  </svg>
+)
+/** Alto-falante cortado: voz desligada. */
+export const IconeSemSom = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+    <path d="m22 9-6 6M16 9l6 6" />
+  </svg>
+)
+/** Capelo: aulas guiadas. */
+export const IconeAulas = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <path d="M22 9 12 4 2 9l10 5 10-5Z" />
+    <path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5" />
+    <path d="M22 9v6" />
+  </svg>
+)
 /** Setas em cruz: mover (deslocar) a vista. */
 export const IconeMover = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}>
