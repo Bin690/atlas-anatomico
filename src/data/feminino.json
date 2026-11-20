@@ -6,8 +6,8 @@
       "tocaveis": ["VHF_labium_majus_R", "VHF_labium_majus_L", "VHF_mons_pubis", "VHF_fat_R", "VHF_fat_L"]
     },
     "genital": {
-      "modelo": "/models/genital-feminino.glb?v=cdd9509d75",
-      "total": 41
+      "modelo": "/models/genital-feminino.glb?v=2a5544f192",
+      "total": 40
     }
   },
   "estruturas": [
@@ -136,14 +136,6 @@
       "en": "isthmus of fallopian tube, left",
       "sistema": "genital",
       "pai": "Tuba uterina esquerda"
-    },
-    {
-      "id": "VHF_cervicovaginal_junction",
-      "nome": "Junção cervicovaginal",
-      "en": "cervicovaginal junction",
-      "sistema": "genital",
-      "pai": "Colo do útero",
-      "paiId": "VHF_cervix"
     },
     {
       "id": "VHF_labium_majus_R",

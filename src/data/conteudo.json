@@ -13272,13 +13272,6 @@
       "Drenagem venosa": "Veias uterinas e ováricas"
     }
   },
-  "VHF_cervicovaginal_junction": {
-    "descricao": "Região onde a parte vaginal do colo do útero encontra a parede da vagina. Ao redor do colo, delimita os fórnices da vagina (anterior, posterior e laterais).",
-    "correlacaoClinica": "O fórnice posterior, o mais profundo, fica junto da escavação retouterina e dá acesso à cavidade peritoneal (culdocentese).",
-    "ficha": {
-      "Localização": "Fundo da vagina, ao redor do colo do útero"
-    }
-  },
   "VHF_suspensory_ligaments_R": {
     "descricao": "Faixas de tecido conjuntivo (ligamentos de Cooper) que vão da fáscia profunda até a derme. Sustentam a glândula e dividem-na em compartimentos.",
     "correlacaoClinica": "Um tumor que repuxa esses ligamentos retrai a pele e forma covinhas, sinal de alerta no exame físico da mama.",

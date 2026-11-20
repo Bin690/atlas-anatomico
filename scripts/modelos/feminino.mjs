@@ -1029,7 +1029,7 @@ const NOMES = {
 const COR = {
   uterus: '#e0807f',
   cervix: '#e4938f',
-  ovary: '#f0cfc0',
+  ovary: '#e3928b', // rosado, como na ilustração de referência (o bege claro ficava quase branco no 3D)
   tube: '#e2827f',
   fat: '#efd39b',
   lobes: '#e3a49c',
@@ -1143,7 +1143,7 @@ function relevoOvario(posicoes, indices) {
   const v = (i) => [pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]]
   const centros = [0]
   const dist = new Float64Array(n).fill(Infinity)
-  while (centros.length < 60) {
+  while (centros.length < 42) {
     const ult = v(centros.at(-1))
     let melhor = 0
     for (let i = 0; i < n; i++) {
@@ -1156,10 +1156,10 @@ function relevoOvario(posicoes, indices) {
   for (let i = 0; i < n; i++) {
     let h = 0
     centros.forEach((c, k) => {
-      const raio = 0.0014 + 0.0009 * ((k * 37) % 5) / 4
-      const altura = 0.0006 + 0.0006 * ((k * 53) % 7) / 6
-      // cúpula de topo arredondado e borda marcada (expoente 4), como os folículos da ilustração
-      h += altura * Math.exp(-((norma(sub(v(i), v(c))) / raio) ** 4))
+      const raio = 0.0019 + 0.0007 * ((k * 37) % 5) / 4
+      const altura = 0.0011 + 0.0006 * ((k * 53) % 7) / 6
+      // cúpula de topo arredondado e borda íngreme (expoente 6): folículos separados por sulcos
+      h = Math.max(h, altura * Math.exp(-((norma(sub(v(i), v(c))) / raio) ** 6)))
     })
     for (let k = 0; k < 3; k++) saida[3 * i + k] += normais[3 * i + k] * h
   }
@@ -1193,15 +1193,23 @@ function pecasEsquematicas() {
   const fornice = centro(malhaPorBase.get('cervicovaginal_junction'))
   // Leve curvatura de concavidade anterior
   const meio = add(lerp(ostio, fornice, 0.5), [0, 0, -0.008])
-  // Seção: alarga para cima e, no último sexto, a abóbada (fórnices) se fecha em volta do colo
-  const vagina = tubo(
-    bezier(ostio, meio, fornice, 32),
-    (t) => {
-      const abobada = 1 - 0.45 * smooth(t, 0.82, 1)
-      return [(0.012 + 0.006 * t) * abobada, (0.006 + 0.008 * t ** 2) * abobada]
-    },
-    28,
-  )
+  // Seção: alarga para cima até os fórnices e, depois deles, a abóbada sobe ~8 mm e se fecha sobre a
+  // porção vaginal do colo (a borda fica escondida dentro do colo, sem degrau nem fresta)
+  const colo = caixa(malhaPorBase.get('cervix'))
+  const raioColo = [(colo.max[0] - colo.min[0]) / 2 - 0.001, 0.0105]
+  const eixoVagina = unit(sub(fornice, meio))
+  const curvaVagina = [
+    ...bezier(ostio, meio, fornice, 32),
+    ...Array.from({ length: 6 }, (_, k) => add(fornice, mul(eixoVagina, (0.008 * (k + 1)) / 6))),
+  ]
+  const tFornice = 31 / (curvaVagina.length - 1)
+  const secao = (t, fator) => {
+    const u = Math.min(1, t / tFornice)
+    const base = [0.012 + 0.006 * u, 0.006 + 0.008 * u ** 2]
+    const w = smooth(t, tFornice, 1)
+    return [(base[0] + (raioColo[0] - base[0]) * w) * fator[0], (base[1] + (raioColo[1] - base[1]) * w) * fator[1]]
+  }
+  const vagina = tubo(curvaVagina, (t) => secao(t, [1, 1]), 28)
   console.log(`  vagina: óstio ${fmt(ostio)} → fórnice ${fmt(fornice)}, ${(norma(sub(fornice, ostio)) * 100).toFixed(1)} cm`)
 
   const ligamento = (lado) => {
@@ -1221,9 +1229,9 @@ function pecasEsquematicas() {
   const rugas = tubo(
     bezier(ostio, meio, fornice, 90),
     (t) => {
-      const abobada = 1 - 0.45 * smooth(t, 0.82, 1)
       const prega = 1 + 0.12 * Math.sin(2 * Math.PI * 16 * t) * (1 - smooth(t, 0.8, 0.9))
-      return [(0.012 + 0.006 * t) * abobada * 0.62 * prega, (0.006 + 0.008 * t ** 2) * abobada * 0.45 * prega]
+      const [ra, rb] = secao(t * tFornice, [0.62, 0.45])
+      return [ra * prega, rb * prega]
     },
     28,
   )
@@ -1282,9 +1290,36 @@ const itens = []
 const gorduraMama = []
 const saidaEstruturas = [{ id: 'VHF_skin', nome: 'Pele', en: 'Skin', sistema: 'pele' }, ...vulva.map((v) => v.estrutura)]
 const malhaPorBase = new Map() // "cornua", "right_ovary"… -> pontos (para as peças esquemáticas)
+
+// Ovário sob as fímbrias: no HuBMAP o ovário e a tuba são peças separadas, e as fímbrias ficavam ~9 mm
+// atrás do topo do ovário (de frente, pareciam soltas acima dele). O ovário é levado para que o polo
+// tubário (o ponto mais alto) fique centrado sob o funil das fímbrias, entrando 3 mm nelas. Move-se o
+// ovário, não a tuba, para não partir a tuba; o ligamento do ovário é calculado depois e acompanha.
+const ajusteOvario = {}
+for (const [lado, arq] of [
+  ['R', '3d-vh-f-fallopian-tube-r.glb'],
+  ['L', '3d-vh-f-fallopian-tube-l.glb'],
+]) {
+  const fimbrias = pontos(transladar(await hubmap(arq)).filter((m) => /fibria/.test(m.nome)))
+  const ovario = pontos(transladar(await hubmap(lado === 'R' ? '3d-vh-f-ovary-r.glb' : '3d-vh-f-ovary-l.glb')))
+  const cx = caixa(fimbrias)
+  const funil = mul(add(cx.min, cx.max), 0.5)
+  const ordem = [...ovario].sort((a, b) => b[1] - a[1])
+  const topo = media(ordem.slice(0, Math.max(3, Math.floor(ordem.length * 0.05))))
+  ajusteOvario[lado] = [funil[0] - topo[0], cx.min[1] + 0.003 - topo[1], funil[2] - topo[2]]
+  console.log(`  ovário ${lado === 'R' ? 'direito' : 'esquerdo'} deslocado ${fmt(ajusteOvario[lado])} m para ficar sob as fímbrias`)
+}
+
 for (const arq of ARQUIVOS) {
   for (const m of transladar(await hubmap(arq))) {
+    const ladoOvario = m.nome === 'VH_F_right_ovary' ? 'R' : m.nome === 'VH_F_left_ovary' ? 'L' : null
+    if (ladoOvario)
+      for (let i = 0; i < m.posicoes.length; i += 3)
+        for (let k = 0; k < 3; k++) m.posicoes[i + k] += ajusteOvario[ladoOvario][k]
     malhaPorBase.set(m.nome.replace(/^VH_F_/, ''), pontos([m]))
+    // A junção cervicovaginal do HuBMAP é uma "saia" fina de bordas recortadas que ficava mal sobre a
+    // vagina; a vagina esquemática já se fecha em volta do colo (fórnices). Serve só de marco de posição.
+    if (m.nome === 'VH_F_cervicovaginal_junction') continue
     const lado = /_R$/.test(m.nome) ? 'R' : /_L$/.test(m.nome) ? 'L' : null
     const base = m.nome.replace(/^VH_F_/, '').replace(/_[RL]$/, '')
     const nome = NOMES[base]
