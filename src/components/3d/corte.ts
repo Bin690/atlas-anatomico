@@ -80,10 +80,49 @@ const raycaster = new Raycaster()
  * caso refaz o raycast em todas as camadas visíveis e pega a primeira do lado mantido.
  */
 export function intersecaoReal(intersecoes: Intersection<Object3D>[], raio: Ray) {
-  if (!ativo) return primeiraIntersecao(intersecoes)
+  const primeira = ativo ? null : primeiraIntersecao(intersecoes)
+  if (primeira && !ehEnvoltorio(primeira)) return primeira
   raycaster.set(raio.origin, raio.direction)
-  const visiveis = [...camadasMontadas].filter((o) => o.visible)
-  return primeiraIntersecao(raycaster.intersectObjects(visiveis, false))
+  const todas = raycaster.intersectObjects(
+    [...camadasMontadas].filter((o) => o.visible),
+    false,
+  )
+  const hit = primeiraIntersecao(todas)
+  return hit && ehEnvoltorio(hit) ? dentroDoEnvoltorio(hit, todas) : hit
+}
+
+/** Peça semi-opaca que envolve outras (gordura da mama, vulva): ver `Sistema.solidez`. */
+function ehEnvoltorio(i: Intersection<Object3D>) {
+  const envoltorios = i.object.userData.envoltorios as Set<string> | undefined
+  const id = idDe(i)
+  return !!envoltorios && !!id && envoltorios.has(id)
+}
+
+const idDe = (i: Intersection<Object3D>) =>
+  i.batchId === undefined ? undefined : (i.object.userData.ids?.[i.batchId] as string | undefined)
+
+/**
+ * Tocar num envoltório escolhe o que está dentro dele (glândulas e ductos da mama), se houver: a
+ * primeira peça do mesmo modelo de origem (prefixo do id, ex.: "VHF_") atingida antes de o raio sair
+ * do envoltório. Peças de outros modelos que o atravessam (o peitoral maior, vindo do corpo masculino)
+ * não contam. Sem nada dentro, fica o próprio envoltório.
+ */
+function dentroDoEnvoltorio(entrada: Intersection<Object3D>, todas: Intersection<Object3D>[]) {
+  const mesma = (i: Intersection<Object3D>) => i.object === entrada.object && i.batchId === entrada.batchId
+  // O material só tem as faces da frente: a saída é achada por um raio de trás para a frente
+  const direcao = raycaster.ray.direction.clone()
+  const ALCANCE = 2
+  const inverso = new Raycaster(entrada.point.clone().addScaledVector(direcao, ALCANCE), direcao.clone().negate())
+  const saidas = inverso
+    .intersectObject(entrada.object, false)
+    .filter((i) => mesma(i) && i.distance < ALCANCE - 1e-4)
+    .map((i) => entrada.distance + ALCANCE - i.distance)
+  const limite = saidas.length ? Math.min(...saidas) : entrada.distance
+  const origem = idDe(entrada)?.split('_')[0] + '_'
+  const dentro = todas.filter(
+    (i) => i.distance > entrada.distance && i.distance < limite && !mesma(i) && idDe(i)?.startsWith(origem),
+  )
+  return primeiraIntersecao(dentro) ?? entrada
 }
 
 const direcao = new Vector3()

@@ -29,6 +29,13 @@ export interface Sistema {
   tocaveis?: string[]
   /** Na pele de vidro: peças mais sólidas (0 = vidro comum, 1 = quase opaca), ex.: mamas e vulva. */
   solidez?: Record<string, number>
+  /** Peças sólidas largas (monte do púbis): sólidas junto às outras e esbatidas até ao vidro nesta distância (m). */
+  esbatimento?: Record<string, number>
+  /**
+   * Peças deste modelo que pertencem a outra camada (id -> camada): aparecem e somem com ela, mesmo
+   * com esta desligada. Ex.: a gordura da mama, na pele de vidro, pertence à camada Mamas.
+   */
+  emprestadas?: Record<string, string>
   /** Fica translúcida no modo raio-X. */
   raioX?: boolean
 }

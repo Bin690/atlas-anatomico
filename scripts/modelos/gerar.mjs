@@ -25,6 +25,7 @@ import { classificar, COR_ESTRUTURA, SISTEMAS } from './sistemas.mjs'
 import { calcularNormais, reconstruirLobos, volumePorFatias } from './superficie.mjs'
 import { traduzirOsso } from './ossos.mjs'
 import { desconhecidas, traduzir } from './traducao.mjs'
+import { paraPtPt } from '../ptpt.mjs'
 import { versionarDados } from './versionar.mjs'
 
 const RAIZ = new URL('../..', import.meta.url).pathname
@@ -187,7 +188,12 @@ for (const sistema of SISTEMAS) {
       .setIndices(doc.createAccessor().setType('SCALAR').setArray(geo.idx))
       .setMaterial(material(COR_ESTRUTURA(sistema, item.en.toLowerCase())))
     cena.addChild(doc.createNode(item.id).setMesh(doc.createMesh(item.id).addPrimitive(prim)))
-    estruturasSaida.push({ id: item.id, nome: item.nomePt ?? traduzir(item.en), en: item.en, sistema: sistema.id })
+    estruturasSaida.push({
+      id: item.id,
+      nome: item.nomePt ? paraPtPt(item.nomePt) : traduzir(item.en),
+      en: item.en,
+      sistema: sistema.id,
+    })
   }
   if (!cena.listChildren().length) continue
 

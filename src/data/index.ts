@@ -1,5 +1,6 @@
 import { use } from 'react'
 import { useAtlasStore } from '../store/useAtlasStore'
+import { aplicarSinonimos } from './sinonimos'
 import type { Conteudo, Estrutura, Sexo, Sistema } from '../types/atlas'
 
 /**
@@ -26,7 +27,19 @@ export interface Catalogo {
 
 interface Feminino {
   /** Camadas que trocam de modelo no corpo feminino. */
-  camadas: Record<string, { modelo: string; total: number; tocaveis?: string[]; solidez?: Record<string, number> }>
+  camadas: Record<
+    string,
+    {
+      modelo: string
+      total: number
+      tocaveis?: string[]
+      solidez?: Record<string, number>
+      esbatimento?: Record<string, number>
+      emprestadas?: Record<string, string>
+      /** Camada que só existe no corpo feminino (ex.: Mamas), inserida depois de `depoisDe`. */
+      nova?: { nome: string; cor: string; visivelPorPadrao: boolean; depoisDe: string }
+    }
+  >
   estruturas: Estrutura[]
   /** Estruturas de camadas comuns que só existem no corpo masculino. */
   somenteMasculino: string[]
@@ -77,9 +90,19 @@ function catalogoDe(base: Base, sexo: Sexo): Catalogo {
           total: variante.total,
           tocaveis: variante.tocaveis,
           solidez: variante.solidez,
+          esbatimento: variante.esbatimento,
+          emprestadas: variante.emprestadas,
         }
       : s
   })
+  // Camadas que só existem no corpo feminino (Mamas)
+  if (sexo === 'feminino')
+    for (const [id, c] of Object.entries(base.feminino.camadas)) {
+      if (!c.nova) continue
+      const { depoisDe, ...resto } = c.nova
+      const pos = sistemas.findIndex((s) => s.id === depoisDe)
+      sistemas.splice(pos + 1, 0, { id, ...resto, modelo: c.modelo, total: c.total })
+    }
   const estruturas = base.estruturas.filter((e) => !e.sexo || e.sexo === sexo)
   const doOutroCorpo = new Set(base.estruturas.filter((e) => e.sexo && e.sexo !== sexo).map((e) => e.id))
   const modelos = [
@@ -120,11 +143,17 @@ export function useCatalogo(): Catalogo {
 /** Remove acentos e caixa, para busca. */
 export const normalizar = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
-/** Busca por palavras (todas precisam aparecer); prioriza nomes que começam com o termo. */
-export function buscar(estruturas: Estrutura[], termo: string, limite = 60): Estrutura[] {
-  const palavras = normalizar(termo).split(/\s+/).filter(Boolean)
-  if (!palavras.length) return []
+/** Termo alternativo vindo dos sinónimos (ex.: "rótula" -> "patela"), ou null se não houver. */
+export function termoAlternativo(termo: string): string | null {
+  const base = normalizar(termo).trim().replace(/\s+/g, ' ')
+  const alt = aplicarSinonimos(base)
+  return base && alt !== base ? alt : null
+}
+
+function pesquisarPalavras(estruturas: Estrutura[], termo: string) {
+  const palavras = termo.split(/\s+/).filter(Boolean)
   const res: { e: Estrutura; pontos: number }[] = []
+  if (!palavras.length) return res
   for (const e of estruturas) {
     const alvo = normalizar(e.nome)
     const alvoEn = e.en.toLowerCase()
@@ -132,8 +161,18 @@ export function buscar(estruturas: Estrutura[], termo: string, limite = 60): Est
     const pontos = (alvo.startsWith(palavras[0]) ? 0 : 10) + alvo.length / 100
     res.push({ e, pontos })
   }
-  return res
-    .sort((a, b) => a.pontos - b.pontos)
-    .slice(0, limite)
-    .map((r) => r.e)
+  return res.sort((a, b) => a.pontos - b.pontos)
+}
+
+/**
+ * Busca por palavras (todas precisam aparecer); prioriza nomes que começam com o termo.
+ * Também aceita nomes populares e tradicionais (rótula, omoplata, trompa…): os resultados do termo
+ * escrito vêm primeiro, seguidos dos do termo equivalente.
+ */
+export function buscar(estruturas: Estrutura[], termo: string, limite = 60): Estrutura[] {
+  const diretos = pesquisarPalavras(estruturas, normalizar(termo))
+  const alt = termoAlternativo(termo)
+  const vistos = new Set(diretos.map((r) => r.e.id))
+  const extra = alt ? pesquisarPalavras(estruturas, alt).filter((r) => !vistos.has(r.e.id)) : []
+  return [...diretos, ...extra].slice(0, limite).map((r) => r.e)
 }

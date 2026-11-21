@@ -1,11 +1,20 @@
 import { useProgress } from '@react-three/drei'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { Toolbar } from '../components/Toolbar'
 import { CartaoEstrutura } from '../components/ui/CartaoEstrutura'
 import { DicaHover } from '../components/ui/DicaHover'
-import { IconeAulas, IconeBusca, IconeInfo, IconePartilhar, IconeSemSom, IconeSom } from '../components/ui/Icones'
+import {
+  IconeAulas,
+  IconeBusca,
+  IconeDefinicoes,
+  IconeInfo,
+  IconePartilhar,
+  IconeSemSom,
+  IconeSom,
+} from '../components/ui/Icones'
 import { aplicarVistaDoLink, partilharVista } from '../hooks/compartilhar'
 import { Sobre } from '../components/ui/Sobre'
+import { Preferencias } from '../components/ui/Preferencias'
 import { pararVoz } from '../hooks/voz'
 import { PainelBusca } from '../components/ui/PainelBusca'
 import { PainelCamadas } from '../components/ui/PainelCamadas'
@@ -21,51 +30,106 @@ function CarregandoCamada() {
   if (!active) return null
   return (
     <output className="pointer-events-none absolute top-16 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-slate-900/90 px-3 py-1.5 text-xs text-slate-300 shadow-lg ring-1 ring-white/10">
-      <span className="size-3 animate-spin rounded-full border-2 border-slate-600 border-t-sky-400" aria-hidden />
-      Carregando modelos 3D… {Math.round(progress)}%
+      <span className="size-3 animate-spin rounded-full border-2 border-slate-600 border-t-sky-400" aria-hidden />A
+      carregar modelos 3D… {Math.round(progress)}%
     </output>
   )
 }
 
 /**
- * Dica inicial: aparece só nas primeiras visitas, some sozinha após alguns segundos ou no primeiro toque,
- * e não volta depois de vista (fica guardado no aparelho).
+ * Primeiros passos: três dicas curtas na primeira visita (podem ser saltadas) e não voltam depois de
+ * vistas (fica guardado no aparelho).
  */
-const CHAVE_DICA = 'atlas3d:dica-vista'
-const DURACAO_DICA = 8000
-let dicaVista = (() => {
+const CHAVE_BOAS_VINDAS = 'atlas3d:primeiros-passos'
+const PASSOS_INICIAIS: { titulo: string; texto: ReactNode }[] = [
+  {
+    titulo: 'Toque numa estrutura',
+    texto: 'Toque em qualquer parte do corpo para ver o nome, ouvi-lo e abrir a descrição.',
+  },
+  {
+    titulo: 'Rode, aproxime e desloque',
+    texto: (
+      <>
+        Arraste para rodar e use dois dedos (ou a roda do rato) para aproximar. Para deslocar a vista, use{' '}
+        <strong className="text-white">Mover</strong>.
+      </>
+    ),
+  },
+  {
+    titulo: 'Explore por dentro',
+    texto: (
+      <>
+        <strong className="text-white">Camadas</strong> mostra músculos, vasos e nervos,{' '}
+        <strong className="text-white">Cortes</strong> fatia o corpo e as{' '}
+        <strong className="text-amber-200">aulas</strong> guiam o estudo passo a passo.
+      </>
+    ),
+  },
+]
+let boasVindasVistas = (() => {
   try {
-    return localStorage.getItem(CHAVE_DICA) === '1'
+    return localStorage.getItem(CHAVE_BOAS_VINDAS) === '1'
   } catch {
     return false
   }
 })()
-function DicaInicial() {
-  const [visivel, setVisivel] = useState(!dicaVista)
-  useEffect(() => {
-    if (!visivel) return
-    const esconder = () => {
-      dicaVista = true
-      try {
-        localStorage.setItem(CHAVE_DICA, '1')
-      } catch {
-        // sem armazenamento: some só nesta sessão
-      }
-      setVisivel(false)
+function PrimeirosPassos() {
+  const [passo, setPasso] = useState<number | null>(boasVindasVistas ? null : 0)
+  if (passo === null) return null
+  const terminar = () => {
+    boasVindasVistas = true
+    try {
+      localStorage.setItem(CHAVE_BOAS_VINDAS, '1')
+    } catch {
+      // sem armazenamento: some só nesta sessão
     }
-    const timer = setTimeout(esconder, DURACAO_DICA)
-    window.addEventListener('pointerdown', esconder, { once: true })
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener('pointerdown', esconder)
-    }
-  }, [visivel])
-  if (!visivel) return null
+    setPasso(null)
+  }
+  const ultimo = passo === PASSOS_INICIAIS.length - 1
+  const atual = PASSOS_INICIAIS[passo]
   return (
-    <p className="pointer-events-none absolute bottom-24 left-1/2 w-max max-w-[90vw] -translate-x-1/2 rounded-full bg-slate-900/80 px-4 py-2 text-center text-xs text-slate-300 ring-1 ring-white/10 backdrop-blur sm:bottom-28 sm:text-sm">
-      Toque em qualquer parte do corpo para ver o nome · use <strong className="text-white">Camadas</strong> para ver
-      músculos, vasos e nervos
-    </p>
+    <section
+      aria-label="Primeiros passos"
+      className="pointer-events-auto absolute inset-x-3 bottom-[88px] mx-auto max-w-sm rounded-2xl border border-sky-400/30 bg-superficie/95 p-4 shadow-2xl backdrop-blur sm:bottom-28"
+    >
+      <p className="text-[11px] font-medium tracking-wide text-sky-400 uppercase">
+        Primeiros passos · {passo + 1}/{PASSOS_INICIAIS.length}
+      </p>
+      <h2 className="mt-1 font-semibold text-white">{atual.titulo}</h2>
+      <p className="mt-1 text-sm leading-relaxed text-slate-300">{atual.texto}</p>
+      <div className="mt-3 flex items-center justify-between">
+        <button type="button" onClick={terminar} className="text-xs text-slate-400 hover:text-white">
+          Saltar
+        </button>
+        <button
+          type="button"
+          onClick={() => (ultimo ? terminar() : setPasso(passo + 1))}
+          className="rounded-full bg-sky-400 px-4 py-1.5 text-sm font-semibold text-slate-950 hover:bg-sky-300"
+        >
+          {ultimo ? 'Começar' : 'Seguinte'}
+        </button>
+      </div>
+    </section>
+  )
+}
+
+/** Aviso discreto quando o aparelho fica sem rede (o que já foi visto continua a funcionar). */
+function SemInternet() {
+  const [online, setOnline] = useState(() => navigator.onLine)
+  useEffect(() => {
+    const atualizar = () => setOnline(navigator.onLine)
+    window.addEventListener('online', atualizar)
+    window.addEventListener('offline', atualizar)
+    return () => {
+      window.removeEventListener('online', atualizar)
+      window.removeEventListener('offline', atualizar)
+    }
+  }, [])
+  if (online) return null
+  return (
+    <output className="pointer-events-none absolute top-[calc(env(safe-area-inset-top)+0.75rem)] left-1/2 -translate-x-1/2 rounded-full bg-slate-800/95 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">
+      Sem internet · a usar o que está guardado
+    </output>
   )
 }
 
@@ -92,7 +156,7 @@ export default function Explorador() {
     return () => clearTimeout(t)
   }, [aviso])
   const partilhar = async () => {
-    const r = await partilharVista('Atlas Anatômico 3D')
+    const r = await partilharVista('Atlas Anatómico 3D')
     if (r === 'copiado') setAviso('Link da vista copiado')
     else if (r === 'falhou') setAviso('Não foi possível copiar o link')
   }
@@ -103,16 +167,18 @@ export default function Explorador() {
   const voz = useAtlasStore((s) => s.voz)
   const [sobreAberto, setSobreAberto] = useState(false)
   const fecharSobre = useCallback(() => setSobreAberto(false), [])
+  const [prefAbertas, setPrefAbertas] = useState(false)
+  const fecharPref = useCallback(() => setPrefAbertas(false), [])
   const alternarVoz = useAtlasStore((s) => s.alternarVoz)
 
   // Atalhos: "/" ou Ctrl/⌘+K abre a busca; Esc fecha painel ou seleção
   useEffect(() => {
     const tecla = (e: KeyboardEvent) => {
-      const digitando = (e.target as HTMLElement)?.tagName === 'INPUT'
+      const digitando = ['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)
       if ((e.key === '/' && !digitando) || (e.key.toLowerCase() === 'k' && (e.metaKey || e.ctrlKey))) {
         e.preventDefault()
         abrirPainel('busca')
-      } else if (e.key === 'Escape') {
+      } else if (e.key === 'Escape' && !digitando) {
         const { painel: p } = useAtlasStore.getState()
         if (p) abrirPainel(null)
         else selecionar(null)
@@ -129,7 +195,7 @@ export default function Explorador() {
     <main className="relative h-full">
       <header className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-4">
         <div>
-          <p className="text-[11px] font-medium tracking-wide text-sky-400 uppercase">Atlas Anatômico 3D</p>
+          <p className="text-[11px] font-medium tracking-wide text-sky-400 uppercase">Atlas Anatómico 3D</p>
           <h1 className="text-lg leading-tight font-bold whitespace-nowrap text-white sm:text-xl">Corpo humano</h1>
           {/* ⓘ na linha do seletor: ao lado do título não cabia em celulares estreitos */}
           <div className="mt-2 flex items-center gap-1.5">
@@ -139,9 +205,18 @@ export default function Explorador() {
               onClick={() => setSobreAberto(true)}
               aria-label="Sobre o atlas: como usar e créditos"
               title="Sobre o atlas: como usar e créditos"
-              className="pointer-events-auto grid size-10 place-items-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-white"
+              className="pointer-events-auto grid size-10 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
             >
               <IconeInfo className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setPrefAbertas(true)}
+              aria-label="Preferências: texto, desempenho e uso sem internet"
+              title="Preferências: texto, desempenho e uso sem internet"
+              className="pointer-events-auto grid size-10 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
+            >
+              <IconeDefinicoes className="size-5" />
             </button>
           </div>
         </div>
@@ -163,7 +238,7 @@ export default function Explorador() {
             type="button"
             onClick={() => void partilhar()}
             aria-label="Partilhar esta vista"
-            title="Partilhar esta vista (link com câmera, camadas e corte)"
+            title="Partilhar esta vista (link com câmara, camadas e corte)"
             className="pointer-events-auto grid size-10 place-items-center rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white sm:size-11"
           >
             <IconePartilhar />
@@ -182,8 +257,8 @@ export default function Explorador() {
             <button
               type="button"
               onClick={() => abrirPainel('busca')}
-              aria-label={`Buscar entre ${estruturas.length} estruturas`}
-              title={`Buscar entre ${estruturas.length} estruturas (atalho: /)`}
+              aria-label={`Pesquisar entre ${estruturas.length} estruturas`}
+              title={`Pesquisar entre ${estruturas.length} estruturas (atalho: /)`}
               className="pointer-events-auto grid size-10 place-items-center sm:size-11 rounded-full border border-borda bg-superficie/80 text-slate-300 backdrop-blur transition hover:border-slate-500 hover:text-white"
             >
               <IconeBusca />
@@ -198,7 +273,8 @@ export default function Explorador() {
           {aviso}
         </output>
       )}
-      {!painel && !selecionada && <DicaInicial />}
+      <SemInternet />
+      {!painel && !selecionada && <PrimeirosPassos />}
 
       {/* Painel de camadas ou busca: folha inferior no celular, coluna à esquerda no desktop */}
       {painel && (
@@ -223,6 +299,7 @@ export default function Explorador() {
       </div>
 
       <Sobre aberto={sobreAberto} fechar={fecharSobre} />
+      <Preferencias aberta={prefAbertas} fechar={fecharPref} />
 
       <DicaHover />
     </main>

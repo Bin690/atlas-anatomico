@@ -1,20 +1,51 @@
 {
   "camadas": {
     "pele": {
-      "modelo": "/models/pele-feminina.glb?v=bbb0d1ed70",
-      "total": 6,
-      "tocaveis": ["VHF_labium_majus_R", "VHF_labium_majus_L", "VHF_mons_pubis", "VHF_fat_R", "VHF_fat_L"],
+      "modelo": "/models/pele-feminina.glb?v=584930ce10",
+      "total": 8,
+      "tocaveis": [
+        "VHF_mons_pubis",
+        "VHF_labium_majus_R",
+        "VHF_labium_majus_L",
+        "VHF_labium_minus_R",
+        "VHF_labium_minus_L",
+        "VHF_vestibule",
+        "VHF_glans_clitoridis",
+        "VHF_fat_R",
+        "VHF_fat_L"
+      ],
       "solidez": {
-        "VHF_labium_majus_R": 0.45,
-        "VHF_labium_majus_L": 0.45,
-        "VHF_mons_pubis": 0.45,
+        "VHF_mons_pubis": 0.85,
+        "VHF_labium_majus_R": 0.85,
+        "VHF_labium_majus_L": 0.85,
+        "VHF_labium_minus_R": 0.85,
+        "VHF_labium_minus_L": 0.85,
+        "VHF_vestibule": 0.85,
+        "VHF_glans_clitoridis": 0.85,
         "VHF_fat_R": 0.85,
         "VHF_fat_L": 0.85
+      },
+      "emprestadas": {
+        "VHF_fat_R": "mamas",
+        "VHF_fat_L": "mamas"
+      },
+      "esbatimento": {
+        "VHF_mons_pubis": 0.03
       }
     },
     "genital": {
-      "modelo": "/models/genital-feminino.glb?v=1793bb34a7",
-      "total": 40
+      "modelo": "/models/genital-feminino.glb?v=b2e40d1730",
+      "total": 26
+    },
+    "mamas": {
+      "modelo": "/models/mamas-feminina.glb?v=5337300453",
+      "total": 16,
+      "nova": {
+        "nome": "Mamas",
+        "cor": "#e8a598",
+        "visivelPorPadrao": true,
+        "depoisDe": "pele"
+      }
     }
   },
   "estruturas": [
@@ -36,14 +67,14 @@
       "id": "VHF_areola_R",
       "nome": "Aréola direita",
       "en": "areola, right",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_areola_L",
       "nome": "Aréola esquerda",
       "en": "areola, left",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
@@ -85,14 +116,14 @@
       "id": "VHF_main_lactiferous_ducts_R",
       "nome": "Ductos lactíferos da mama direita",
       "en": "main lactiferous ducts, right",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_main_lactiferous_ducts_L",
       "nome": "Ductos lactíferos da mama esquerda",
       "en": "main lactiferous ducts, left",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
@@ -115,6 +146,14 @@
       "en": "fundus of uterus",
       "sistema": "genital",
       "pai": "Útero"
+    },
+    {
+      "id": "VHF_glans_clitoridis",
+      "nome": "Glande do clitóris",
+      "en": "Glans of clitoris",
+      "sistema": "pele",
+      "pai": "Pudendo feminino (vulva)",
+      "esquematico": true
     },
     {
       "id": "VHF_uterine_tube_infundibulum_R",
@@ -149,14 +188,32 @@
       "nome": "Lábio maior direito",
       "en": "Labium majus, right",
       "sistema": "pele",
-      "pai": "Pudendo feminino (vulva)"
+      "pai": "Pudendo feminino (vulva)",
+      "esquematico": true
     },
     {
       "id": "VHF_labium_majus_L",
       "nome": "Lábio maior esquerdo",
       "en": "Labium majus, left",
       "sistema": "pele",
-      "pai": "Pudendo feminino (vulva)"
+      "pai": "Pudendo feminino (vulva)",
+      "esquematico": true
+    },
+    {
+      "id": "VHF_labium_minus_R",
+      "nome": "Lábio menor direito",
+      "en": "Labium minus, right",
+      "sistema": "pele",
+      "pai": "Pudendo feminino (vulva)",
+      "esquematico": true
+    },
+    {
+      "id": "VHF_labium_minus_L",
+      "nome": "Lábio menor esquerdo",
+      "en": "Labium minus, left",
+      "sistema": "pele",
+      "pai": "Pudendo feminino (vulva)",
+      "esquematico": true
     },
     {
       "id": "VHF_ovarian_ligament_R",
@@ -176,28 +233,28 @@
       "id": "VHF_suspensory_ligaments_R",
       "nome": "Ligamentos suspensores da mama direita",
       "en": "suspensory ligaments, right",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_suspensory_ligaments_L",
       "nome": "Ligamentos suspensores da mama esquerda",
       "en": "suspensory ligaments, left",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
       "id": "VHF_mammary_lobes_R",
       "nome": "Lobos da glândula mamária direita",
       "en": "mammary lobes, right",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_mammary_lobes_L",
       "nome": "Lobos da glândula mamária esquerda",
       "en": "mammary lobes, left",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
@@ -246,14 +303,14 @@
       "id": "VHF_nipple_R",
       "nome": "Papila mamária direita",
       "en": "nipple, right",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_nipple_L",
       "nome": "Papila mamária esquerda",
       "en": "nipple, left",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
@@ -294,42 +351,42 @@
       "id": "VHF_main_lactiferous_sinuses_R",
       "nome": "Seios lactíferos da mama direita",
       "en": "main lactiferous sinuses, right",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_main_lactiferous_sinuses_L",
       "nome": "Seios lactíferos da mama esquerda",
       "en": "main lactiferous sinuses, left",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
       "id": "VHF_fat_R",
       "nome": "Tecido adiposo da mama direita",
       "en": "adipose tissue of breast, right",
-      "sistema": "pele",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_fat_L",
       "nome": "Tecido adiposo da mama esquerda",
       "en": "adipose tissue of breast, left",
-      "sistema": "pele",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
       "id": "VHF_areolar_tubercles_R",
       "nome": "Tubérculos areolares da mama direita",
       "en": "areolar tubercles, right",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama direita"
     },
     {
       "id": "VHF_areolar_tubercles_L",
       "nome": "Tubérculos areolares da mama esquerda",
       "en": "areolar tubercles, left",
-      "sistema": "genital",
+      "sistema": "mamas",
       "pai": "Mama esquerda"
     },
     {
@@ -337,6 +394,14 @@
       "nome": "Vagina",
       "en": "Vagina",
       "sistema": "genital",
+      "esquematico": true
+    },
+    {
+      "id": "VHF_vestibule",
+      "nome": "Vestíbulo da vagina",
+      "en": "Vestibule of vagina",
+      "sistema": "pele",
+      "pai": "Pudendo feminino (vulva)",
       "esquematico": true
     }
   ],

@@ -5,7 +5,7 @@ Gera o áudio com o nome de cada estrutura (voz masculina neural), para o app di
 Uso (num ambiente Python com o pacote `piper-tts` instalado):
     python scripts/voz/gerar_audios.py <voz.onnx>
 
-A voz usada no app é a pt_BR "faber" (medium) do Piper (https://huggingface.co/rhasspy/piper-voices,
+A voz usada no app é a pt_PT "tugão" (medium) do Piper (https://huggingface.co/rhasspy/piper-voices,
 dados de treino CC0). Para outra voz, passe outro modelo .onnx; os arquivos são todos regenerados.
 
 Saída:
@@ -57,6 +57,7 @@ def main() -> None:
         sys.exit(__doc__)
     modelo = Path(sys.argv[1])
 
+    import numpy as np
     import piper
     from piper import PiperVoice, SynthesisConfig
 
@@ -71,14 +72,24 @@ def main() -> None:
     config = SynthesisConfig(length_scale=1.05, noise_scale=0.5, noise_w_scale=0.333)
     itens = estruturas()
     SAIDA.mkdir(parents=True, exist_ok=True)
-    resumo = hashlib.sha256(modelo.name.encode())
+    # A marca de versão muda quando a forma de gerar muda, para os aparelhos trocarem os áudios em cache
+    resumo = hashlib.sha256(f"{modelo.name}|r-inicial-duplo".encode())
     with tempfile.TemporaryDirectory() as tmp:
         for n, (ident, nome) in enumerate(itens, 1):
             texto = para_fala(nome)
             resumo.update(f"{ident}\t{texto}\n".encode())
             wav = Path(tmp) / f"{ident}.wav"
             with wave.open(str(wav), "wb") as w:
-                voz.synthesize_wav(texto, w, syn_config=config)
+                w.setnchannels(1)
+                w.setsampwidth(2)
+                w.setframerate(voz.config.sample_rate)
+                for k, frase in enumerate(voz.phonemize(texto)):
+                    # No arranque da fala a voz quase não pronuncia o R inicial (5–10 ms, inaudível em
+                    # "Rádio", "Reto", "Rim"); duplicado, fica com a duração que tem no meio da frase.
+                    if k == 0 and frase and frase[0] == "ʁ":
+                        frase = ["ʁ", *frase]
+                    audio = voz.phoneme_ids_to_audio(voz.phonemes_to_ids(frase), config)
+                    w.writeframes((np.clip(audio, -1, 1) * 32767).astype(np.int16).tobytes())
             subprocess.run(
                 ["afconvert", "-f", "m4af", "-d", "aac", "-b", "32000", str(wav), str(SAIDA / f"{ident}.m4a")],
                 check=True,

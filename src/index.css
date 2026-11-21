@@ -8,6 +8,37 @@
   --color-destaque: #38bdf8;
 }
 
+/*
+ * Tamanho do texto (Preferências): aumenta só as letras; botões e ícones mantêm o tamanho, para a
+ * interface continuar a caber no ecrã do telemóvel.
+ */
+html[data-texto='grande'] {
+  --text-xs: 0.8438rem;
+  --text-sm: 0.9844rem;
+  --text-base: 1.125rem;
+  --text-lg: 1.2656rem;
+  --text-xl: 1.4062rem;
+  --text-2xl: 1.6875rem;
+}
+html[data-texto='muito-grande'] {
+  --text-xs: 0.9375rem;
+  --text-sm: 1.0938rem;
+  --text-base: 1.25rem;
+  --text-lg: 1.4062rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.875rem;
+}
+
+/* Alto contraste: textos secundários mais claros, contornos visíveis e painéis opacos */
+html[data-contraste] {
+  --color-slate-500: #cbd5e1;
+  --color-slate-400: #e2e8f0;
+  --color-slate-300: #f1f5f9;
+  --color-slate-200: #ffffff;
+  --color-borda: #94a3b8;
+  --color-superficie: #000000;
+}
+
 @layer base {
   html,
   body,

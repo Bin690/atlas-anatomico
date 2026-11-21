@@ -104,7 +104,7 @@
     },
     {
       "titulo": "Adutores",
-      "texto": "Os adutores longo, curto e magno partem do púbis e do ísquio e se inserem na linha áspera do fêmur; aduzem a coxa. São inervados pelo nervo obturatório (L2–L4); a parte isquiotibial do adutor magno recebe a parte tibial do nervo isquiático. A distensão dos adutores é comum em esportes com mudança brusca de direção.",
+      "texto": "Os adutores longo, curto e magno partem do púbis e do ísquio e se inserem na linha áspera do fémur; aduzem a coxa. São inervados pelo nervo obturatório (L2–L4); a parte isquiotibial do adutor magno recebe a parte tibial do nervo isquiático. A distensão dos adutores é comum em esportes com mudança brusca de direção.",
       "camadas": ["esqueleto", "musculos"],
       "isolar": [
         "FMA24474",

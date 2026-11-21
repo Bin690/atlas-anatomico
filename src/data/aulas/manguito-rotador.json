@@ -16,7 +16,7 @@
     },
     {
       "titulo": "Músculo supraespinal",
-      "texto": "Origem na fossa supraespinal da escápula; passa sob o acrômio e insere-se na face superior do tubérculo maior do úmero. Inicia a abdução do braço (primeiros 15°). Inervação: nervo supraescapular (C5–C6). É o tendão do manguito mais lesado.",
+      "texto": "Origem na fossa supraespinal da escápula; passa sob o acrómio e insere-se na face superior do tubérculo maior do úmero. Inicia a abdução do braço (primeiros 15°). Inervação: nervo supraescapular (C5–C6). É o tendão do manguito mais lesado.",
       "camadas": ["esqueleto", "musculos"],
       "isolar": ["FMA13322", "FMA13395", "FMA23130", "FMA32544", "FMA32547", "FMA32553", "FMA13414"],
       "destaques": ["FMA32544"],
@@ -32,7 +32,7 @@
     },
     {
       "titulo": "Músculo subescapular",
-      "texto": "O único músculo do manguito na face anterior: ocupa a fossa subescapular e insere-se no tubérculo menor do úmero. Faz a rotação medial do braço. Inervação: nervos subescapulares superior e inferior (C5–C6). Mnemônico do manguito: SIRS (Supraespinal, Infraespinal, Redondo menor, Subescapular).",
+      "texto": "O único músculo do manguito na face anterior: ocupa a fossa subescapular e insere-se no tubérculo menor do úmero. Faz a rotação medial do braço. Inervação: nervos subescapulares superior e inferior (C5–C6). Mnemónico do manguito: SIRS (Supraespinal, Infraespinal, Redondo menor, Subescapular).",
       "camadas": ["esqueleto", "musculos"],
       "isolar": ["FMA13322", "FMA13395", "FMA23130", "FMA32544", "FMA32547", "FMA32553", "FMA13414"],
       "destaques": ["FMA13414"],
@@ -59,7 +59,7 @@
     },
     {
       "titulo": "Correlação clínica: síndrome do impacto",
-      "texto": "Neste corte coronal, veja o supraespinal passando no espaço estreito sob o acrômio. Na abdução, o tendão pode ser comprimido contra o arco coracoacromial (síndrome do impacto), levando a tendinopatia e ruptura. O teste de Jobe (abdução contra resistência, polegares para baixo) avalia o supraespinal.",
+      "texto": "Neste corte coronal, veja o supraespinal passando no espaço estreito sob o acrómio. Na abdução, o tendão pode ser comprimido contra o arco coracoacromial (síndrome do impacto), levando a tendinopatia e ruptura. O teste de Jobe (abdução contra resistência, polegares para baixo) avalia o supraespinal.",
       "camadas": ["esqueleto", "musculos"],
       "isolar": [
         "FMA13322",

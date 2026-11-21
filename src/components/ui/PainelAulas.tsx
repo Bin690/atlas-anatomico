@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router'
 import { AULAS_AGRUPADAS } from '../../data/aulas'
 import type { Aula } from '../../types/atlas'
 import { useAtlasStore } from '../../store/useAtlasStore'
+import { useCaderno } from '../../store/caderno'
 import { IconeFechar } from './Icones'
 import { BotoesVersao, SimboloSexo } from './SeletorCorpo'
 import { SeloPro } from './Pro'
@@ -45,6 +46,17 @@ export function PainelAulas() {
   )
 }
 
+/** ✓ discreto para aulas já vistas até ao fim. */
+function Concluida({ id }: { id: string }) {
+  const feita = useCaderno((s) => s.aulasConcluidas.includes(id))
+  if (!feita) return null
+  return (
+    <span title="Aula concluída" className="text-xs font-semibold text-emerald-300">
+      ✓<span className="sr-only"> concluída</span>
+    </span>
+  )
+}
+
 function Selos({ aulas, premium }: { aulas: Aula[]; premium: boolean }) {
   const paga = aulas.some((a) => a.premium)
   return (
@@ -78,7 +90,9 @@ function CartaoVersoes({ grupo, abrir, premium }: { grupo: Aula[]; abrir: (a: Au
         {grupo.map((a) => (
           <li key={a.id} className="flex gap-1.5">
             <SimboloSexo sexo={a.sexo!} />
-            <span>{a.resumo}</span>
+            <span>
+              {a.resumo} <Concluida id={a.id} />
+            </span>
           </li>
         ))}
       </ul>
@@ -102,6 +116,7 @@ function CartaoAula({ a, abrir, premium }: { a: Aula; abrir: (a: Aula) => void; 
             {a.sexo && <SimboloSexo sexo={a.sexo} className="text-lg leading-none" />}
             {a.titulo}
           </span>
+          <Concluida id={a.id} />
           <Selos aulas={[a]} premium={premium} />
         </span>
         <span className="mt-1 block text-xs text-slate-300">{a.resumo}</span>

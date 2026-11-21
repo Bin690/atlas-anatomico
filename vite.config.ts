@@ -16,10 +16,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Atlas Anatômico 3D',
+        name: 'Atlas Anatómico 3D',
         short_name: 'Atlas 3D',
-        description: 'Atlas anatômico 3D interativo para estudantes de medicina e enfermagem.',
-        lang: 'pt-BR',
+        description: 'Atlas anatómico 3D interativo para estudantes de medicina e enfermagem.',
+        lang: 'pt-PT',
         theme_color: '#020617',
         background_color: '#020617',
         display: 'standalone',

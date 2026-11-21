@@ -2,7 +2,9 @@ import { Environment, Lightformer, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { Suspense, useEffect, useState, type ComponentProps } from 'react'
 import { useCatalogo } from '../data'
+import type { Sistema } from '../types/atlas'
 import { useAtlasStore } from '../store/useAtlasStore'
+import { useModoLeve } from '../store/preferencias'
 import { CamadaBatched } from './3d/CamadaBatched'
 import { RigCamera } from './3d/RigCamera'
 import { IndicadorCorte } from './3d/IndicadorCorte'
@@ -32,9 +34,13 @@ function PreCarregar({ url, onPronto }: { url: string; onPronto: () => void }) {
   return null
 }
 
-/** Mostra a versão leve imediatamente e troca pela detalhada quando ela termina de baixar. */
+/**
+ * Mostra a versão leve imediatamente e troca pela detalhada quando ela termina de baixar.
+ * No modo leve (aparelhos modestos) fica com a versão leve.
+ */
 function CamadaProgressiva(props: Omit<ComponentProps<typeof CamadaBatched>, 'url'>) {
   const { sistema } = props
+  const leve = useModoLeve()
   const [detalhada, setDetalhada] = useState(!sistema.modeloLeve)
   const [pronta] = useState(() => () => setDetalhada(true))
   // Este efeito só roda depois que a versão leve terminou de carregar e apareceu (o componente
@@ -43,8 +49,11 @@ function CamadaProgressiva(props: Omit<ComponentProps<typeof CamadaBatched>, 'ur
   useEffect(() => setPodeDetalhar(true), [])
   return (
     <>
-      <CamadaBatched {...props} url={detalhada || !sistema.modeloLeve ? sistema.modelo : sistema.modeloLeve} />
-      {!detalhada && podeDetalhar && (
+      <CamadaBatched
+        {...props}
+        url={(detalhada && !leve) || !sistema.modeloLeve ? sistema.modelo : sistema.modeloLeve}
+      />
+      {!detalhada && !leve && podeDetalhar && (
         <Suspense fallback={null}>
           <PreCarregar url={sistema.modelo} onPronto={pronta} />
         </Suspense>
@@ -61,11 +70,17 @@ function Camadas() {
   const emEstudo = useAtlasStore((s) => s.selecionada ?? s.regiaoFoco)
   const sistemaSelecionado = emEstudo ? porId.get(emEstudo)?.sistema : undefined
 
+  /** A camada aparece se estiver ligada ou se alguma peça "emprestada" a outra camada ligada (gordura da mama). */
+  const ativa = (s: Sistema) =>
+    camadas.has(s.id) || Object.values(s.emprestadas ?? {}).some((dona) => camadas.has(dona))
+
   // Camadas são baixadas na primeira vez que ficam visíveis e depois permanecem em memória
   const [carregadas, setCarregadas] = useState<Set<string>>(() => new Set())
   useEffect(() => {
-    setCarregadas((c) => ([...camadas].every((id) => c.has(id)) ? c : new Set([...c, ...camadas])))
-  }, [camadas])
+    const ids = sistemas.filter(ativa).map((s) => s.id)
+    setCarregadas((c) => (ids.every((id) => c.has(id)) ? c : new Set([...c, ...ids])))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [camadas, sistemas])
 
   return (
     <>
@@ -76,7 +91,7 @@ function Camadas() {
           <Suspense key={`${s.id}:${s.modelo}`} fallback={null}>
             <CamadaProgressiva
               sistema={s}
-              visivel={camadas.has(s.id)}
+              visivel={ativa(s)}
               translucida={raioX && !!s.raioX && s.id !== sistemaSelecionado}
             />
           </Suspense>
@@ -87,11 +102,12 @@ function Camadas() {
 
 /** Canvas único e persistente do atlas. */
 export default function Viewer3D() {
+  const leve = useModoLeve()
   return (
     <>
       <Canvas
         camera={{ fov: 35, position: [0, 1.1, 5], near: 0.005, far: 50 }}
-        dpr={[1, 2]}
+        dpr={leve ? 1 : [1, 2]}
         gl={{ antialias: true, alpha: true, localClippingEnabled: true }}
       >
         <Iluminacao />

@@ -1,3 +1,4 @@
+import { catalogoDoCorpo } from '../../data'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import type { Sexo } from '../../types/atlas'
 
@@ -11,6 +12,18 @@ const OPCOES: { sexo: Sexo; rotulo: string; simbolo: string }[] = [
 export function SeletorCorpo() {
   const sexo = useAtlasStore((s) => s.sexo)
   const definirSexo = useAtlasStore((s) => s.definirSexo)
+
+  /** Troca de corpo e liga as camadas padrão que só existem no novo corpo (ex.: Mamas no feminino). */
+  const trocar = (novo: Sexo) => {
+    if (novo === sexo) return
+    const antes = new Set(catalogoDoCorpo(sexo)?.sistemas.map((s) => s.id))
+    definirSexo(novo)
+    const novas = (catalogoDoCorpo(novo)?.sistemas ?? []).filter((s) => s.visivelPorPadrao && !antes.has(s.id))
+    if (novas.length) {
+      const { camadas, definirCamadas } = useAtlasStore.getState()
+      definirCamadas([...camadas, ...novas.map((s) => s.id)])
+    }
+  }
 
   return (
     <div
@@ -28,7 +41,7 @@ export function SeletorCorpo() {
             aria-checked={ativo}
             aria-label={o.rotulo}
             title={o.rotulo}
-            onClick={() => definirSexo(o.sexo)}
+            onClick={() => trocar(o.sexo)}
             className={`grid size-9 place-items-center rounded-full text-lg leading-none font-semibold transition ${
               ativo ? 'bg-sky-400 text-slate-950' : 'text-slate-300 hover:bg-white/10 hover:text-white'
             }`}

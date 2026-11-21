@@ -31,13 +31,19 @@ export function pararVoz() {
   if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel()
 }
 
-/** Plano B: síntese do navegador, preferindo uma voz masculina em português. */
+/** Plano B: síntese do navegador, preferindo português europeu e uma voz masculina. */
 function falarComVozDoAparelho(nome: string) {
   if (typeof speechSynthesis === 'undefined') return
   const vozes = speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith('pt'))
-  const masculina = /antonio|felipe|daniel|ricardo|eddy|reed|rocko|male|mascul/i
+  const masculina = /joaquim|duarte|antonio|felipe|daniel|ricardo|eddy|reed|rocko|male|mascul/i
+  const europeia = (v: SpeechSynthesisVoice) => /pt[-_]pt/i.test(v.lang)
   const fala = new SpeechSynthesisUtterance(nome)
-  fala.lang = 'pt-BR'
-  fala.voice = vozes.find((v) => masculina.test(v.name)) ?? vozes.find((v) => v.lang === 'pt-BR') ?? vozes[0] ?? null
+  fala.lang = 'pt-PT'
+  fala.voice =
+    vozes.find((v) => europeia(v) && masculina.test(v.name)) ??
+    vozes.find(europeia) ??
+    vozes.find((v) => masculina.test(v.name)) ??
+    vozes[0] ??
+    null
   speechSynthesis.speak(fala)
 }

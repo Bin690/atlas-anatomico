@@ -7,6 +7,7 @@ import { aulaPorId, variantesDe } from '../data/aulas'
 import { figuraPorSrc } from '../data/figuras'
 import { MiniaturaFigura } from '../components/ui/FiguraReferencia'
 import { useAtlasStore } from '../store/useAtlasStore'
+import { useCaderno } from '../store/caderno'
 import type { PassoAula, Sexo } from '../types/atlas'
 import NaoEncontrado from './NaoEncontrado'
 import { BotoesVersao, SimboloSexo } from '../components/ui/SeletorCorpo'
@@ -77,6 +78,12 @@ function ConteudoAula({ id }: { id: string | undefined }) {
   useEffect(() => {
     if (aula && !bloqueada) aplicarPasso(aula.passos[indice])
   }, [aula, indice, bloqueada])
+
+  // Chegar ao último passo conta a aula como concluída (✓ na lista de aulas)
+  const concluirAula = useCaderno((s) => s.concluirAula)
+  useEffect(() => {
+    if (aula && !bloqueada && indice === aula.passos.length - 1) concluirAula(aula.id)
+  }, [aula, indice, bloqueada, concluirAula])
 
   // Setas do teclado avançam/voltam
   useEffect(() => {

@@ -1,27 +1,28 @@
 import { useCallback, useEffect, useState } from 'react'
-const CACHE = 'modelos-3d'
 
 export type EstadoOffline =
   { fase: 'indisponivel' } | { fase: 'parcial' } | { fase: 'baixando'; progresso: number } | { fase: 'pronto' }
 
 /**
- * Baixa todos os modelos 3D para o cache do service worker (estratégia CacheFirst),
- * permitindo usar o atlas inteiro sem internet.
+ * Descarrega uma lista de ficheiros para o cache do service worker (estratégia CacheFirst), para usar
+ * o atlas sem internet: os modelos 3D (cache "modelos-3d") ou os nomes falados (cache "voz").
+ *
+ * @param arquivos endereços com a versão (?v=…): um ficheiro regenerado conta como ainda não guardado
+ * @param cache nome do cache do service worker (vite.config.ts)
+ * @param emParalelo pedidos simultâneos (muitos ficheiros pequenos, como os áudios, vão mais rápido assim)
  */
-/** @param arquivos todos os modelos .glb (versões detalhada e leve, dos dois corpos) */
-export function useOffline(arquivos: string[]) {
+export function useOffline(arquivos: string[], cache: string, emParalelo = 1) {
   const suportado = typeof window !== 'undefined' && 'caches' in window && 'serviceWorker' in navigator
   const [estado, setEstado] = useState<EstadoOffline>({ fase: suportado ? 'parcial' : 'indisponivel' })
 
   // Já está tudo em cache?
   useEffect(() => {
-    if (!suportado) return
+    if (!suportado || !arquivos.length) return
     let ativo = true
     caches
-      .open(CACHE)
+      .open(cache)
       .then((c) => c.keys())
       .then((chaves) => {
-        // Compara caminho + versão (?v=…): um modelo regenerado conta como ainda não baixado
         const salvos = new Set(
           chaves.map((r) => {
             const u = new URL(r.url)
@@ -34,27 +35,32 @@ export function useOffline(arquivos: string[]) {
     return () => {
       ativo = false
     }
-  }, [suportado, arquivos])
+  }, [suportado, arquivos, cache])
 
   const baixar = useCallback(async () => {
     if (!suportado) return
     setEstado({ fase: 'baixando', progresso: 0 })
     let feitos = 0
-    const lista = arquivos
-    for (const url of lista) {
-      try {
-        // A requisição passa pelo service worker, que guarda a resposta no cache
-        const r = await fetch(url)
-        await r.arrayBuffer()
-      } catch {
-        setEstado({ fase: 'parcial' })
-        return
+    let falhou = false
+    const fila = [...arquivos]
+    // A requisição passa pelo service worker, que guarda a resposta no cache
+    const trabalhador = async () => {
+      for (let url = fila.shift(); url && !falhou; url = fila.shift()) {
+        try {
+          const r = await fetch(url)
+          if (!r.ok) throw new Error(String(r.status))
+          await r.arrayBuffer()
+        } catch {
+          falhou = true
+          return
+        }
+        feitos++
+        setEstado({ fase: 'baixando', progresso: feitos / arquivos.length })
       }
-      feitos++
-      setEstado({ fase: 'baixando', progresso: feitos / lista.length })
     }
-    setEstado({ fase: 'pronto' })
-  }, [suportado, arquivos])
+    await Promise.all(Array.from({ length: emParalelo }, trabalhador))
+    setEstado(falhou ? { fase: 'parcial' } : { fase: 'pronto' })
+  }, [suportado, arquivos, emParalelo])
 
   return { estado, baixar }
 }

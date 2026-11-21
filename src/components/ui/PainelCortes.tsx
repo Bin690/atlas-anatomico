@@ -42,9 +42,9 @@ export function PainelCortes() {
   }
 
   return (
-    <section aria-label="Cortes anatômicos" className="flex max-h-full min-h-0 flex-col">
+    <section aria-label="Cortes anatómicos" className="flex max-h-full min-h-0 flex-col">
       <header className="flex items-center justify-between border-b border-borda px-4 py-3">
-        <h2 className="font-semibold text-white">Cortes anatômicos</h2>
+        <h2 className="font-semibold text-white">Cortes anatómicos</h2>
         <button
           type="button"
           onClick={() => abrirPainel(null)}

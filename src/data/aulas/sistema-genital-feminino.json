@@ -203,7 +203,7 @@
     },
     {
       "titulo": "Ovários e ligamentos",
-      "texto": "Os ovários são as gônadas femininas: produzem oócitos, estrogênio e progesterona. Cada um fica na fossa ovárica, preso ao útero pelo ligamento próprio do ovário e à parede da pelve pelo ligamento suspensor, que leva a artéria e a veia ováricas. (Os ligamentos aqui são esquemáticos.)",
+      "texto": "Os ovários são as gónadas femininas: produzem oócitos, estrogénio e progesterona. Cada um fica na fossa ovárica, preso ao útero pelo ligamento próprio do ovário e à parede da pelve pelo ligamento suspensor, que leva a artéria e a veia ováricas. (Os ligamentos aqui são esquemáticos.)",
       "camadas": ["genital"],
       "isolar": [
         "VHF_fundus_of_uterus",

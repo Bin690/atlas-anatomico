@@ -1,6 +1,7 @@
-# Atlas Anatômico 3D
+# Atlas Anatómico 3D
 
-Atlas anatômico 3D interativo, em português do Brasil, para estudantes de medicina e enfermagem.
+Atlas anatómico 3D interativo, em português europeu (norma usada em Angola e Portugal), para estudantes de
+medicina e enfermagem.
 Funciona no navegador do celular, do iPad e do computador, e pode ser instalado como app (PWA) para uso offline.
 
 ## Funcionalidades
@@ -11,10 +12,12 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
 - **Toque em qualquer peça:** destaque, rótulo 3D e card com nome (Terminologia Anatômica), nome original em
   inglês, estrutura-mãe ("Faz parte de"), descrição, ficha técnica (ex.: origem, inserção, inervação e ação) e
   correlação clínica.
-- **Corpo masculino ou feminino:** o seletor Homem | Mulher, abaixo do título, troca a pele e o sistema
-  genital (útero, tubas uterinas, ovários, vagina, mamas, monte do púbis e lábios maiores). A aula guiada
-  "♀ Sistema genital" mostra esses órgãos isolados, de frente e de lado; a aula "♂ Sistema genital" faz o
-  mesmo com o sistema genital masculino. A escolha fica guardada no aparelho.
+- **Corpo masculino ou feminino:** o seletor ♂ | ♀, abaixo do título, troca a pele e o sistema
+  genital (útero, tubas uterinas, ovários, vagina e vulva) e acrescenta a camada **Mamas** (tegumento comum:
+  glândula mamária, ductos e seios lactíferos, ligamentos suspensores, aréola, papila e gordura), que se liga
+  e desliga à parte da pele e do sistema genital. A aula guiada
+  "Sistema genital" tem uma versão para cada corpo (botões ♂ e ♀ no cartão e no cabeçalho da aula). A
+  escolha fica guardada no aparelho.
 - **Voz:** ao tocar numa peça, uma voz masculina diz o nome dela (botão de alto-falante no topo liga e
   desliga; no cartão, o alto-falante repete). No quiz a voz fica muda, para não entregar a resposta.
 - **Ligações entre estruturas:** no cartão, nomes de outras peças citados na descrição e na ficha (origem,
@@ -23,7 +26,13 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
   selecionada e câmera (menu do sistema no celular; no computador, copia o link).
 - **Figuras de referência:** ilustrações em `public/figuras/` (listadas em `src/data/figuras.ts`) aparecem nos
   passos das aulas e no cartão das estruturas ligadas a elas ("Ver figura de referência").
-- **Busca** em português ou inglês, sem precisar de acentos (`/` ou Ctrl/⌘+K).
+- **Pesquisa** em português ou inglês, sem precisar de acentos (`/` ou Ctrl/⌘+K). Aceita nomes populares e
+  tradicionais (rótula, omoplata, perónio, trompa de Falópio, tendão de Aquiles…) e grafias do Brasil
+  (tireoide, abdome), definidos em `src/data/sinonimos.ts`.
+- **Favoritos e notas:** a estrela do cartão guarda a estrutura nos favoritos (listados na pesquisa vazia) e
+  cada estrutura aceita uma nota pessoal. Ficam no aparelho.
+- **Aulas concluídas:** chegar ao último passo marca a aula com ✓ na lista.
+- **Primeiros passos:** na primeira visita, três dicas curtas (podem ser saltadas).
 - **Ferramentas:**
   - camadas que se ligam e desligam;
   - ocultar e isolar estruturas;
@@ -32,8 +41,11 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
 - **Quiz "Ouça e encontre":** a voz diz o nome (sem mostrá-lo) e o aluno toca na peça no modelo 3D.
 - **Quiz:** a estrutura fica destacada no modelo, sem nome, e o aluno escolhe entre 4 opções. São 10
   perguntas por sistema, com explicação depois de cada resposta.
-- **Offline (PWA):** a interface fica guardada no aparelho, e os modelos podem ser baixados pelo painel de
-  camadas.
+- **Preferências** (botão ao lado do ⓘ): tamanho do texto, alto contraste, desempenho (automático, leve ou
+  detalhado: o modo leve fica com os modelos simplificados e menos resolução, e é escolhido sozinho em
+  aparelhos com pouca memória ou poucos núcleos), uso sem internet e apagar o progresso.
+- **Sem internet (PWA):** a interface fica guardada no aparelho; nas Preferências é possível descarregar
+  todos os modelos e os nomes falados. Sem rede, um aviso discreto aparece no topo.
 
 ## Instalação
 
@@ -135,8 +147,15 @@ O corpo feminino (pele, útero, tubas uterinas, ovários e mamas) vem dos órgã
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Foram adaptados: reposicionados, com a pele deformada
 para seguir o esqueleto do atlas, simplificados e comprimidos.
 
-A voz é a pt_BR "faber" (medium) do [Piper](https://github.com/OHF-Voice/piper1-gpl), treinada com dados
+A voz é a pt_PT "tugão" (medium) do [Piper](https://github.com/OHF-Voice/piper1-gpl), treinada com dados
 de licença CC0 ([piper-voices](https://huggingface.co/rhasspy/piper-voices)).
+
+### Português europeu
+
+Os nomes e textos seguem a norma europeia. `scripts/ptpt.mjs` faz a adaptação (fémur, anatómico, peritoneu,
+tiroide, esófago, abdómen…) e é aplicado pelo gerador aos nomes; para os textos escritos à mão, corra
+`node scripts/converter-ptpt.mjs` depois de os editar. A Terminologia Anatómica mantém-se (tuba uterina,
+fíbula, valva); os nomes tradicionais chegam pela pesquisa.
 
 ## Limitações conhecidas
 
@@ -145,8 +164,9 @@ de licença CC0 ([piper-voices](https://huggingface.co/rhasspy/piper-voices)).
   (incluindo a pelve, mais estreita que a feminina), os músculos e os demais órgãos continuam sendo os do
   modelo masculino. O conjunto do HuBMAP não tem vagina, ligamentos nem órgãos genitais externos: a vagina
   e os ligamentos próprios dos ovários são modelos esquemáticos (marcados assim no app), assim como a
-  cavidade do útero, o canal do colo, as rugas da vagina e o relevo dos folículos nos ovários, o monte do púbis e os
-  lábios maiores foram recortados da própria pele da doadora, e lábios menores e clitóris não existem. A bexiga
+  cavidade do útero, o canal do colo, as rugas da vagina e o relevo dos folículos nos ovários, o monte do púbis foi
+  recortado da própria pele da doadora, e os lábios maiores e menores e a glande do clitóris são modelados ao
+  longo da rima do pudendo (esquemáticos, porque a pele da doadora nessa região tem pouca resolução). A bexiga
   continua sendo a masculina, que não tem o mesmo formato da feminina. O útero do HuBMAP é só a parede
   externa; a cavidade e o canal foram construídos por dentro e aparecem no corte frontal da aula. A pele foi
   deformada para seguir o esqueleto: polegares e dedos dos pés podem não coincidir exatamente com os ossos.

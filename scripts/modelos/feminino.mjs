@@ -936,9 +936,9 @@ function trocarMaos() {
 }
 
 /**
- * Regiões da vulva na pele deformada (coordenadas do corpo, medidas no perfil da linha média):
- * monte do púbis à frente da sínfise (y 0,845–0,925 m) e lábios maiores ao redor da rima do pudendo,
- * que desce e curva para trás até o períneo (y 0,795–0,85 m, z de +0,06 a −0,065 m).
+ * Monte do púbis recortado da pele deformada da doadora (coordenadas do corpo, medidas no perfil da
+ * linha média): à frente da sínfise, y 0,845–0,925 m. Os lábios e o clitóris são modelados à parte
+ * (esculpirVulva), porque a pele da doadora nessa região tem pouca resolução.
  */
 function recortarVulva() {
   const normais = calcularNormais(Pd, I)
@@ -948,18 +948,8 @@ function recortarVulva() {
     [-1, k, 0, x0 - 0.845 * k], //  x <= x0 + k·(y − 0,845)
     [1, k, 0, x0 - 0.845 * k], // −x <= x0 + k·(y − 0,845)
   ]
-  const LABIO = [
-    [0, 1, 0, -0.795],
-    [0, -1, 0, 0.845],
-    [0, 0, 1, 0.065],
-    [0, 0, -1, 0.06],
-  ]
   const REGIOES = {
     monte: { planos: [[0, 1, 0, -0.845], [0, -1, 0, 0.925], [0, 0, 1, -0.03], ...largura(0.03, 0.6)], nz: 0.35 },
-    // Lábios: continuam da ponta do monte (3 cm de cada lado) e afinam para trás, rumo ao períneo
-    // De frente, o contorno é convexo: 3 cm no alto, 3,6 cm em y = 0,82 m e 2 cm embaixo
-    D: { planos: [...LABIO, [-1, 0, 0, 0], [1, 0, 0.1, 0.03], [1, -0.24, 0, 0.2328], [1, 0.64, 0, -0.4888]] },
-    E: { planos: [...LABIO, [1, 0, 0, 0], [-1, 0, 0.1, 0.03], [-1, -0.24, 0, 0.2328], [-1, 0.64, 0, -0.4888]] },
   }
   const f = (pl, p) => pl[0] * p[0] + pl[1] * p[1] + pl[2] * p[2] + pl[3]
   /** Sutherland–Hodgman: recorta um polígono 3D por um semiespaço. */
@@ -978,7 +968,7 @@ function recortarVulva() {
     }
     return out
   }
-  const grupos = { monte: [], D: [], E: [] }
+  const grupos = { monte: [] }
   for (let t = 0; t < I.length; t += 3) {
     const tri = [I[t], I[t + 1], I[t + 2]]
     const vs = tri.map((v) => [Pd[3 * v], Pd[3 * v + 1], Pd[3 * v + 2]])
@@ -1008,24 +998,157 @@ function recortarVulva() {
     return { posicoes: pos, indices: Uint32Array.from(pts.keys()) }
   }
   const pai = 'Pudendo feminino (vulva)'
-  const partes = [
-    ['monte', 'VHF_mons_pubis', 'Monte do púbis', 'Mons pubis'],
-    ['D', 'VHF_labium_majus_R', 'Lábio maior direito', 'Labium majus, right'],
-    ['E', 'VHF_labium_majus_L', 'Lábio maior esquerdo', 'Labium majus, left'],
-  ]
+  const partes = [['monte', 'VHF_mons_pubis', 'Monte do púbis', 'Mons pubis']]
   return partes.map(([g, id, nome, en]) => {
     if (grupos[g].length < 90) throw new Error(`região da vulva vazia: ${nome}`)
     console.log(`  vulva: ${nome} com ${grupos[g].length / 3} triângulos`)
     return {
       estrutura: { id, nome, en, sistema: 'pele', pai },
-      malha: { id, ...malha(grupos[g]), cor: '#c98f7e', travarBorda: true },
+      malha: { id, ...malha(grupos[g]), cor: '#e6b39c', travarBorda: true },
     }
   })
 }
 
+/**
+ * Lábios maiores e menores, vestíbulo e glande do clitóris (esquemáticos), como UMA superfície
+ * contínua esculpida ao longo da rima do pudendo, sem peças sobrepostas. A rima segue o perfil da
+ * pele na linha média: desce pela frente, por baixo do monte do púbis, e curva para trás até à
+ * comissura posterior, junto ao períneo. Sobre esse caminho, uma folha (u ao longo da rima, x para os
+ * lados) recebe o relevo: duas elevações largas (lábios maiores), o vale da rima entre elas, duas
+ * cristas baixas dentro do vale (lábios menores), o fundo (vestíbulo) e a glande do clitóris à
+ * frente. A folha é depois dividida por regiões, uma malha por estrutura, partilhando as bordas.
+ */
+function esculpirVulva() {
+  // Perfil (y, z) da pele na linha média: começa bem por baixo do monte do púbis (onde a borda da
+  // folha fica escondida) e acaba no períneo
+  const PERFIL = [
+    [0.876, 0.068],
+    [0.86, 0.06],
+    [0.848, 0.051],
+    [0.836, 0.037],
+    [0.824, 0.019],
+    [0.814, 0.004],
+    [0.807, -0.013],
+    [0.804, -0.03],
+    [0.803, -0.047],
+    [0.803, -0.058],
+  ]
+  /** Catmull-Rom pelo perfil, para u em [0, 1]. */
+  const perfil = (u) => {
+    const n = PERFIL.length - 1
+    const v = Math.min(n - 1e-6, Math.max(0, u * n))
+    const i = Math.floor(v)
+    const f = v - i
+    const P = (k) => PERFIL[Math.max(0, Math.min(n, k))]
+    const cr = (k) =>
+      0.5 *
+      (2 * P(i)[k] +
+        (-P(i - 1)[k] + P(i + 1)[k]) * f +
+        (2 * P(i - 1)[k] - 5 * P(i)[k] + 4 * P(i + 1)[k] - P(i + 2)[k]) * f * f +
+        (-P(i - 1)[k] + 3 * P(i)[k] - 3 * P(i + 1)[k] + P(i + 2)[k]) * f * f * f)
+    return [0, cr(0), cr(1)]
+  }
+  // Para fora do corpo: à frente na parte anterior, para baixo na parte de baixo
+  const normal = (u) => {
+    const T = unit(sub(perfil(Math.min(1, u + 0.01)), perfil(Math.max(0, u - 0.01))))
+    return [0, T[2], -T[1]]
+  }
+  // Comprimento da rima (para medir distâncias ao longo dela)
+  const COMPRIMENTO = (() => {
+    let c = 0
+    for (let k = 1; k <= 100; k++) c += norma(sub(perfil(k / 100), perfil((k - 1) / 100)))
+    return c
+  })()
+
+  const janela = (u, a, b, rampa) => smooth(u, a, a + rampa) * (1 - smooth(u, b - rampa, b))
+  const gauss = (d, largura) => Math.exp(-((d / largura) ** 2))
+  /** Posição ao longo da rima medida a partir do 2.º ponto do perfil (o 1.º fica sob o monte). */
+  const rima = (u) => (u * 9 - 1) / 8
+  const U_GLANDE = (0.2 * 8 + 1) / 9
+  /**
+   * Meia largura da folha ao longo da rima: contorno em amêndoa, estreito sob o monte e no períneo
+   * (comissuras) e mais largo a meio, onde os lábios maiores são mais cheios.
+   */
+  const largura = (u) => {
+    const v = Math.min(1, Math.max(0, rima(u)))
+    return 0.007 + 0.019 * Math.pow(Math.sin(Math.PI * Math.min(1, v * 1.08)), 0.55)
+  }
+  /** Altura (m) da superfície ao longo da normal, acima da pele. */
+  const altura = (u, x) => {
+    const ax = Math.abs(x)
+    const v = rima(u)
+    const labios = janela(v, 0.12, 0.94, 0.16)
+    const maiores = 0.011 * gauss(ax - 0.012, 0.0065)
+    const sulco = -0.006 * gauss(x, 0.0035)
+    const menores = 0.004 * gauss(ax - 0.0028, 0.0014) * janela(v, 0.2, 0.84, 0.14)
+    const dGlande = Math.hypot(x, (u - U_GLANDE) * COMPRIMENTO)
+    const glande = 0.0055 * gauss(dGlande, 0.0032)
+    // Nas margens laterais e fora dos lábios a folha afunda sob a pele (e sob o monte), onde se esbate
+    const L = largura(u)
+    const margem = -0.005 * smooth(ax, L * 0.6, L)
+    // Por baixo do monte do púbis a folha afunda mais, para não o atravessar
+    const sobMonte = -0.004 * (1 - smooth(v, 0.02, 0.14))
+    return labios * (maiores + sulco) + menores + glande + margem + sobMonte - 0.001
+  }
+  // A pele sobe para os lados da rima (as coxas e o monte ficam mais à frente)
+  // (por baixo do monte a folha não sobe para os lados, para não o atravessar)
+  const ponto = (u, x) =>
+    add(add(perfil(u), [x, 0, 0]), mul(normal(u), 15 * x * x * smooth(rima(u), 0.04, 0.2) + altura(u, x)))
+
+  const NU = 100
+  const NX = 64
+  const grade = []
+  for (let a = 0; a <= NU; a++)
+    for (let b = 0; b <= NX; b++) grade.push({ u: a / NU, x: largura(a / NU) * (-1 + (2 * b) / NX) })
+  /** Estrutura de cada célula da folha, pela posição do centro. */
+  const regiao = (u, x) => {
+    if (Math.hypot(x, (u - U_GLANDE) * COMPRIMENTO) < 0.0042) return 'VHF_glans_clitoridis'
+    const dentro = u > U_GLANDE && rima(u) < 0.86
+    if (dentro && Math.abs(x) < 0.0011) return 'VHF_vestibule'
+    if (dentro && Math.abs(x) < 0.0055) return x < 0 ? 'VHF_labium_minus_R' : 'VHF_labium_minus_L'
+    return x < 0 ? 'VHF_labium_majus_R' : 'VHF_labium_majus_L'
+  }
+  const pecas = new Map()
+  for (let a = 0; a < NU; a++)
+    for (let b = 0; b < NX; b++) {
+      const k = a * (NX + 1) + b
+      const canto = [k, k + 1, k + NX + 2, k + NX + 1]
+      const uc = (a + 0.5) / NU
+      const c = { u: uc, x: largura(uc) * (-1 + (2 * (b + 0.5)) / NX) }
+      const id = regiao(c.u, c.x)
+      if (!pecas.has(id)) pecas.set(id, [])
+      const pts = canto.map((v) => ponto(grade[v].u, grade[v].x))
+      // normais para fora: (u cresce para trás/baixo, x para a esquerda)
+      pecas.get(id).push(pts[0], pts[2], pts[1], pts[0], pts[3], pts[2])
+    }
+  const malhaDe = (pts) => {
+    const pos = new Float32Array(pts.length * 3)
+    pts.forEach((p, i) => pos.set(p, 3 * i))
+    return soldar(pos, Uint32Array.from(pts.keys()))
+  }
+  // Mesmo tecido das mamas (pele com gordura): monte e lábios maiores no tom da mama, lábios menores,
+  // vestíbulo e clitóris num tom mais rosado, como a aréola na mama
+  const COR_MAIOR = '#e6b39c'
+  const COR_MENOR = '#d9968c'
+  const COR_VESTIBULO = '#c98282'
+  const pai = 'Pudendo feminino (vulva)'
+  const NOMES = [
+    ['VHF_labium_majus_R', 'Lábio maior direito', 'Labium majus, right', COR_MAIOR],
+    ['VHF_labium_majus_L', 'Lábio maior esquerdo', 'Labium majus, left', COR_MAIOR],
+    ['VHF_labium_minus_R', 'Lábio menor direito', 'Labium minus, right', COR_MENOR],
+    ['VHF_labium_minus_L', 'Lábio menor esquerdo', 'Labium minus, left', COR_MENOR],
+    ['VHF_vestibule', 'Vestíbulo da vagina', 'Vestibule of vagina', COR_VESTIBULO],
+    ['VHF_glans_clitoridis', 'Glande do clitóris', 'Glans of clitoris', COR_MENOR],
+  ]
+  return NOMES.map(([id, nome, en, cor]) => ({
+    estrutura: { id, nome, en, sistema: 'pele', pai, esquematico: true },
+    malha: { id, ...malhaDe(pecas.get(id)), cor, travarBorda: true },
+  }))
+}
+
 // Vulva recortada da própria pele da doadora (só há a superfície externa: lábios menores e clitóris não
 // existem no modelo). As partes ficam 0,5 mm por fora, na camada de pele (vidro), e respondem ao toque.
-const vulva = recortarVulva()
+const vulva = [...recortarVulva(), ...esculpirVulva()]
 const peleFinal = trocarMaos()
 
 // Órgãos genitais e mamas
@@ -1336,6 +1459,7 @@ function pecasEsquematicas() {
 }
 
 const itens = []
+const itensMama = []
 const gorduraMama = []
 const saidaEstruturas = [
   { id: 'VHF_skin', nome: 'Pele', en: 'Skin', sistema: 'pele' },
@@ -1393,6 +1517,9 @@ for (const arq of ARQUIVOS) {
       sistema: 'genital',
     }
     if (nome[1]) e.pai = sufixo(nome[1])
+    // Mama: camada própria (tegumento comum, não sistema genital)
+    const daMama = nome[1] === 'Mama' || base === 'fat'
+    if (daMama) e.sistema = 'mamas'
     saidaEstruturas.push(e)
     // Orçamento de triângulos: peças grandes da mama ganham mais detalhe
     const alvoItem = /^(fat|mammary_lobes|suspensory_ligaments)$/.test(base)
@@ -1402,12 +1529,20 @@ for (const arq of ARQUIVOS) {
         : 1500
     // O tecido adiposo da mama vai para a pele de vidro (tocável): opaco, ele escondia a glândula e
     // parecia colado por cima dos músculos
+    // O tecido adiposo fica no modelo da pele de vidro (semi-opaco, deixa ver a glândula), mas pertence
+    // à camada Mamas: aparece e some com ela (ver "emprestadas" em feminino.json)
     if (base === 'fat') {
-      e.sistema = 'pele'
       gorduraMama.push({ id, posicoes: m.posicoes, indices: m.indices, cor: '#e6b39c', alvo: 5000, erro: 0.01 }) // tom de pele: na pele de vidro (semi-opaca) lê-se como a mama
     } else if (/ovary/.test(base)) {
       itens.push({ id, ...relevoOvario(m.posicoes, m.indices), cor: corDe(base), alvo: 6000, erro: 0.002 })
-    } else itens.push({ id, posicoes: m.posicoes, indices: m.indices, cor: corDe(base), alvo: alvoItem })
+    } else
+      (daMama ? itensMama : itens).push({
+        id,
+        posicoes: m.posicoes,
+        indices: m.indices,
+        cor: corDe(base),
+        alvo: alvoItem,
+      })
   }
 }
 for (const p of pecasEsquematicas()) {
@@ -1415,6 +1550,7 @@ for (const p of pecasEsquematicas()) {
   itens.push(p.malha)
 }
 await gravar('genital-feminino', itens, 1500, 0.01)
+await gravar('mamas-feminina', itensMama, 1500, 0.01)
 await gravar(
   'pele-feminina',
   [{ id: 'VHF_skin', ...peleFinal, cor: '#e2b49b' }, ...vulva.map((v) => ({ ...v.malha, alvo: 2500 })), ...gorduraMama],
@@ -1436,15 +1572,23 @@ writeFileSync(
         pele: {
           modelo: '/models/pele-feminina.glb',
           total: contar('pele'),
-          tocaveis: saidaEstruturas.filter((e) => e.sistema === 'pele' && e.id !== 'VHF_skin').map((e) => e.id),
-          // Solidez na pele de vidro: mamas bem cheias; vulva mais suave, para o recorte não marcar
+          tocaveis: [...vulva.map((v) => v.estrutura.id), ...gorduraMama.map((g) => g.id)],
+          // Solidez na pele de vidro: mamas e vulva (pele com gordura) com volume, deixando ver o que está dentro
           solidez: Object.fromEntries(
-            saidaEstruturas
-              .filter((e) => e.sistema === 'pele' && e.id !== 'VHF_skin')
-              .map((e) => [e.id, /^VHF_fat_/.test(e.id) ? 0.85 : 0.45]),
+            [...vulva.map((v) => v.estrutura.id), ...gorduraMama.map((g) => g.id)].map((id) => [id, 0.85]),
           ),
+          // A gordura da mama está neste modelo, mas pertence à camada Mamas
+          emprestadas: Object.fromEntries(gorduraMama.map((g) => [g.id, 'mamas'])),
+          // O monte do púbis é sólido junto à vulva e funde-se com a pele ao afastar-se dela (3 cm)
+          esbatimento: { VHF_mons_pubis: 0.03 },
         },
         genital: { modelo: '/models/genital-feminino.glb', total: contar('genital') },
+        // Camada só do corpo feminino: mama (tegumento comum), entre a pele e o sistema genital
+        mamas: {
+          modelo: '/models/mamas-feminina.glb',
+          total: contar('mamas'),
+          nova: { nome: 'Mamas', cor: '#e8a598', visivelPorPadrao: true, depoisDe: 'pele' },
+        },
       },
       estruturas: saidaEstruturas,
       // Estruturas de camadas comuns aos dois corpos que só existem no masculino (ficam ocultas no feminino):

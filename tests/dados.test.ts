@@ -22,7 +22,11 @@ describe('integridade dos dados', () => {
   })
 
   it('toda estrutura pertence a uma camada existente', () => {
-    const ids = new Set(camadas.map((s) => s.id))
+    // Camadas comuns, mais as que só existem no corpo feminino (Mamas)
+    const novas = Object.entries(feminino.camadas)
+      .filter(([, c]) => 'nova' in c)
+      .map(([id]) => id)
+    const ids = new Set([...camadas.map((s) => s.id), ...novas])
     expect(lista.filter((e) => !ids.has(e.sistema)).map((e) => e.nome)).toEqual([])
   })
 
@@ -90,16 +94,24 @@ describe('voz', () => {
 })
 
 describe('corpo feminino', () => {
-  it('só troca camadas que existem, com a contagem certa', () => {
+  it('só troca camadas que existem (ou cria as só femininas), com a contagem certa', () => {
     const ids = new Set(camadas.map((s) => s.id))
     for (const [id, c] of Object.entries(feminino.camadas)) {
-      expect(ids.has(id), id).toBe(true)
+      expect(ids.has(id) || 'nova' in c, id).toBe(true)
       expect(femininas.filter((e) => e.sistema === id).length, id).toBe(c.total)
     }
   })
 
   it('toda estrutura feminina está numa camada que troca de modelo', () => {
     expect(femininas.filter((e) => !(e.sistema in feminino.camadas)).map((e) => e.nome)).toEqual([])
+  })
+
+  it('a gordura da mama, no modelo da pele, pertence à camada Mamas', () => {
+    const pele = feminino.camadas.pele as { emprestadas?: Record<string, string> }
+    for (const [id, dona] of Object.entries(pele.emprestadas ?? {})) {
+      expect(dona in feminino.camadas, dona).toBe(true)
+      expect(femininas.find((e) => e.id === id)?.sistema, id).toBe(dona)
+    }
   })
 
   it('as estruturas só masculinas existem no catálogo', () => {

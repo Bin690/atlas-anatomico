@@ -54,7 +54,7 @@ export function Toolbar() {
       <Botao rotulo="Raio-X" ativo={raioX} onClick={alternarRaioX}>
         <IconeRaioX />
       </Botao>
-      <Botao rotulo="Girar" ativo={rotacao} onClick={alternarRotacao}>
+      <Botao rotulo="Rodar" ativo={rotacao} onClick={alternarRotacao}>
         <IconeRotacao />
       </Botao>
       <Botao rotulo="Mover" ativo={mover} onClick={alternarMover}>

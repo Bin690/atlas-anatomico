@@ -1,7 +1,7 @@
 {
   "id": "sistema-genital-masculino",
   "titulo": "Sistema genital",
-  "resumo": "Testículos, epidídimos, ductos deferentes, glândulas seminais, próstata, uretra e pênis: partes, trajeto dos espermatozoides e correlações clínicas.",
+  "resumo": "Testículos, epidídimos, ductos deferentes, glândulas seminais, próstata, uretra e pénis: partes, trajeto dos espermatozoides e correlações clínicas.",
   "duracaoMin": 6,
   "premium": false,
   "ordem": 7,
@@ -9,7 +9,7 @@
   "passos": [
     {
       "titulo": "Visão geral",
-      "texto": "O sistema genital masculino produz os espermatozoides e os hormônios sexuais e os conduz para o exterior. Os testículos ficam fora da cavidade abdominal, no escroto; o trajeto segue pelo epidídimo e pelo ducto deferente até a uretra, que atravessa a próstata e o pênis.",
+      "texto": "O sistema genital masculino produz os espermatozoides e as hormonas sexuais e os conduz para o exterior. Os testículos ficam fora da cavidade abdominal, no escroto; o trajeto segue pelo epidídimo e pelo ducto deferente até a uretra, que atravessa a próstata e o pénis.",
       "camadas": ["genital", "urinario"],
       "isolar": [
         "FMA7211",
@@ -47,7 +47,7 @@
     },
     {
       "titulo": "Testículo e epidídimo",
-      "texto": "Os testículos produzem os espermatozoides (nos túbulos seminíferos) e a testosterona (nas células intersticiais). Ficam no escroto, alguns graus abaixo da temperatura do corpo, o que a espermatogênese exige. Na face posterior de cada testículo, o epidídimo armazena os espermatozoides enquanto eles amadurecem.",
+      "texto": "Os testículos produzem os espermatozoides (nos túbulos seminíferos) e a testosterona (nas células intersticiais). Ficam no escroto, alguns graus abaixo da temperatura do corpo, o que a espermatogénese exige. Na face posterior de cada testículo, o epidídimo armazena os espermatozoides enquanto eles amadurecem.",
       "camadas": ["genital"],
       "isolar": [
         "FMA7211",
@@ -71,7 +71,7 @@
     },
     {
       "titulo": "Ducto deferente e glândula seminal",
-      "texto": "Do epidídimo, o ducto deferente sobe no funículo espermático, atravessa o canal inguinal e entra na pelve, passando por trás da bexiga. Ali se une ao ducto da glândula seminal, que produz a maior parte do volume do sêmen, e forma o ducto ejaculatório, que se abre na uretra dentro da próstata. A vasectomia corta o ducto deferente no escroto.",
+      "texto": "Do epidídimo, o ducto deferente sobe no funículo espermático, atravessa o canal inguinal e entra na pelve, passando por trás da bexiga. Ali se une ao ducto da glândula seminal, que produz a maior parte do volume do sémen, e forma o ducto ejaculatório, que se abre na uretra dentro da próstata. A vasectomia corta o ducto deferente no escroto.",
       "camadas": ["genital", "urinario"],
       "isolar": [
         "FMA7211",
@@ -95,7 +95,7 @@
     },
     {
       "titulo": "Próstata e uretra",
-      "texto": "A próstata, do tamanho de uma noz, fica logo abaixo da bexiga e envolve o início da uretra. Por isso o aumento benigno da próstata, comum com a idade, dificulta a micção. A uretra masculina tem cerca de 20 cm: parte prostática, membranácea e esponjosa, que percorre o pênis até o óstio externo.",
+      "texto": "A próstata, do tamanho de uma noz, fica logo abaixo da bexiga e envolve o início da uretra. Por isso o aumento benigno da próstata, comum com a idade, dificulta a micção. A uretra masculina tem cerca de 20 cm: parte prostática, membranácea e esponjosa, que percorre o pénis até o óstio externo.",
       "camadas": ["genital", "urinario"],
       "isolar": [
         "FMA7211",
@@ -118,8 +118,8 @@
       "vista": [-1, 0.1, 0]
     },
     {
-      "titulo": "Pênis",
-      "texto": "O pênis tem três cilindros de tecido erétil: os dois corpos cavernosos, no dorso, e o corpo esponjoso, embaixo, que contém a uretra e se expande na glande. Na ereção, o sangue enche os espaços dos corpos cavernosos, e a túnica albugínea, firme, limita a saída do sangue venoso.",
+      "titulo": "Pénis",
+      "texto": "O pénis tem três cilindros de tecido erétil: os dois corpos cavernosos, no dorso, e o corpo esponjoso, embaixo, que contém a uretra e se expande na glande. Na ereção, o sangue enche os espaços dos corpos cavernosos, e a túnica albugínea, firme, limita a saída do sangue venoso.",
       "camadas": ["genital", "urinario"],
       "isolar": [
         "FMA7211",

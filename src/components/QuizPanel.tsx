@@ -233,9 +233,9 @@ export function QuizPanel() {
 
   if (fase.tipo === 'fim') {
     const nota = Math.round((fase.acertos / fase.total) * 100)
-    let mensagem = 'Continue praticando: revise os erros abaixo.'
+    let mensagem = 'Continue a praticar: reveja os erros abaixo.'
     if (nota >= 80) mensagem = 'Excelente! 🎉'
-    else if (nota >= 50) mensagem = 'Bom trabalho — revise os erros abaixo.'
+    else if (nota >= 50) mensagem = 'Bom trabalho — reveja os erros abaixo.'
     return (
       <section aria-label="Resultado do quiz" className={`${cartao} max-h-full overflow-y-auto`}>
         <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase">Resultado</p>
@@ -342,7 +342,7 @@ export function QuizPanel() {
       {fase.resposta && (
         <div className="mt-3 min-h-0 overflow-y-auto text-sm" aria-live="polite">
           <p className={`font-semibold ${acertou ? 'text-emerald-300' : 'text-rose-300'}`}>
-            {acertou ? 'Correto!' : fase.modo !== 'identificar' ? `Você tocou: ${tocada?.nome}` : `Era: ${p.alvo.nome}`}
+            {acertou ? 'Correto!' : fase.modo !== 'identificar' ? `Tocou em: ${tocada?.nome}` : `Era: ${p.alvo.nome}`}
           </p>
           {!acertou && fase.modo !== 'identificar' && (
             <p className="text-slate-300">A estrutura certa está destacada em azul no modelo.</p>

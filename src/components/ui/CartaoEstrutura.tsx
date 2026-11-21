@@ -6,7 +6,8 @@ import { FiguraAmpliada } from './FiguraReferencia'
 import { useTelaPequena } from '../../hooks/useTelaPequena'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import { dizerNome } from '../../hooks/voz'
-import { IconeAlvo, IconeFechar, IconeIsolar, IconeOlho, IconeOlhoFechado, IconeSom } from './Icones'
+import { useCaderno } from '../../store/caderno'
+import { IconeAlvo, IconeEstrela, IconeFechar, IconeIsolar, IconeOlho, IconeOlhoFechado, IconeSom } from './Icones'
 
 /**
  * Card da estrutura selecionada: nome, sistema, conteúdo didático e ações.
@@ -27,6 +28,8 @@ export function CartaoEstrutura() {
   // Guarda para qual estrutura os detalhes foram abertos: trocar a seleção volta ao compacto.
   const [detalhesDe, setDetalhesDe] = useState<string | null>(null)
   const [figuraAberta, setFiguraAberta] = useState(false)
+  const favorito = useCaderno((s) => !!id && s.favoritos.includes(id))
+  const alternarFavorito = useCaderno((s) => s.alternarFavorito)
 
   const estrutura = id ? porId.get(id) : undefined
   if (!estrutura) return null
@@ -92,6 +95,18 @@ export function CartaoEstrutura() {
             </p>
           )}
         </div>
+        <button
+          type="button"
+          onClick={() => alternarFavorito(estrutura.id)}
+          aria-pressed={favorito}
+          aria-label={favorito ? 'Tirar dos favoritos' : 'Guardar nos favoritos'}
+          title={favorito ? 'Tirar dos favoritos' : 'Guardar nos favoritos'}
+          className={`grid size-9 shrink-0 place-items-center rounded-full transition hover:bg-white/10 ${
+            favorito ? 'text-amber-300' : 'text-slate-300 hover:text-white'
+          }`}
+        >
+          <IconeEstrela cheia={favorito} />
+        </button>
         <button
           type="button"
           onClick={() => dizerNome(estrutura.id, estrutura.nome, { forcar: true })}
@@ -172,7 +187,13 @@ export function CartaoEstrutura() {
               <p className="mt-1 text-slate-200">{texto.correlacaoClinica}</p>
             </div>
           )}
+          <NotaPessoal key={estrutura.id} id={estrutura.id} />
           <div className="h-2" />
+        </div>
+      )}
+      {detalhes && !texto && (
+        <div className="px-4">
+          <NotaPessoal key={estrutura.id} id={estrutura.id} />
         </div>
       )}
 
@@ -196,5 +217,35 @@ export function CartaoEstrutura() {
         </footer>
       )}
     </article>
+  )
+}
+
+/** Nota pessoal do aluno sobre a estrutura (guardada no aparelho enquanto escreve). */
+function NotaPessoal({ id }: { id: string }) {
+  const nota = useCaderno((s) => s.notas[id] ?? '')
+  const definirNota = useCaderno((s) => s.definirNota)
+  const [aberta, setAberta] = useState(!!nota)
+  if (!aberta)
+    return (
+      <button
+        type="button"
+        onClick={() => setAberta(true)}
+        className="mt-3 text-xs font-medium text-sky-300 underline-offset-2 hover:underline"
+      >
+        + Escrever uma nota
+      </button>
+    )
+  return (
+    <label className="mt-3 block">
+      <span className="text-xs font-semibold tracking-wide text-slate-400 uppercase">A minha nota</span>
+      <textarea
+        value={nota}
+        onChange={(e) => definirNota(id, e.target.value)}
+        autoFocus={!nota}
+        rows={3}
+        placeholder="Ex.: cai no exame; não confundir com…"
+        className="mt-1 block w-full resize-y rounded-xl border border-borda bg-white/[0.03] p-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
+      />
+    </label>
   )
 }

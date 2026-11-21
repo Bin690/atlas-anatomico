@@ -1,3 +1,4 @@
+import { paraPtPt } from '../ptpt.mjs'
 /**
  * Tradução dos nomes FMA (inglês) do BodyParts3D para o português, seguindo a
  * Terminologia Anatômica: substantivo primeiro, adjetivos na ordem inversa do inglês,
@@ -935,5 +936,5 @@ function sintagma(en, ehMusculo) {
 /** Nome FMA em inglês -> nome em português (com inicial maiúscula). */
 export function traduzir(en) {
   const { texto } = sintagma(en.trim().toLowerCase(), false)
-  return texto.charAt(0).toUpperCase() + texto.slice(1)
+  return paraPtPt(texto.charAt(0).toUpperCase() + texto.slice(1))
 }

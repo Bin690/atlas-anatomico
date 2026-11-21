@@ -4,6 +4,7 @@ import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import {
   BatchedMesh,
   Box3,
+  BufferAttribute,
   Color,
   DoubleSide,
   FrontSide,
@@ -79,20 +80,28 @@ export function pontosDaEstrutura(id: string, quantidade = 24): Vector3[] {
 function materialVidro() {
   const m = new MeshStandardMaterial({ roughness: 0.5, metalness: 0, transparent: true, depthWrite: false })
   m.onBeforeCompile = (shader) => {
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <opaque_fragment>',
-      `float fresnel = pow(1.0 - abs(dot(normalize(normal), normalize(vViewPosition))), 2.4);
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute float borda;\nvarying float vBorda;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvBorda = borda;')
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying float vBorda;')
+      .replace(
+        '#include <opaque_fragment>',
+        `float fresnel = pow(1.0 - abs(dot(normalize(normal), normalize(vViewPosition))), 2.4);
        float vidro = 0.06 + fresnel * 0.55;
-       // "Solidez" por peça vem no alfa da cor da instância (1 = vidro comum; menor = mais sólida):
-       // mamas e vulva ficam com volume visível sem esconder de todo o que está dentro
+       // "Solidez" por peça vem no alfa da cor da instância (alfa 1 = vidro comum; menor = mais
+       // sólida): mamas e vulva (pele com gordura) ficam com volume visível, deixando ver o que está
+       // por dentro, e esbatem-se até ao vidro junto à borda do recorte (atributo "borda")
        #ifdef USE_COLOR_ALPHA
-         float solidez = 1.0 - vColor.a;
+         float solidez = (1.0 - vColor.a) * smoothstep(0.0, 1.0, vBorda);
        #else
          float solidez = 0.0;
        #endif
-       diffuseColor.a = mix(vidro, 0.72, solidez);
+       diffuseColor.a = mix(vidro, solidez > 0.99 ? 1.0 : 0.72, solidez);
+       // Luz ambiente própria: a vulva fica virada para baixo, sem luz direta, e escurecia demais
+       outgoingLight = mix(outgoingLight, diffuseColor.rgb * 0.8, 0.25 * solidez);
        #include <opaque_fragment>`,
-    )
+      )
   }
   return m
 }
@@ -113,8 +122,106 @@ function materialTecido() {
   return m
 }
 
+/** Largura (m) da faixa em que uma peça sólida da pele se esbate até ao vidro, junto à borda. */
+const FAIXA_BORDA = 0.007
+
+/** Distância (m) até à qual outra peça sólida pode cobrir a borda de uma peça. */
+const COBERTURA = 0.008
+/** Abaixo desta distância (m), o ponto é partilhado com a outra peça: é uma junção, não uma borda. */
+const JUNCAO = 0.001
+
+/**
+ * Atributo "borda" (0 na borda aberta do recorte, 1 a partir da faixa de esbatimento para dentro) nas peças
+ * sólidas da pele de vidro (vulva); 1 nas demais. Borda = arestas usadas por um só triângulo da
+ * peça. Onde outra peça sólida passa POR CIMA da borda (a vulva sob o monte do púbis), ela não se
+ * esbate: fica escondida. Onde a peça é que está por cima (o monte sobre a vulva), esbate-se e
+ * revela o tecido de baixo.
+ */
+function marcarBordas(meshes: Mesh[], solidas: Set<string>, esbatimento: Record<string, number>) {
+  const chave = (v: Vector3) => `${Math.round(v.x * 1e4)},${Math.round(v.y * 1e4)},${Math.round(v.z * 1e4)}`
+  const pecas = meshes
+    .filter((m) => solidas.has(m.name))
+    .map((m) => {
+      const pos = m.geometry.attributes.position
+      const pontos = Array.from({ length: pos.count }, (_, v) =>
+        new Vector3().fromBufferAttribute(pos, v).applyMatrix4(m.matrixWorld),
+      )
+      const chaves = pontos.map(chave)
+      const arestas = new Map<string, number>()
+      const idx = m.geometry.index
+      const n = idx ? idx.count : pos.count
+      const vert = (k: number) => (idx ? idx.getX(k) : k)
+      for (let t = 0; t < n; t += 3)
+        for (let k = 0; k < 3; k++) {
+          const a = chaves[vert(t + k)]
+          const b = chaves[vert(t + ((k + 1) % 3))]
+          if (a === b) continue
+          const e = a < b ? `${a}|${b}` : `${b}|${a}`
+          arestas.set(e, (arestas.get(e) ?? 0) + 1)
+        }
+      const naBorda = new Set<string>()
+      for (const [e, c] of arestas) if (c === 1) for (const x of e.split('|')) naBorda.add(x)
+      const normal = m.geometry.attributes.normal
+      const borda = pontos.flatMap((p, v) =>
+        naBorda.has(chaves[v])
+          ? [{ p, n: new Vector3().fromBufferAttribute(normal, v).transformDirection(m.matrixWorld) }]
+          : [],
+      )
+      return { m, pontos, borda }
+    })
+  /** Outra peça sólida passa por cima deste ponto da borda (do lado para onde a normal aponta)? */
+  const coberto = (p: Vector3, n: Vector3, outra: Vector3[]) => {
+    let melhor: Vector3 | null = null
+    let dMin = COBERTURA * COBERTURA
+    for (const q of outra) {
+      const d = p.distanceToSquared(q)
+      if (d < dMin) {
+        dMin = d
+        melhor = q
+      }
+    }
+    if (!melhor) return false
+    // Vértice partilhado (junção entre peças da mesma superfície) ou outra peça por cima
+    return dMin < JUNCAO * JUNCAO || melhor.clone().sub(p).dot(n) > 0
+  }
+  const pontosBorda = pecas.flatMap(({ m, borda }) =>
+    borda.filter(({ p, n }) => !pecas.some((o) => o.m !== m && coberto(p, n, o.pontos))).map(({ p }) => p),
+  )
+
+  for (const m of meshes) {
+    const borda = new Float32Array(m.geometry.attributes.position.count).fill(1)
+    const peca = pecas.find((x) => x.m === m)
+    if (peca && pontosBorda.length) {
+      const dist = peca.pontos.map((w) => {
+        let min = Infinity
+        for (const b of pontosBorda) min = Math.min(min, w.distanceToSquared(b))
+        return Math.sqrt(min)
+      })
+      dist.forEach((d, v) => (borda[v] = Math.min(1, d / FAIXA_BORDA)))
+      // Peças largas (monte do púbis): sólidas junto às outras peças sólidas (a vulva) e esbatendo-se
+      // até ao vidro à medida que se afastam delas
+      const faixa = esbatimento[m.name]
+      if (faixa) {
+        const outras = pecas.filter((o) => o.m !== m).flatMap((o) => o.pontos)
+        peca.pontos.forEach((w, v) => {
+          let min = Infinity
+          for (const q of outras) min = Math.min(min, w.distanceToSquared(q))
+          const perto = 1 - Math.min(1, Math.max(0, (Math.sqrt(min) - 0.004) / faixa))
+          borda[v] = Math.min(borda[v], perto)
+        })
+      }
+    }
+    m.geometry.setAttribute('borda', new BufferAttribute(borda, 1))
+  }
+}
+
 /** Converte a cena do .glb (uma mesh por estrutura) em um único BatchedMesh. */
-function construir(cena: Object3D, estilo?: Sistema['estilo']): InfoCamada {
+function construir(
+  cena: Object3D,
+  estilo?: Sistema['estilo'],
+  solidas: string[] = [],
+  esbatimento: Record<string, number> = {},
+): InfoCamada {
   cena.updateMatrixWorld(true)
   const meshes: Mesh[] = []
   cena.traverse((o) => {
@@ -128,6 +235,7 @@ function construir(cena: Object3D, estilo?: Sistema['estilo']): InfoCamada {
     vertices += m.geometry.attributes.position.count
     indices += m.geometry.index?.count ?? 0
   }
+  if (estilo === 'vidro') marcarBordas(meshes, new Set(solidas), esbatimento)
   const material = estilo === 'vidro' ? materialVidro() : materialTecido()
   const malha = new BatchedMesh(meshes.length, vertices, indices, material)
   if (estilo === 'vidro') malha.renderOrder = 10 // depois das demais camadas
@@ -163,7 +271,17 @@ interface CamadaProps {
 
 function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) {
   const { scene } = useGLTF(url)
-  const info = useMemo(() => construir(scene, sistema.estilo), [scene, sistema.estilo])
+  const solidas = useMemo(
+    () =>
+      Object.entries(sistema.solidez ?? {})
+        .filter(([, v]) => v > 0)
+        .map(([id]) => id),
+    [sistema.solidez],
+  )
+  const info = useMemo(
+    () => construir(scene, sistema.estilo, solidas, sistema.esbatimento),
+    [scene, sistema.estilo, solidas, sistema.esbatimento],
+  )
   const { malha, ids, indice, corBase } = info
 
   const selecionada = useAtlasStore((s) => s.selecionada)
@@ -197,6 +315,8 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
   // as peças "tocáveis" dela (vulva na pele feminina) continuam respondendo
   useEffect(() => {
     malha.userData.vidro = sistema.estilo === 'vidro'
+    // Peças semi-opacas que envolvem outras: o toque atravessa-as até ao que está dentro (corte.ts)
+    malha.userData.envoltorios = new Set(Object.keys(sistema.solidez ?? {}))
     // Na pele de vidro, algumas peças (mamas, vulva) ficam semi-opacas: alfa da instância = 1 − solidez
     if (sistema.estilo === 'vidro')
       for (const [id, solidez] of Object.entries(sistema.solidez ?? {})) {
@@ -223,12 +343,20 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
   }, [malha, ids, indice, corBase, sistema.interativo, sistema.tocaveis, sistema.solidez, sistema.estilo])
   const naoTocavel = sistema.interativo === false && !sistema.tocaveis?.length
 
-  // Visibilidade por estrutura (ocultar / isolar / outro corpo)
+  // Visibilidade por estrutura (ocultar / isolar / outro corpo / camada dona)
+  const camadas = useAtlasStore((s) => s.camadas)
   useEffect(() => {
     ids.forEach((id, i) =>
-      malha.setVisibleAt(i, !doOutroCorpo.has(id) && !ocultas.has(id) && (!isoladas || isoladas.has(id))),
+      malha.setVisibleAt(
+        i,
+        !doOutroCorpo.has(id) &&
+          !ocultas.has(id) &&
+          (!isoladas || isoladas.has(id)) &&
+          // Peça emprestada a outra camada (gordura da mama): segue essa camada; as demais, esta
+          camadas.has(sistema.emprestadas?.[id] ?? sistema.id),
+      ),
     )
-  }, [malha, ids, ocultas, isoladas, doOutroCorpo])
+  }, [malha, ids, ocultas, isoladas, doOutroCorpo, camadas, sistema.emprestadas, sistema.id])
 
   // Cores: atualiza só as instâncias que mudaram de estado
   const anteriores = useRef<string[]>([])

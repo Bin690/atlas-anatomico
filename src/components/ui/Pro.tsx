@@ -16,7 +16,7 @@ const BENEFICIOS = [
   'Aulas 3D guiadas, passo a passo',
   'Quiz "Encontre a estrutura" no modelo 3D',
   'Revisão espaçada dos seus erros e painel de desempenho',
-  'Cortes anatômicos e raio-X sem limites',
+  'Cortes anatómicos e raio-X sem limites',
   'Uso offline completo',
 ]
 

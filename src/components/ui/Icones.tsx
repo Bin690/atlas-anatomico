@@ -125,3 +125,15 @@ export const IconeCorte = (p: SVGProps<SVGSVGElement>) => (
     <path d="M2 12h20" />
   </svg>
 )
+export const IconeDefinicoes = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
+    <circle cx="16" cy="7" r="2" />
+    <circle cx="10" cy="17" r="2" />
+  </svg>
+)
+export const IconeEstrela = ({ cheia, ...p }: SVGProps<SVGSVGElement> & { cheia?: boolean }) => (
+  <svg {...base(p)} fill={cheia ? 'currentColor' : 'none'}>
+    <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3z" />
+  </svg>
+)

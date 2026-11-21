@@ -4,6 +4,7 @@ import { Carregando } from './components/Carregando'
 import { TelaPro } from './components/ui/Pro'
 import { useCatalogo } from './data'
 import { useAtlasStore } from './store/useAtlasStore'
+import { usePreferencias } from './store/preferencias'
 
 // O motor 3D fica num chunk separado: a interface aparece antes do Three.js terminar de baixar.
 const Viewer3D = lazy(() => import('./components/Viewer3D'))
@@ -23,6 +24,20 @@ function CamadasIniciais() {
   return null
 }
 
+/** Tamanho do texto e alto contraste valem para a página inteira. */
+function AplicarPreferencias() {
+  const tamanho = usePreferencias((s) => s.tamanhoTexto)
+  const contraste = usePreferencias((s) => s.altoContraste)
+  useEffect(() => {
+    const html = document.documentElement
+    if (tamanho === 'normal') delete html.dataset.texto
+    else html.dataset.texto = tamanho
+    if (contraste) html.dataset.contraste = ''
+    else delete html.dataset.contraste
+  }, [tamanho, contraste])
+  return null
+}
+
 /**
  * O canvas 3D vive aqui, fora das rotas, e nunca é desmontado.
  * As páginas são camadas de interface por cima dele.
@@ -30,7 +45,8 @@ function CamadasIniciais() {
 function Layout() {
   return (
     <div className="relative h-dvh overflow-hidden bg-[radial-gradient(ellipse_at_50%_35%,#0c2340_0%,#020617_70%)]">
-      <Suspense fallback={<Carregando texto="Preparando o atlas…" />}>
+      <AplicarPreferencias />
+      <Suspense fallback={<Carregando texto="A preparar o atlas…" />}>
         <CamadasIniciais />
         <div className="absolute inset-0 touch-none">
           <Viewer3D />
