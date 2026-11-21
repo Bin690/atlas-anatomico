@@ -58,7 +58,13 @@ describe('integridade dos dados', () => {
 
   it('aulas guiadas só usam estruturas e camadas existentes', () => {
     const ids = new Set(lista.map((e) => e.id))
-    const camadasIds = new Set(camadas.map((s) => s.id))
+    // Camadas comuns e as que só existem no corpo feminino (Mamas)
+    const camadasIds = new Set([
+      ...camadas.map((s) => s.id),
+      ...Object.entries(feminino.camadas)
+        .filter(([, c]) => 'nova' in c)
+        .map(([id]) => id),
+    ])
     const pasta = join(__dirname, '..', 'src', 'data', 'aulas')
     for (const arquivo of readdirSync(pasta)) {
       const aula = JSON.parse(readFileSync(join(pasta, arquivo), 'utf8'))
@@ -102,8 +108,23 @@ describe('corpo feminino', () => {
     }
   })
 
-  it('toda estrutura feminina está numa camada que troca de modelo', () => {
-    expect(femininas.filter((e) => !(e.sistema in feminino.camadas)).map((e) => e.nome)).toEqual([])
+  it('toda estrutura feminina está numa camada que troca de modelo (ou foi emprestada a outra camada)', () => {
+    const emprestadas = new Set(
+      Object.values(feminino.camadas).flatMap((c) => Object.keys((c as { emprestadas?: object }).emprestadas ?? {})),
+    )
+    expect(
+      femininas.filter((e) => !(e.sistema in feminino.camadas) && !emprestadas.has(e.id)).map((e) => e.nome),
+    ).toEqual([])
+  })
+
+  it('a pelve feminina substitui a masculina no corpo feminino', () => {
+    for (const id of ['FMA16586', 'FMA16587', 'FMA16202']) expect(feminino.somenteMasculino).toContain(id)
+    const genital = feminino.camadas.genital as { emprestadas?: Record<string, string> }
+    expect(genital.emprestadas).toMatchObject({
+      VHF_hip_bone_R: 'esqueleto',
+      VHF_sacrum: 'esqueleto',
+      VHF_coccyx: 'esqueleto',
+    })
   })
 
   it('a gordura da mama, no modelo da pele, pertence à camada Mamas', () => {

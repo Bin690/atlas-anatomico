@@ -32,6 +32,8 @@ interface AtlasState {
   ocultas: Set<string>
   /** Se definido, só estas estruturas aparecem ("isolar"). */
   isoladas: Set<string> | null
+  /** Nome da região isolada pelo painel de regiões (ex.: "Mão direita"), para o aviso no topo. */
+  regiaoAtiva: string | null
   /** Modo raio-X: camadas externas ficam translúcidas. */
   raioX: boolean
   rotacaoAutomatica: boolean
@@ -80,6 +82,8 @@ interface AtlasState {
   definirCamadas: (ids: string[]) => void
   ocultar: (id: string) => void
   isolar: (ids: string[]) => void
+  /** Isola as estruturas de uma região do corpo e enquadra-a. */
+  isolarRegiao: (rotulo: string, ids: string[]) => void
   mostrarTudo: () => void
   alternarRaioX: () => void
   alternarRotacao: () => void
@@ -112,7 +116,11 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
     } catch {
       // sem armazenamento: vale só nesta sessão
     }
-    set((s) => (s.sexo === sexo ? s : { sexo, selecionada: null, pontoSelecao: null, hover: null, isoladas: null }))
+    set((s) =>
+      s.sexo === sexo
+        ? s
+        : { sexo, selecionada: null, pontoSelecao: null, hover: null, isoladas: null, regiaoAtiva: null },
+    )
   },
   selecionada: null,
   pontoSelecao: null,
@@ -120,6 +128,7 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
   camadas: new Set(),
   ocultas: new Set(),
   isoladas: null,
+  regiaoAtiva: null,
   raioX: false,
   rotacaoAutomatica: false,
   modoMover: false,
@@ -172,8 +181,18 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
       ocultas: new Set(s.ocultas).add(id),
       selecionada: s.selecionada === id ? null : s.selecionada,
     })),
-  isolar: (ids) => set((s) => ({ isoladas: new Set(ids), ocultas: new Set(), focoVersao: s.focoVersao + 1 })),
-  mostrarTudo: () => set({ ocultas: new Set(), isoladas: null }),
+  isolar: (ids) =>
+    set((s) => ({ isoladas: new Set(ids), regiaoAtiva: null, ocultas: new Set(), focoVersao: s.focoVersao + 1 })),
+  isolarRegiao: (rotulo, ids) =>
+    set((s) => ({
+      isoladas: new Set(ids),
+      regiaoAtiva: rotulo,
+      ocultas: new Set(),
+      selecionada: null,
+      vista: null,
+      focoVersao: s.focoVersao + 1,
+    })),
+  mostrarTudo: () => set({ ocultas: new Set(), isoladas: null, regiaoAtiva: null }),
   alternarRaioX: () => set((s) => ({ raioX: !s.raioX })),
   alternarRotacao: () => set((s) => ({ rotacaoAutomatica: !s.rotacaoAutomatica })),
   alternarMover: () => set((s) => ({ modoMover: !s.modoMover })),

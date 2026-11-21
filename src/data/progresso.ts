@@ -27,9 +27,18 @@ export function lerProgresso(): Progresso {
   }
 }
 
+/** Avisa (ex.: a sincronização com a conta) que o progresso mudou. */
+export const EVENTO_PROGRESSO = 'atlas3d:progresso'
+
+/** Substitui o progresso guardado (ex.: dados vindos da conta). */
+export function escreverProgresso(p: Progresso) {
+  salvar(p)
+}
+
 function salvar(p: Progresso) {
   try {
     localStorage.setItem(CHAVE, JSON.stringify(p))
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event(EVENTO_PROGRESSO))
   } catch {
     // armazenamento indisponível (modo privado): o progresso vale só nesta sessão
   }

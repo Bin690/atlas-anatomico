@@ -13567,5 +13567,45 @@
       "Irrigação": "Ramos da artéria pudenda interna",
       "Inervação": "Nervo pudendo"
     }
+  },
+  "VHF_hip_bone_R": {
+    "descricao": "Formado pela fusão de ílio, ísquio e púbis; seu acetábulo articula-se com a cabeça do fémur. Na mulher, a pelve é mais larga e baixa: abertura superior arredondada, ângulo subpúbico aberto (cerca de 80–90°, contra 50–60° no homem), incisura isquiática maior mais larga e tuberosidades isquiáticas mais afastadas, adaptações ao parto.",
+    "correlacaoClinica": "Fraturas da pelve podem causar hemorragia grave; a crista ilíaca é local de biópsia e aspirado de medula óssea."
+  },
+  "VHF_hip_bone_L": {
+    "descricao": "Formado pela fusão de ílio, ísquio e púbis; seu acetábulo articula-se com a cabeça do fémur. Na mulher, a pelve é mais larga e baixa: abertura superior arredondada, ângulo subpúbico aberto (cerca de 80–90°, contra 50–60° no homem), incisura isquiática maior mais larga e tuberosidades isquiáticas mais afastadas, adaptações ao parto.",
+    "correlacaoClinica": "Fraturas da pelve podem causar hemorragia grave; a crista ilíaca é local de biópsia e aspirado de medula óssea."
+  },
+  "VHF_sacrum": {
+    "descricao": "Osso formado pela fusão de cinco vértebras sacrais; articula-se com os ossos do quadril nas articulações sacroilíacas. Na mulher, o sacro é mais curto, mais largo e menos curvo, o que alarga a pelve menor.",
+    "correlacaoClinica": "A sacroileíte é achado característico das espondiloartrites, como a espondilite anquilosante."
+  },
+  "VHF_coccyx": {
+    "descricao": "Pequeno osso triangular formado pela fusão de 3 a 5 vértebras coccígeas rudimentares, na extremidade inferior da coluna. Articula-se com o ápice do sacro e dá inserção ao ligamento anococcígeo, aos músculos levantador do ânus e glúteo máximo.",
+    "correlacaoClinica": "A coccigodinia (dor no cóccix) é comum após quedas sentadas e após o parto, quando o cóccix é empurrado para trás pela passagem da cabeça do feto.",
+    "ficha": {
+      "Localização": "Extremidade inferior da coluna vertebral, abaixo do sacro",
+      "Articulação": "Sínfise sacrococcígea"
+    }
+  },
+  "VHF_urinary_bladder": {
+    "descricao": "Reservatório muscular extraperitoneal da urina, atrás da sínfise púbica; seu trígono é delimitado pelos óstios dos ureteres e pelo óstio interno da uretra. Na mulher, fica à frente do útero e da vagina, que a separam do reto; o útero apoia-se sobre a sua face superior.",
+    "correlacaoClinica": "Quando cheia, ascende acima da sínfise e afasta o peritoneu, permitindo punção suprapúbica sem atravessar a cavidade peritoneal.",
+    "ficha": {
+      "Localização": "Pelve menor, posterior ao púbis",
+      "Irrigação": "Artérias vesicais superiores e (no homem) inferiores; na mulher, ramos vaginais",
+      "Drenagem venosa": "Plexo venoso vesical → veias ilíacas internas",
+      "Inervação": "Parassimpática: nervos esplâncnicos pélvicos (S2–S4); simpática: T11–L2",
+      "Função": "Armazenamento e esvaziamento (micção) da urina"
+    }
+  },
+  "VHF_urethra": {
+    "descricao": "Canal de cerca de 4 cm que leva a urina do colo da bexiga ao óstio externo da uretra, no vestíbulo da vagina, entre a glande do clitóris e o óstio da vagina. Desce à frente da vagina, unida à sua parede anterior.",
+    "correlacaoClinica": "Por ser curta e abrir perto do ânus e da vagina, a uretra feminina explica a maior frequência de infeções urinárias nas mulheres. No cateterismo vesical procura-se o óstio no vestíbulo, logo acima do óstio da vagina.",
+    "ficha": {
+      "Localização": "Do colo da bexiga ao vestíbulo da vagina, à frente da vagina",
+      "Comprimento": "Cerca de 4 cm",
+      "Esfíncteres": "Interno (involuntário, no colo da bexiga) e externo (voluntário, no períneo)"
+    }
   }
 }

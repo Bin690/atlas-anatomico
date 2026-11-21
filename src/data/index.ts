@@ -43,6 +43,8 @@ interface Feminino {
   estruturas: Estrutura[]
   /** Estruturas de camadas comuns que só existem no corpo masculino. */
   somenteMasculino: string[]
+  /** Id masculino -> id feminino da mesma estrutura (ex.: pelve). */
+  equivalentes?: Record<string, string>
 }
 
 interface Base {
@@ -121,6 +123,16 @@ function catalogoDe(base: Base, sexo: Sexo): Catalogo {
   }
   catalogos.set(sexo, catalogo)
   return catalogo
+}
+
+/**
+ * A mesma estrutura no outro corpo (ex.: o sacro masculino -> o feminino), para aulas e links escritos
+ * com os ids de um corpo continuarem a funcionar no outro. Sem equivalente, devolve o próprio id.
+ */
+export function equivalenteNoCorpo(id: string, sexo: Sexo): string {
+  const eq = baseCarregada?.feminino.equivalentes ?? {}
+  if (sexo === 'feminino') return eq[id] ?? id
+  return Object.keys(eq).find((m) => eq[m] === id) ?? id
 }
 
 /** Pré-carrega os dados (ex.: antes de montar a interface). */

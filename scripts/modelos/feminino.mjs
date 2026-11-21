@@ -1009,6 +1009,14 @@ function recortarVulva() {
   })
 }
 
+/** Curva de Bézier quadrática com n pontos (função, para poder ser usada antes da definição de `bezier`). */
+function bezierSimples(a, b, c, n) {
+  return Array.from({ length: n }, (_, i) => {
+    const t = i / (n - 1)
+    return add(add(mul(a, (1 - t) ** 2), mul(b, 2 * t * (1 - t))), mul(c, t * t))
+  })
+}
+
 /**
  * Lábios maiores e menores, vestíbulo e glande do clitóris (esquemáticos), como UMA superfície
  * contínua esculpida ao longo da rima do pudendo, sem peças sobrepostas. A rima segue o perfil da
@@ -1545,6 +1553,162 @@ for (const arq of ARQUIVOS) {
       })
   }
 }
+// ---------------------------------------------------------------------------
+// Pelve feminina real (Visible Human Female, HuBMAP): ossos do quadril, sacro e cóccix
+// ---------------------------------------------------------------------------
+/**
+ * A pelve da doadora é mais larga, com ângulo subpúbico aberto e abertura superior arredondada. Os
+ * acetábulos dela ficam 1,2 cm mais para fora e 1,8 cm mais à frente que as cabeças dos fémures do
+ * atlas (medidos ajustando esferas à cavidade e à cabeça): uma deformação local, que se esbate com a
+ * distância (gaussiana de 4,5 cm), leva cada acetábulo à cabeça do fémur sem mudar a forma da sínfise,
+ * das cristas ilíacas nem do sacro. Fica na malha do sistema genital, mas pertence à camada Esqueleto.
+ */
+const ACETABULO_F = [0.101, 0.892, -0.004]
+const CABECA_FEMUR = [0.089, 0.89, -0.022]
+const SIGMA_PELVE = 0.045
+function encaixarPelve(posicoes) {
+  const out = Float32Array.from(posicoes)
+  for (let i = 0; i < out.length; i += 3) {
+    const p = [out[i], out[i + 1], out[i + 2]]
+    for (const lado of [1, -1]) {
+      const a = [ACETABULO_F[0] * lado, ACETABULO_F[1], ACETABULO_F[2]]
+      const d = [
+        (CABECA_FEMUR[0] - ACETABULO_F[0]) * lado,
+        CABECA_FEMUR[1] - ACETABULO_F[1],
+        CABECA_FEMUR[2] - ACETABULO_F[2],
+      ]
+      const peso = Math.exp(-(norma(sub(p, a)) ** 2) / (2 * SIGMA_PELVE ** 2))
+      for (let k = 0; k < 3; k++) out[i + k] += d[k] * peso
+    }
+    // As asas ilíacas da doadora saem 1,4 cm para fora dos músculos (masculinos) do atlas: recolhe-as
+    // 0,8 cm na crista, mantendo-as mais abertas que as masculinas
+    const ax = Math.abs(out[i])
+    out[i] -= Math.sign(out[i]) * 0.008 * smooth(out[i + 1], 0.95, 1.035) * smooth(ax, 0.08, 0.16)
+  }
+  return out
+}
+const pelveReal = transladar(await hubmap('3d-vh-f-pelvis.glb'))
+/** Centro da face superior da base do sacro (S1): pontos da linha média, na parte anterior, no topo. */
+function baseSacro(pts) {
+  const frente = Math.max(...pts.map((p) => p[2]))
+  const corpo = pts.filter((p) => Math.abs(p[0]) < 0.02 && p[2] > frente - 0.045)
+  const topo = Math.max(...corpo.map((p) => p[1]))
+  return media(corpo.filter((p) => p[1] > topo - 0.006))
+}
+// Inclinação: a pelve da doadora está mais inclinada que a do atlas. Roda-se em torno do eixo dos
+// acetábulos (as ancas não saem do lugar) até a base do sacro ficar onde a L5 do atlas espera
+const PIVO_PELVE = [0, ACETABULO_F[1], ACETABULO_F[2]]
+const anguloPelve = (() => {
+  const f = sub(baseSacro(pontos(porNome(pelveReal, /^VH_F_sacrum$/))), PIVO_PELVE)
+  const m = sub(baseSacro(osso('Sacrum')), PIVO_PELVE)
+  return Math.atan2(m[2], m[1]) - Math.atan2(f[2], f[1])
+})()
+console.log(`  pelve feminina: rodada ${((anguloPelve * 180) / Math.PI).toFixed(1)}° em torno dos acetábulos`)
+for (const m of pelveReal)
+  for (let i = 0; i < m.posicoes.length; i += 3) {
+    const y = m.posicoes[i + 1] - PIVO_PELVE[1]
+    const z = m.posicoes[i + 2] - PIVO_PELVE[2]
+    m.posicoes[i + 1] = PIVO_PELVE[1] + y * Math.cos(anguloPelve) - z * Math.sin(anguloPelve)
+    m.posicoes[i + 2] = PIVO_PELVE[2] + y * Math.sin(anguloPelve) + z * Math.cos(anguloPelve)
+  }
+const COR_OSSO = '#e8dfcf'
+const ossosPelve = [
+  [
+    'VHF_hip_bone_R',
+    'Osso do quadril direito',
+    'Right hip bone',
+    /^VH_F_(ilium|ischium|pubis)_compact_bone_R$/,
+    'Right hip bone',
+  ],
+  [
+    'VHF_hip_bone_L',
+    'Osso do quadril esquerdo',
+    'Left hip bone',
+    /^VH_F_(ilium|ischium|pubis)_compact_bone_L$/,
+    'Left hip bone',
+  ],
+  ['VHF_sacrum', 'Sacro', 'Sacrum', /^VH_F_sacrum$/, 'Sacrum'],
+  ['VHF_coccyx', 'Cóccix', 'Coccyx', /^VH_F_coccyx$/, null],
+]
+const ossosMasculinos = []
+/** Id masculino -> id feminino da mesma estrutura (aulas e links do outro corpo continuam a funcionar). */
+const equivalentes = {}
+for (const [id, nome, en, re, enM] of ossosPelve) {
+  const partes = porNome(pelveReal, re)
+  if (!partes.length) throw new Error(`pelve feminina sem ${nome}`)
+  // Junta ílio, ísquio e púbis (ossos do quadril da doadora) numa malha
+  let base = 0
+  const pos = []
+  const ind = []
+  for (const m of partes) {
+    pos.push(...encaixarPelve(m.posicoes))
+    for (const k of m.indices) ind.push(k + base)
+    base += m.posicoes.length / 3
+  }
+  saidaEstruturas.push({ id, nome, en, sistema: 'esqueleto' })
+  itens.push({
+    id,
+    posicoes: Float32Array.from(pos),
+    indices: Uint32Array.from(ind),
+    cor: COR_OSSO,
+    alvo: 6000,
+    erro: 0.0008,
+  })
+  if (enM) {
+    ossosMasculinos.push(idPorEn.get(enM.toLowerCase()))
+    equivalentes[idPorEn.get(enM.toLowerCase())] = id
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Bexiga feminina real (HuBMAP) e uretra feminina (esquemática)
+// ---------------------------------------------------------------------------
+// Ficam no modelo do sistema genital, mas pertencem à camada do sistema urinário; no corpo feminino
+// substituem a bexiga e a uretra masculinas (a uretra masculina, de 8 cm, já fica oculta)
+const bexigaReal = transladar(await hubmap('3d-vh-f-urinary-bladder.glb'))
+const urinarias = []
+{
+  let base = 0
+  const pos = []
+  const ind = []
+  for (const m of bexigaReal) {
+    pos.push(...m.posicoes)
+    for (const k of m.indices) ind.push(k + base)
+    base += m.posicoes.length / 3
+  }
+  urinarias.push({ id: 'VHF_urinary_bladder', nome: 'Bexiga urinária', en: 'Urinary bladder', enM: 'Urinary bladder' })
+  itens.push({
+    id: 'VHF_urinary_bladder',
+    posicoes: Float32Array.from(pos),
+    indices: Uint32Array.from(ind),
+    cor: '#9a4b3e',
+    alvo: 5000,
+  })
+  // Uretra feminina: ~3,5 cm, do colo da bexiga ao óstio externo, no vestíbulo à frente do óstio da vagina
+  const colo = media(pontos(porNome(bexigaReal, /bladder_neck/)))
+  const ostioUretra = [0, 0.827, 0.012]
+  const meio = add(lerp(colo, ostioUretra, 0.5), [0, 0, 0.004])
+  const uretra = tubo(bezierSimples(colo, meio, ostioUretra, 24), () => [0.003, 0.003], 16, true)
+  urinarias.push({
+    id: 'VHF_urethra',
+    nome: 'Uretra feminina',
+    en: 'Female urethra',
+    enM: 'Urethra',
+    esquematico: true,
+  })
+  itens.push({ id: 'VHF_urethra', ...uretra, cor: '#c27a6e' })
+}
+for (const u of urinarias) {
+  const estrutura = { id: u.id, nome: u.nome, en: u.en, sistema: 'urinario' }
+  if (u.esquematico) estrutura.esquematico = true
+  saidaEstruturas.push(estrutura)
+  const idM = idPorEn.get(u.enM.toLowerCase())
+  if (idM) {
+    ossosMasculinos.push(idM)
+    equivalentes[idM] = u.id
+  }
+}
+
 for (const p of pecasEsquematicas()) {
   saidaEstruturas.push(p.estrutura)
   itens.push(p.malha)
@@ -1582,7 +1746,16 @@ writeFileSync(
           // O monte do púbis é sólido junto à vulva e funde-se com a pele ao afastar-se dela (3 cm)
           esbatimento: { VHF_mons_pubis: 0.03 },
         },
-        genital: { modelo: '/models/genital-feminino.glb', total: contar('genital') },
+        genital: {
+          modelo: '/models/genital-feminino.glb',
+          total: contar('genital'),
+          // A pelve feminina, a bexiga e a uretra estão neste modelo, mas pertencem às camadas Esqueleto e
+          // Sistema urinário
+          emprestadas: Object.fromEntries([
+            ...ossosPelve.map(([id]) => [id, 'esqueleto']),
+            ...urinarias.map((u) => [u.id, 'urinario']),
+          ]),
+        },
         // Camada só do corpo feminino: mama (tegumento comum), entre a pele e o sistema genital
         mamas: {
           modelo: '/models/mamas-feminina.glb',
@@ -1591,11 +1764,18 @@ writeFileSync(
         },
       },
       estruturas: saidaEstruturas,
+      equivalentes,
       // Estruturas de camadas comuns aos dois corpos que só existem no masculino (ficam ocultas no feminino):
-      // uretra masculina, vasos do pênis e vasos testiculares
-      somenteMasculino: estruturas
-        .filter((e) => e.sistema !== 'genital' && (e.en === 'Urethra' || /penis|testicular/i.test(e.en)))
-        .map((e) => e.id),
+      // uretra masculina, vasos do pénis e testiculares e a pelve masculina
+      somenteMasculino: [
+        ...new Set([
+          ...estruturas
+            .filter((e) => e.sistema !== 'genital' && (e.en === 'Urethra' || /penis|testicular/i.test(e.en)))
+            .map((e) => e.id),
+          // pelve e bexiga masculinas (no corpo feminino aparecem as da doadora)
+          ...ossosMasculinos,
+        ]),
+      ],
     },
     null,
     2,

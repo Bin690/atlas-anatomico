@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useCatalogo } from '../../data'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import { IconeFechar } from './Icones'
+import { PainelRegioes } from './PainelRegioes'
 
-/** Liga/desliga os sistemas do corpo (camadas), como num atlas em camadas. */
+/** Liga/desliga os sistemas do corpo (camadas), como num atlas em camadas, ou isola uma região. */
 export function PainelCamadas() {
   const { sistemas } = useCatalogo()
   const camadas = useAtlasStore((s) => s.camadas)
@@ -14,11 +16,28 @@ export function PainelCamadas() {
   const isoladas = useAtlasStore((s) => s.isoladas)
   const mostrarTudo = useAtlasStore((s) => s.mostrarTudo)
   const abrirPainel = useAtlasStore((s) => s.abrirPainel)
+  const [aba, setAba] = useState<'sistemas' | 'regioes'>('sistemas')
+  const separador = (id: typeof aba, texto: string) => (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={aba === id}
+      onClick={() => setAba(id)}
+      className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
+        aba === id ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'
+      }`}
+    >
+      {texto}
+    </button>
+  )
 
   return (
     <section aria-label="Camadas do corpo" className="flex max-h-full min-h-0 flex-col">
       <header className="flex items-center justify-between border-b border-borda px-4 py-3">
-        <h2 className="font-semibold text-white">Sistemas do corpo</h2>
+        <div role="tablist" aria-label="Ver por" className="-ml-2 flex gap-1">
+          {separador('sistemas', 'Sistemas')}
+          {separador('regioes', 'Regiões')}
+        </div>
         <button
           type="button"
           onClick={() => abrirPainel(null)}
@@ -29,7 +48,8 @@ export function PainelCamadas() {
         </button>
       </header>
 
-      <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
+      {aba === 'regioes' && <PainelRegioes />}
+      <ul className={`min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 ${aba === 'regioes' ? 'hidden' : ''}`}>
         {sistemas.map((s) => {
           const ativo = camadas.has(s.id)
           return (

@@ -4,6 +4,8 @@ import { limparProgresso } from '../../data/progresso'
 import versaoVoz from '../../data/voz.json'
 import { useOffline, type EstadoOffline } from '../../hooks/useOffline'
 import { useCaderno } from '../../store/caderno'
+import { contaConfigurada } from '../../lib/supabase'
+import { useConta } from '../../store/conta'
 import { aparelhoModesto, usePreferencias, type Desempenho, type TamanhoTexto } from '../../store/preferencias'
 import { Janela, Secao } from './Janela'
 
@@ -61,10 +63,20 @@ function BotaoDescarregar({ estado, baixar, texto }: { estado: EstadoOffline; ba
 }
 
 /** Preferências: leitura, desempenho, uso sem internet e o progresso guardado no aparelho. */
-export function Preferencias({ aberta, fechar }: { aberta: boolean; fechar: () => void }) {
-  const { tamanhoTexto, altoContraste, desempenho, definir } = usePreferencias()
+export function Preferencias({
+  aberta,
+  fechar,
+  abrirSobre,
+}: {
+  aberta: boolean
+  fechar: () => void
+  abrirSobre: () => void
+}) {
+  const { tamanhoTexto, altoContraste, desempenho, batimento, definir } = usePreferencias()
   const { modelos, estruturas, sexo } = useCatalogo()
   const apagarCaderno = useCaderno((s) => s.apagarCaderno)
+  const faseConta = useConta((s) => s.fase)
+  const abrirConta = useConta((s) => s.abrir)
   const [confirmar, setConfirmar] = useState(false)
   const [apagado, setApagado] = useState(false)
 
@@ -117,6 +129,26 @@ export function Preferencias({ aberta, fechar }: { aberta: boolean; fechar: () =
         </label>
       </Secao>
 
+      <Secao titulo="Animações">
+        <label className="flex cursor-pointer items-center justify-between gap-3">
+          <span>
+            <span className="block text-slate-200">Batimento do coração</span>
+            <span className="block text-xs text-slate-400">O coração pulsa a 72 batimentos por minuto</span>
+          </span>
+          <input
+            type="checkbox"
+            role="switch"
+            checked={batimento}
+            onChange={(e) => definir({ batimento: e.target.checked })}
+            className="peer sr-only"
+          />
+          <span
+            aria-hidden
+            className="relative h-6 w-10 shrink-0 rounded-full bg-slate-700 transition peer-checked:bg-sky-500 peer-focus-visible:outline-2 peer-focus-visible:outline-sky-400 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:transition peer-checked:after:translate-x-4"
+          />
+        </label>
+      </Secao>
+
       <Secao titulo="Desempenho">
         <Escolha<Desempenho>
           rotulo="Qualidade dos modelos 3D"
@@ -148,8 +180,22 @@ export function Preferencias({ aberta, fechar }: { aberta: boolean; fechar: () =
 
       <Secao titulo="O meu progresso">
         <p className="text-xs text-slate-400">
-          Respostas do quiz, aulas concluídas, favoritos e notas ficam guardados só neste aparelho.
+          {faseConta === 'com-sessao'
+            ? 'Respostas do quiz, aulas concluídas, favoritos e notas estão guardados na sua conta e neste aparelho.'
+            : 'Respostas do quiz, aulas concluídas, favoritos e notas ficam guardados só neste aparelho.'}
         </p>
+        {contaConfigurada && (
+          <button
+            type="button"
+            onClick={() => {
+              fechar()
+              abrirConta()
+            }}
+            className="rounded-full bg-sky-400/15 px-3 py-1.5 text-xs font-medium text-sky-200 hover:bg-sky-400/25"
+          >
+            {faseConta === 'com-sessao' ? 'Gerir a minha conta' : 'Entrar ou criar conta para guardar tudo'}
+          </button>
+        )}
         {apagado ? (
           <p className="text-xs font-medium text-emerald-300">✓ Progresso apagado.</p>
         ) : confirmar ? (
@@ -180,6 +226,16 @@ export function Preferencias({ aberta, fechar }: { aberta: boolean; fechar: () =
           </button>
         )}
       </Secao>
+      <button
+        type="button"
+        onClick={() => {
+          fechar()
+          abrirSobre()
+        }}
+        className="block w-full text-center text-xs text-slate-400 underline underline-offset-2 hover:text-slate-200"
+      >
+        Sobre o Nitu: como usar e créditos
+      </button>
     </Janela>
   )
 }

@@ -2,13 +2,15 @@ import { create } from 'zustand'
 
 /**
  * O "caderno" do aluno, guardado no aparelho: estruturas favoritas, notas pessoais e aulas concluídas.
- * (Num produto com conta de utilizador, isto sincronizaria entre aparelhos.)
+ * Com uma conta, é sincronizado entre aparelhos (src/data/nuvem.ts).
  */
 interface Dados {
   /** Ids das estruturas favoritas, da mais recente para a mais antiga. */
   favoritos: string[]
   /** Nota pessoal por id de estrutura. */
   notas: Record<string, string>
+  /** Quando cada nota foi escrita (ms), para a sincronização escolher a mais recente. */
+  notasEm: Record<string, number>
   /** Ids das aulas vistas até ao último passo. */
   aulasConcluidas: string[]
 }
@@ -18,10 +20,12 @@ interface Caderno extends Dados {
   definirNota: (id: string, texto: string) => void
   concluirAula: (id: string) => void
   apagarCaderno: () => void
+  /** Substitui o caderno (ex.: dados vindos da conta). */
+  substituir: (d: Dados) => void
 }
 
 const CHAVE = 'atlas3d:caderno:v1'
-const VAZIO: Dados = { favoritos: [], notas: {}, aulasConcluidas: [] }
+const VAZIO: Dados = { favoritos: [], notas: {}, notasEm: {}, aulasConcluidas: [] }
 
 function ler(): Dados {
   try {
@@ -31,9 +35,9 @@ function ler(): Dados {
   }
 }
 
-function guardar({ favoritos, notas, aulasConcluidas }: Dados) {
+function guardar({ favoritos, notas, notasEm, aulasConcluidas }: Dados) {
   try {
-    localStorage.setItem(CHAVE, JSON.stringify({ favoritos, notas, aulasConcluidas }))
+    localStorage.setItem(CHAVE, JSON.stringify({ favoritos, notas, notasEm, aulasConcluidas }))
   } catch {
     // sem armazenamento (modo privado): vale só nesta sessão
   }
@@ -52,14 +56,21 @@ export const useCaderno = create<Caderno>()((set, get) => {
     },
     definirNota: (id, texto) => {
       const notas = { ...get().notas }
-      if (texto.trim()) notas[id] = texto
-      else delete notas[id]
-      mudar({ notas })
+      const notasEm = { ...get().notasEm }
+      if (texto.trim()) {
+        notas[id] = texto
+        notasEm[id] = Date.now()
+      } else {
+        delete notas[id]
+        delete notasEm[id]
+      }
+      mudar({ notas, notasEm })
     },
     concluirAula: (id) => {
       const { aulasConcluidas } = get()
       if (!aulasConcluidas.includes(id)) mudar({ aulasConcluidas: [...aulasConcluidas, id] })
     },
     apagarCaderno: () => mudar(VAZIO),
+    substituir: (d) => mudar({ ...VAZIO, ...d }),
   }
 })

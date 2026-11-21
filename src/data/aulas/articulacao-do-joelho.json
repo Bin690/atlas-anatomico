@@ -1,0 +1,83 @@
+{
+  "id": "articulacao-do-joelho",
+  "titulo": "Articulação do joelho",
+  "resumo": "Fémur, tíbia e patela, aparelho extensor, meniscos e ligamentos, fossa poplítea e lesões do desporto.",
+  "duracaoMin": 6,
+  "premium": true,
+  "ordem": 10,
+  "passos": [
+    {
+      "titulo": "Os ossos do joelho",
+      "texto": "O joelho é a maior articulação sinovial do corpo. Une os côndilos do fémur aos côndilos da tíbia (planalto tibial) e, à frente, a patela à face patelar do fémur (articulação femoropatelar). Funciona sobretudo como um gínglimo (flexão e extensão), com alguma rotação quando fletido. A fíbula não participa no joelho: articula-se só com a tíbia, abaixo dele. Nesta aula usa-se o joelho direito.",
+      "camadas": ["esqueleto"],
+      "isolar": ["FMA24474", "FMA24477", "FMA24486", "FMA24480"],
+      "destaques": ["FMA24474", "FMA24477", "FMA24486", "FMA24480"],
+      "foco": ["FMA24474", "FMA24477", "FMA24486", "FMA24480"],
+      "vista": [-0.5, 0.1, 0.85]
+    },
+    {
+      "titulo": "A patela e o aparelho extensor",
+      "texto": "Os quatro ventres do quadríceps femoral (reto femoral e vastos lateral, medial e intermédio) convergem no tendão do quadríceps, que envolve a patela, o maior osso sesamoide do corpo, e continua como ligamento patelar até à tuberosidade da tíbia. A patela aumenta o braço de alavanca da extensão. Percutir o ligamento patelar provoca o reflexo patelar (nervo femoral, L3–L4).",
+      "camadas": ["esqueleto", "musculos"],
+      "isolar": ["FMA24474", "FMA24477", "FMA24486", "FMA24480", "FMA38928", "FMA38930", "FMA38932", "FMA38934"],
+      "destaques": ["FMA24486", "FMA38928", "FMA38930", "FMA38932", "FMA38934"],
+      "foco": ["FMA24486", "FMA24474", "FMA24477"],
+      "vista": [0, 0.1, 1]
+    },
+    {
+      "titulo": "Meniscos e ligamentos",
+      "texto": "Sobre o planalto tibial ficam dois meniscos de fibrocartilagem que aprofundam a superfície articular: o medial, em C, preso ao ligamento colateral tibial e por isso mais lesado, e o lateral, quase circular e mais móvel. Os ligamentos cruzados, dentro da articulação, impedem a tíbia de deslizar para a frente (cruzado anterior) ou para trás (cruzado posterior); os colaterais tibial e fibular resistem às forças em valgo e em varo. Estas estruturas ainda não estão representadas no modelo: observe as superfícies ósseas onde se prendem.",
+      "camadas": ["esqueleto"],
+      "isolar": ["FMA24474", "FMA24477", "FMA24486", "FMA24480"],
+      "destaques": ["FMA24474", "FMA24477"],
+      "foco": ["FMA24474", "FMA24477"],
+      "vista": [-0.85, 0.1, 0.5]
+    },
+    {
+      "titulo": "Lado medial: a pata de ganso",
+      "texto": "Três tendões, um de cada compartimento da coxa, inserem-se juntos na face medial da tíbia, abaixo do joelho: sartório (nervo femoral), grácil (nervo obturatório) e semitendíneo (nervo isquiático). Este conjunto chama-se pata de ganso e ajuda a fletir o joelho e a estabilizá-lo medialmente. A sua bolsa sinovial pode inflamar (bursite anserina), sobretudo em pessoas com artrose do joelho.",
+      "camadas": ["esqueleto", "musculos"],
+      "isolar": ["FMA24474", "FMA24477", "FMA24486", "FMA24480", "FMA22354", "FMA43883", "FMA22358", "FMA22448"],
+      "destaques": ["FMA22354", "FMA43883", "FMA22358"],
+      "foco": ["FMA24474", "FMA24477", "FMA22354", "FMA43883", "FMA22358"],
+      "vista": [1, 0.1, 0.3]
+    },
+    {
+      "titulo": "Lado lateral e fossa poplítea",
+      "texto": "Lateralmente, o trato iliotibial insere-se na tíbia e o bíceps femoral na cabeça da fíbula. Atrás, a fossa poplítea é limitada pelo bíceps femoral (em cima e por fora), pelo semimembranáceo e semitendíneo (em cima e por dentro) e pelas duas cabeças do gastrocnémio (em baixo); no fundo, o músculo poplíteo «destranca» o joelho em extensão. O nervo fibular comum contorna o colo da fíbula, onde pode ser lesado por fraturas ou gessos apertados (pé pendente).",
+      "camadas": ["esqueleto", "musculos", "articulacoes"],
+      "isolar": [
+        "FMA24474",
+        "FMA24477",
+        "FMA24486",
+        "FMA24480",
+        "FMA38928",
+        "FMA38930",
+        "FMA38932",
+        "FMA38934",
+        "FMA22354",
+        "FMA43883",
+        "FMA22358",
+        "FMA22448",
+        "FMA45888",
+        "FMA45891",
+        "FMA45957",
+        "FMA45960",
+        "FMA22591",
+        "FMA58776"
+      ],
+      "destaques": ["FMA58776", "FMA45888", "FMA45891", "FMA22448", "FMA45957", "FMA45960", "FMA22591"],
+      "foco": ["FMA24474", "FMA24477", "FMA24480"],
+      "vista": [-0.5, 0.15, -0.85]
+    },
+    {
+      "titulo": "Correlação clínica: lesões do joelho no desporto",
+      "texto": "Uma rotação brusca com o pé fixo ou um golpe na face lateral do joelho fletido (comum no futebol) pode romper o ligamento cruzado anterior, o colateral tibial e o menisco medial — a «tríade infeliz». O cruzado anterior avalia-se com o teste da gaveta anterior e o de Lachman (a tíbia desliza para a frente em relação ao fémur). As lesões do menisco dão dor na interlinha articular e bloqueio do joelho.",
+      "camadas": ["esqueleto"],
+      "isolar": ["FMA24474", "FMA24477", "FMA24486", "FMA24480"],
+      "destaques": ["FMA24474", "FMA24477"],
+      "foco": ["FMA24474", "FMA24477", "FMA24486"],
+      "vista": [-0.5, 0.1, 0.85]
+    }
+  ]
+}

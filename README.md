@@ -1,6 +1,6 @@
-# Atlas Anatómico 3D
+# Nitu · Atlas Anatómico
 
-Atlas anatómico 3D interativo, em português europeu (norma usada em Angola e Portugal), para estudantes de
+Nitu é um atlas anatómico 3D interativo, em português europeu (norma usada em Angola e Portugal), para estudantes de
 medicina e enfermagem.
 Funciona no navegador do celular, do iPad e do computador, e pode ser instalado como app (PWA) para uso offline.
 
@@ -29,6 +29,19 @@ Funciona no navegador do celular, do iPad e do computador, e pode ser instalado 
 - **Pesquisa** em português ou inglês, sem precisar de acentos (`/` ou Ctrl/⌘+K). Aceita nomes populares e
   tradicionais (rótula, omoplata, perónio, trompa de Falópio, tendão de Aquiles…) e grafias do Brasil
   (tireoide, abdome), definidos em `src/data/sinonimos.ts`.
+- **Batimento do coração:** a camada do coração pulsa a 72 batimentos por minuto ("tum-tá", 3,5% de
+  amplitude). Fica parado no quiz, e pode ser desligado nas Preferências (vem desligado se o sistema pede
+  menos movimento).
+- **Isolar ao fazer zoom:** ao aproximar a câmara de uma parte (pinça no telemóvel, roda do rato), aparece
+  "Isolar a mão direita" (ou a perna, a cabeça…); a região vem dos marcos do esqueleto (`src/data/marcos.ts`,
+  partilhado com o script das regiões).
+- **Seleção por regiões:** no painel Camadas, o separador Regiões isola a cabeça, o pescoço, o tórax, o
+  abdómen, a pelve ou um membro (inteiro, braço, antebraço, mão, coxa, perna, pé; de um lado ou dos dois),
+  ou um grupo (costelas, coluna vertebral, crânio, dentes), nas camadas ligadas. A região de cada estrutura
+  é calculada pela geometria em `scripts/modelos/regioes.mjs` (`src/data/regioes.json`).
+- **Conta opcional:** o aluno pode criar conta (email, Google ou número de telefone) para guardar na nuvem os
+  favoritos, as notas, as aulas concluídas e o progresso no quiz, e tê-los em qualquer aparelho. Sem conta, a
+  app funciona como sempre. Ver "Conta e sincronização" abaixo.
 - **Favoritos e notas:** a estrela do cartão guarda a estrutura nos favoritos (listados na pesquisa vazia) e
   cada estrutura aceita uma nota pessoal. Ficam no aparelho.
 - **Aulas concluídas:** chegar ao último passo marca a aula com ✓ na lista.
@@ -142,7 +155,7 @@ Os modelos 3D são do **BodyParts3D**, © The Database Center for Life Science, 
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Foram adaptados: simplificados, convertidos para
 glTF e, no caso dos pulmões, com superfícies reconstruídas. O crédito aparece no app.
 
-O corpo feminino (pele, útero, tubas uterinas, ovários e mamas) vem dos órgãos de referência 3D do
+O corpo feminino (pele, útero, tubas uterinas, ovários, mamas e pelve) vem dos órgãos de referência 3D do
 **HuBMAP Human Reference Atlas** (Visible Human Female), de K. Browne e H. Schlehlein, sob licença
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Foram adaptados: reposicionados, com a pele deformada
 para seguir o esqueleto do atlas, simplificados e comprimidos.
@@ -157,17 +170,50 @@ tiroide, esófago, abdómen…) e é aplicado pelo gerador aos nomes; para os te
 `node scripts/converter-ptpt.mjs` depois de os editar. A Terminologia Anatómica mantém-se (tuba uterina,
 fíbula, valva); os nomes tradicionais chegam pela pesquisa.
 
+## Conta e sincronização (Supabase)
+
+As contas e os dados sincronizados ficam num projeto [Supabase](https://supabase.com) (plano gratuito chega
+para começar). Sem a configuração abaixo, a app funciona só no aparelho e o botão da conta não aparece.
+
+1. **Criar o projeto** em supabase.com (gratuito).
+2. **Criar a tabela e as regras de privacidade:** Supabase > SQL Editor > cole o conteúdo de
+   `supabase/schema.sql` > Run. Cada aluno só consegue ler e alterar o seu próprio documento, e a função
+   `apagar_a_minha_conta` permite-lhe apagar a conta e os dados.
+3. **Ligar a app:** copie `.env.example` para `.env.local` (fora do git) e preencha com o URL e a chave
+   pública (`anon`) de Project Settings > API. Reinicie `npm run dev`. A chave `service_role` **nunca** vai para
+   a app. Em produção, defina as mesmas duas variáveis no serviço onde publicar a app.
+4. **Escolher como se entra** (Authentication > Providers):
+   - _Email:_ ativo por defeito. Convém manter "Confirm email" ligado em produção.
+   - _Google:_ crie credenciais OAuth no Google Cloud (tipo "Web") com o URI de redirecionamento
+     `https://<o-seu-projeto>.supabase.co/auth/v1/callback` e cole o Client ID e o Secret no Supabase.
+   - _Telefone:_ precisa de um fornecedor de SMS (Twilio, MessageBird ou Vonage) configurado no Supabase;
+     cada SMS tem custo.
+5. **Endereços permitidos** (Authentication > URL Configuration): Site URL = o endereço da app em produção;
+   acrescente `http://localhost:5173` em Redirect URLs para desenvolvimento.
+
+**O que se sincroniza:** favoritos, notas, aulas concluídas e progresso do quiz (não as preferências nem o corpo
+escolhido, que são de cada aparelho). As alterações seguem para a conta poucos segundos depois de feitas, e as
+dos outros aparelhos chegam ao voltar à app. Se dois aparelhos mudarem ao mesmo tempo (um deles sem ligação),
+juntam-se sem perder nada: favoritos e aulas somam-se, em cada nota fica a mais recente e no quiz fica o registo
+com mais respostas (`src/data/nuvem.ts`). Ao sair da conta, o aparelho fica limpo (os dados continuam na conta).
+
+**Privacidade:** guarda-se apenas esse conjunto de dados, com consentimento expresso ao criar a conta, e o aluno
+pode apagar a conta e tudo o que está nela na janela da conta.
+
 ## Limitações conhecidas
 
 - **Estruturas ausentes no BodyParts3D:** cóccix, ossículos da orelha e alguns músculos (ex.: reto do abdome).
-- **Corpo feminino:** só a pele, os órgãos genitais internos e as mamas são femininos. O esqueleto
-  (incluindo a pelve, mais estreita que a feminina), os músculos e os demais órgãos continuam sendo os do
-  modelo masculino. O conjunto do HuBMAP não tem vagina, ligamentos nem órgãos genitais externos: a vagina
+- **Corpo feminino:** a pele, os órgãos genitais, as mamas e a pelve (ossos do quadril, sacro e cóccix
+  reais da doadora) são femininos. A pelve foi encaixada nas cabeças dos fémures do atlas por uma deformação
+  local e inclinada para assentar na L5; as aulas e os links usam o osso equivalente de cada corpo
+  (`equivalentes` em feminino.json). O resto do esqueleto, os músculos e os demais órgãos continuam a ser os
+  do modelo masculino (as cristas ilíacas femininas passam ligeiramente para fora dos músculos, mais
+  estreitos). O conjunto do HuBMAP não tem vagina, ligamentos nem órgãos genitais externos: a vagina
   e os ligamentos próprios dos ovários são modelos esquemáticos (marcados assim no app), assim como a
   cavidade do útero, o canal do colo, as rugas da vagina e o relevo dos folículos nos ovários, o monte do púbis foi
   recortado da própria pele da doadora, e os lábios maiores e menores e a glande do clitóris são modelados ao
   longo da rima do pudendo (esquemáticos, porque a pele da doadora nessa região tem pouca resolução). A bexiga
-  continua sendo a masculina, que não tem o mesmo formato da feminina. O útero do HuBMAP é só a parede
+  é a real da doadora e a uretra feminina (4 cm, até ao vestíbulo) é esquemática. O útero do HuBMAP é só a parede
   externa; a cavidade e o canal foram construídos por dentro e aparecem no corte frontal da aula. A pele foi
   deformada para seguir o esqueleto: polegares e dedos dos pés podem não coincidir exatamente com os ossos.
 - **Pulmões:** as superfícies foram reconstruídas a partir das árvores brônquicas e são aproximações

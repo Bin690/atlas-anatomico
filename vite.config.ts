@@ -14,11 +14,11 @@ export default defineConfig({
     // (grandes) ficam em cache à medida que são usados — ou todos de uma vez pelo painel de camadas.
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'icone.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Atlas Anatómico 3D',
-        short_name: 'Atlas 3D',
-        description: 'Atlas anatómico 3D interativo para estudantes de medicina e enfermagem.',
+        name: 'Nitu · Atlas Anatómico',
+        short_name: 'Nitu · Atlas Anatómico',
+        description: 'Nitu · Atlas Anatómico: atlas anatómico',
         lang: 'pt-PT',
         theme_color: '#020617',
         background_color: '#020617',

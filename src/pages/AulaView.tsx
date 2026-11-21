@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { BotaoVoltar } from '../components/BotaoVoltar'
 import { SeloPro } from '../components/ui/Pro'
-import { useCatalogo } from '../data'
+import { equivalenteNoCorpo, useCatalogo } from '../data'
 import { aulaPorId, variantesDe } from '../data/aulas'
 import { figuraPorSrc } from '../data/figuras'
 import { MiniaturaFigura } from '../components/ui/FiguraReferencia'
@@ -15,17 +15,20 @@ import { BotoesVersao, SimboloSexo } from '../components/ui/SeletorCorpo'
 /** Aplica um passo da aula ao 3D: camadas, raio-X, corte, isolamento, destaques e câmera. */
 function aplicarPasso(p: PassoAula) {
   const s = useAtlasStore.getState()
+  // Ids escritos para um corpo valem no outro (ex.: a pelve feminina substitui a masculina)
+  const eq = (ids?: string[]) => ids?.map((id) => equivalenteNoCorpo(id, s.sexo))
   s.definirCamadas(p.camadas)
   s.definirRaioX(!!p.raioX)
   s.definirCorte(p.corte ?? null)
   useAtlasStore.setState({
-    destaques: p.destaques ?? [],
-    focoIds: p.foco ?? null,
+    destaques: eq(p.destaques) ?? [],
+    focoIds: eq(p.foco) ?? null,
     vista: p.vista ?? null,
     selecionada: null,
     pontoSelecao: null,
     ocultas: new Set(),
-    isoladas: p.isolar?.length ? new Set(p.isolar) : null,
+    isoladas: p.isolar?.length ? new Set(eq(p.isolar)) : null,
+    regiaoAtiva: null,
   })
   s.focar()
 }
@@ -61,6 +64,7 @@ function ConteudoAula({ id }: { id: string | undefined }) {
         destaques: [],
         focoIds: null,
         isoladas: null,
+        regiaoAtiva: null,
         ocultas: new Set(),
         vista: null,
       })

@@ -29,8 +29,12 @@ type Jogo = {
 }
 type Fase = { tipo: 'config' } | Jogo | { tipo: 'fim'; acertos: number; total: number; erros: Pergunta[] }
 
-/** Prepara o 3D para a pergunta: só a camada da resposta, com o esqueleto em raio-X como referência. */
-function prepararCena(p: Pergunta, modo: Modo) {
+/**
+ * Prepara o 3D para a pergunta: só a camada da resposta, com o esqueleto em raio-X como referência.
+ * Em "Qual é esta estrutura?", só o alvo aparece sobre o esqueleto: as peças superficiais da mesma camada
+ * (o raio-X só atravessa as outras camadas) escondiam alvos profundos, como os músculos do pescoço.
+ */
+function prepararCena(p: Pergunta, modo: Modo, idsEsqueleto: string[]) {
   const s = useAtlasStore.getState()
   const camadas = [p.alvo.sistema]
   if (p.alvo.sistema !== 'esqueleto') camadas.push('esqueleto')
@@ -40,6 +44,7 @@ function prepararCena(p: Pergunta, modo: Modo) {
   s.definirQuiz(true, false)
   if (modo === 'identificar') {
     useAtlasStore.setState({ regiaoFoco: null, quizAguardandoToque: false, quizToque: null })
+    if (p.alvo.sistema !== 'esqueleto') s.isolar([...idsEsqueleto, p.alvo.id])
     s.selecionar(p.alvo.id, { focar: true })
   } else {
     // "Encontre" e "Ouça": enquadra a região ao redor, sem destacar a resposta
@@ -61,6 +66,7 @@ export function QuizPanel() {
   const [modo, setModo] = useState<Modo>('identificar')
   const [revisao, setRevisao] = useState(false)
   const [progresso, setProgresso] = useState(lerProgresso)
+  const idsEsqueleto = useMemo(() => estruturas.filter((e) => e.sistema === 'esqueleto').map((e) => e.id), [estruturas])
 
   // Guarda o estado do atlas para restaurar ao sair do quiz
   const anterior = useRef<{ camadas: string[]; raioX: boolean } | null>(null)
@@ -92,7 +98,7 @@ export function QuizPanel() {
   const iniciar = () => {
     const perguntas = gerarPerguntas(estruturas, conteudo, sistema, TOTAL, revisao ? aRevisar : [])
     if (!perguntas.length) return
-    prepararCena(perguntas[0], modo)
+    prepararCena(perguntas[0], modo, idsEsqueleto)
     setFase({ tipo: 'jogando', modo, perguntas, atual: 0, resposta: null, acertos: 0, erros: [] })
   }
 
@@ -132,7 +138,7 @@ export function QuizPanel() {
       setFase({ tipo: 'fim', acertos: fase.acertos, total: fase.perguntas.length, erros: fase.erros })
       return
     }
-    prepararCena(fase.perguntas[atual], fase.modo)
+    prepararCena(fase.perguntas[atual], fase.modo, idsEsqueleto)
     setFase({ ...fase, atual, resposta: null })
   }
 
@@ -144,87 +150,88 @@ export function QuizPanel() {
 
   if (fase.tipo === 'config')
     return (
-      <section aria-label="Configurar quiz" className={`${cartao} max-h-full overflow-y-auto`}>
-        <h2 className="text-lg font-semibold text-white">Teste seus conhecimentos</h2>
-
-        <p className="mt-4 text-xs font-semibold tracking-wide text-slate-400 uppercase">Modo</p>
-        <div className="mt-2 grid gap-2 sm:grid-cols-3" role="radiogroup" aria-label="Modo do quiz">
-          {(
-            [
-              ['identificar', 'Qual é esta estrutura?', 'Escolha o nome entre 4 opções', null],
+      <section aria-label="Configurar quiz" className={`${cartao} flex min-h-0 flex-col`}>
+        <h2 className="text-lg font-semibold text-white">Teste os seus conhecimentos</h2>
+        <div className="-mx-4 min-h-0 flex-1 overflow-y-auto overscroll-contain px-4">
+          <p className="mt-4 text-xs font-semibold tracking-wide text-slate-400 uppercase">Modo</p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-3" role="radiogroup" aria-label="Modo do quiz">
+            {(
               [
-                'localizar',
-                'Encontre a estrutura',
-                'Leia o nome e toque nela no modelo 3D',
-                'O quiz "Encontre a estrutura"',
-              ],
-              ['ouvir', 'Ouça e encontre', 'Ouça o nome e toque nela no modelo 3D', 'O quiz "Ouça e encontre"'],
-            ] as const
-          ).map(([id, titulo, dica, recursoPro]) => (
-            <button
-              key={id}
-              type="button"
-              role="radio"
-              aria-checked={modo === id}
-              onClick={() => (recursoPro ? exigirPro(recursoPro, () => setModo(id)) : setModo(id))}
-              className={`rounded-xl border p-3 text-left transition ${modo === id ? 'border-sky-400 bg-sky-400/15' : 'border-borda hover:border-slate-500'}`}
-            >
-              <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
-                {titulo} {recursoPro && !premium && <SeloPro />}
-              </span>
-              <span className="mt-0.5 block text-[11px] text-slate-400">{dica}</span>
-            </button>
-          ))}
-        </div>
-
-        <p className="mt-4 text-xs font-semibold tracking-wide text-slate-400 uppercase">Sistema</p>
-        <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Sistema do quiz">
-          {[{ id: null, nome: 'Todos os sistemas', cor: '#94a3b8' }, ...opcoesSistema].map((s) => (
-            <button
-              key={s.id ?? 'todos'}
-              type="button"
-              role="radio"
-              aria-checked={sistema === s.id}
-              onClick={() => setSistema(s.id)}
-              className={chip(sistema === s.id)}
-            >
-              <span className="size-2 rounded-full" style={{ backgroundColor: s.cor }} aria-hidden />
-              {s.nome}
-              {desempenho.get(s.id ?? '') && (
-                <span className="text-[10px] text-slate-400">
-                  {Math.round((desempenho.get(s.id!)!.acertos / desempenho.get(s.id!)!.total) * 100)}%
+                ['identificar', 'Qual é esta estrutura?', 'Escolha o nome entre 4 opções', null],
+                [
+                  'localizar',
+                  'Encontre a estrutura',
+                  'Leia o nome e toque nela no modelo 3D',
+                  'O quiz "Encontre a estrutura"',
+                ],
+                ['ouvir', 'Ouça e encontre', 'Ouça o nome e toque nela no modelo 3D', 'O quiz "Ouça e encontre"'],
+              ] as const
+            ).map(([id, titulo, dica, recursoPro]) => (
+              <button
+                key={id}
+                type="button"
+                role="radio"
+                aria-checked={modo === id}
+                onClick={() => (recursoPro ? exigirPro(recursoPro, () => setModo(id)) : setModo(id))}
+                className={`rounded-xl border p-3 text-left transition ${modo === id ? 'border-sky-400 bg-sky-400/15' : 'border-borda hover:border-slate-500'}`}
+              >
+                <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
+                  {titulo} {recursoPro && !premium && <SeloPro />}
                 </span>
-              )}
-            </button>
-          ))}
-        </div>
+                <span className="mt-0.5 block text-[11px] text-slate-400">{dica}</span>
+              </button>
+            ))}
+          </div>
 
-        <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-xl border border-borda p-3">
-          <input
-            type="checkbox"
-            checked={revisao}
-            onChange={(e) => {
-              const marcar = e.target.checked
-              if (!marcar) setRevisao(false)
-              else exigirPro('A revisão espaçada dos seus erros', () => setRevisao(true))
-            }}
-            className="size-4 accent-sky-400"
-          />
-          <span className="flex-1 text-sm text-slate-200">
-            Revisar meus erros primeiro
-            <span className="block text-[11px] text-slate-400">
-              {aRevisar.length
-                ? `${aRevisar.length} estrutura${aRevisar.length > 1 ? 's' : ''} para revisar agora`
-                : 'Nenhuma revisão pendente'}
+          <p className="mt-4 text-xs font-semibold tracking-wide text-slate-400 uppercase">Sistema</p>
+          <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Sistema do quiz">
+            {[{ id: null, nome: 'Todos os sistemas', cor: '#94a3b8' }, ...opcoesSistema].map((s) => (
+              <button
+                key={s.id ?? 'todos'}
+                type="button"
+                role="radio"
+                aria-checked={sistema === s.id}
+                onClick={() => setSistema(s.id)}
+                className={chip(sistema === s.id)}
+              >
+                <span className="size-2 rounded-full" style={{ backgroundColor: s.cor }} aria-hidden />
+                {s.nome}
+                {desempenho.get(s.id ?? '') && (
+                  <span className="text-[10px] text-slate-400">
+                    {Math.round((desempenho.get(s.id!)!.acertos / desempenho.get(s.id!)!.total) * 100)}%
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-xl border border-borda p-3">
+            <input
+              type="checkbox"
+              checked={revisao}
+              onChange={(e) => {
+                const marcar = e.target.checked
+                if (!marcar) setRevisao(false)
+                else exigirPro('A revisão espaçada dos seus erros', () => setRevisao(true))
+              }}
+              className="size-4 accent-sky-400"
+            />
+            <span className="flex-1 text-sm text-slate-200">
+              Rever primeiro os meus erros
+              <span className="block text-[11px] text-slate-400">
+                {aRevisar.length
+                  ? `${aRevisar.length} estrutura${aRevisar.length > 1 ? 's' : ''} para rever agora`
+                  : 'Nenhuma revisão pendente'}
+              </span>
             </span>
-          </span>
-          {!premium && <SeloPro />}
-        </label>
-
+            {!premium && <SeloPro />}
+          </label>
+        </div>
+        {/* Fora da área com rolagem: sempre visível, mesmo em ecrãs baixos */}
         <button
           type="button"
           onClick={iniciar}
-          className="mt-5 min-h-11 w-full rounded-xl bg-sky-400 font-semibold text-slate-950 transition hover:bg-sky-300"
+          className="mt-3 min-h-11 w-full shrink-0 rounded-xl bg-sky-400 font-semibold text-slate-950 transition hover:bg-sky-300"
         >
           Começar ({TOTAL} perguntas)
         </button>
@@ -237,7 +244,7 @@ export function QuizPanel() {
     if (nota >= 80) mensagem = 'Excelente! 🎉'
     else if (nota >= 50) mensagem = 'Bom trabalho — reveja os erros abaixo.'
     return (
-      <section aria-label="Resultado do quiz" className={`${cartao} max-h-full overflow-y-auto`}>
+      <section aria-label="Resultado do quiz" className={`${cartao} min-h-0 overflow-y-auto overscroll-contain`}>
         <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase">Resultado</p>
         <p className="mt-1 text-4xl font-bold text-white">
           {fase.acertos}
@@ -255,7 +262,7 @@ export function QuizPanel() {
               ))}
             </ul>
             <p className="mt-2 text-[11px] text-slate-400">
-              Elas voltarão nas próximas rodadas com “Revisar meus erros primeiro”.
+              Elas voltarão nas próximas rondas com “Rever primeiro os meus erros”.
             </p>
           </>
         )}
@@ -276,7 +283,7 @@ export function QuizPanel() {
   const tocada: Estrutura | undefined = fase.resposta ? porId.get(fase.resposta) : undefined
 
   return (
-    <section aria-label="Pergunta do quiz" className={`${cartao} flex max-h-full flex-col`}>
+    <section aria-label="Pergunta do quiz" className={`${cartao} flex min-h-0 flex-col`}>
       <header className="flex items-center justify-between text-xs text-slate-400">
         <span>
           Pergunta {fase.atual + 1} de {fase.perguntas.length}

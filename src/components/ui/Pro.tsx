@@ -53,7 +53,7 @@ export function TelaPro() {
         </button>
         <SeloPro />
         <h2 id="titulo-pro" className="mt-3 text-xl font-bold text-white">
-          Atlas 3D PRO
+          Nitu PRO
         </h2>
         <p className="mt-1 text-sm text-slate-300">
           <strong className="text-white">{recurso}</strong> faz parte do plano PRO.

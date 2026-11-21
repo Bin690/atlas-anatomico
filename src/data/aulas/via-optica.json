@@ -1,0 +1,136 @@
+{
+  "id": "via-optica",
+  "titulo": "Via óptica",
+  "resumo": "Da retina ao córtex visual: nervo óptico, quiasma, trato óptico, corpo geniculado lateral e defeitos do campo visual.",
+  "duracaoMin": 6,
+  "premium": true,
+  "ordem": 11,
+  "passos": [
+    {
+      "titulo": "Da retina ao córtex",
+      "texto": "A informação visual segue uma cadeia de neurónios: retina → nervo óptico → quiasma óptico → trato óptico → corpo geniculado lateral (no tálamo) → radiação óptica → córtex visual primário, no lobo occipital. Conhecer este trajeto permite localizar uma lesão a partir do defeito do campo visual.",
+      "camadas": ["nervoso", "olhos"],
+      "isolar": [
+        "FMA58607",
+        "FMA58608",
+        "FMA50875",
+        "FMA50878",
+        "FMA62045",
+        "FMA62382",
+        "FMA67936",
+        "FMA73303",
+        "FMA73304",
+        "FMA72975",
+        "FMA72976"
+      ],
+      "destaques": [
+        "FMA58607",
+        "FMA58608",
+        "FMA50875",
+        "FMA50878",
+        "FMA62045",
+        "FMA62382",
+        "FMA67936",
+        "FMA73303",
+        "FMA73304",
+        "FMA72975",
+        "FMA72976"
+      ],
+      "foco": [
+        "FMA58607",
+        "FMA58608",
+        "FMA50875",
+        "FMA50878",
+        "FMA62045",
+        "FMA62382",
+        "FMA67936",
+        "FMA73303",
+        "FMA73304",
+        "FMA72975",
+        "FMA72976"
+      ],
+      "vista": [0, -1, 0.15]
+    },
+    {
+      "titulo": "O bulbo do olho e a retina",
+      "texto": "A luz atravessa a córnea, a lente e o corpo vítreo até à parte óptica da retina, que reveste o fundo do olho por dentro da corioide e da esclera. Os fotorrecetores (cones e bastonetes) transmitem o sinal às células ganglionares, cujos axónios convergem no disco óptico (o ponto cego) e saem do olho como nervo óptico. No aumento da pressão intracraniana, o disco óptico fica edemaciado (papiledema), visível à fundoscopia.",
+      "camadas": ["olhos", "nervoso"],
+      "isolar": [
+        "FMA58271",
+        "FMA58272",
+        "FMA58239",
+        "FMA58240",
+        "FMA58242",
+        "FMA58243",
+        "FMA58828",
+        "FMA58829",
+        "FMA58607",
+        "FMA58608",
+        "FMA50875",
+        "FMA50878"
+      ],
+      "destaques": ["FMA58607", "FMA58608", "FMA58242", "FMA58243", "FMA58239", "FMA58240"],
+      "foco": ["FMA58271", "FMA58272", "FMA58607", "FMA58608"],
+      "vista": [0.6, 0.1, 0.8]
+    },
+    {
+      "titulo": "Nervo óptico e quiasma",
+      "texto": "O nervo óptico (II par craniano) sai da órbita pelo canal óptico. No quiasma óptico, por cima da hipófise, cruzam apenas as fibras das metades nasais das retinas, que recebem a luz dos campos visuais temporais; as fibras das metades temporais continuam do mesmo lado.",
+      "camadas": ["nervoso", "olhos", "endocrino"],
+      "isolar": ["FMA58607", "FMA58608", "FMA50875", "FMA50878", "FMA62045", "FMA62382", "FMA67936", "FMA13889"],
+      "destaques": ["FMA50875", "FMA50878", "FMA62045", "FMA13889"],
+      "foco": ["FMA50875", "FMA50878", "FMA62045"],
+      "vista": [0, -1, 0.15]
+    },
+    {
+      "titulo": "Trato óptico e corpo geniculado lateral",
+      "texto": "Depois do quiasma, cada trato óptico leva as fibras da retina temporal do mesmo lado e da retina nasal do lado oposto: ou seja, todo o campo visual do lado oposto. A maioria das fibras termina no corpo geniculado lateral do tálamo. Algumas seguem pelo braço do colículo superior para o colículo superior (reflexos de orientação visual) e para a área pré-tetal, que comanda o reflexo fotomotor das pupilas.",
+      "camadas": ["nervoso"],
+      "isolar": [
+        "FMA50875",
+        "FMA50878",
+        "FMA62045",
+        "FMA62382",
+        "FMA67936",
+        "FMA73303",
+        "FMA73304",
+        "FMA73461",
+        "FMA73462",
+        "FMA73422",
+        "FMA73423"
+      ],
+      "destaques": ["FMA62382", "FMA67936", "FMA73303", "FMA73304", "FMA73422", "FMA73423"],
+      "foco": ["FMA62382", "FMA67936", "FMA73303", "FMA73304", "FMA73422", "FMA73423"],
+      "vista": [0, -1, 0.15]
+    },
+    {
+      "titulo": "Radiação óptica e córtex visual",
+      "texto": "Do corpo geniculado lateral parte a radiação óptica, que se abre em leque até ao córtex visual primário (área 17 de Brodmann), nas margens do sulco calcarino, na face medial do lobo occipital. As fibras do campo superior passam pelo lobo temporal (alça de Meyer). O lobo occipital é irrigado pela artéria cerebral posterior: um AVC nesse território dá hemianopsia homónima do lado oposto, muitas vezes com preservação da visão central (macular).",
+      "camadas": ["nervoso"],
+      "isolar": ["FMA62382", "FMA67936", "FMA73303", "FMA73304", "FMA72975", "FMA72976"],
+      "destaques": ["FMA72975", "FMA72976", "FMA73303", "FMA73304"],
+      "foco": ["FMA72975", "FMA72976", "FMA73303", "FMA73304"],
+      "vista": [0, 0.2, -1]
+    },
+    {
+      "titulo": "Correlação clínica: defeitos do campo visual",
+      "texto": "Uma lesão do nervo óptico dá cegueira de um olho. A compressão do quiasma por baixo, típica do adenoma da hipófise, atinge as fibras nasais cruzadas e dá hemianopsia bitemporal (perde-se a visão lateral dos dois lados: o doente choca com objetos ao lado). Lesões do trato, da radiação ou do córtex dão hemianopsia homónima do lado oposto.",
+      "camadas": ["nervoso", "olhos", "endocrino"],
+      "isolar": [
+        "FMA58607",
+        "FMA58608",
+        "FMA50875",
+        "FMA50878",
+        "FMA62045",
+        "FMA62382",
+        "FMA67936",
+        "FMA73303",
+        "FMA73304",
+        "FMA13889"
+      ],
+      "destaques": ["FMA62045", "FMA13889"],
+      "foco": ["FMA50875", "FMA50878", "FMA62045", "FMA13889"],
+      "vista": [0, -1, 0.15]
+    }
+  ]
+}

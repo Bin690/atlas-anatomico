@@ -6,7 +6,7 @@ declare const __DATA_BUILD__: string
 
 function Link({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="text-sky-300 underline-offset-2 hover:underline">
+    <a href={href} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-slate-300">
       {children}
     </a>
   )
@@ -19,8 +19,15 @@ function Link({ href, children }: { href: string; children: ReactNode }) {
 export function Sobre({ aberto, fechar }: { aberto: boolean; fechar: () => void }) {
   return (
     <Janela aberta={aberto} fechar={fechar} titulo="Sobre o atlas">
+      <div className="flex items-center gap-3">
+        <img src="/icone.svg" alt="" className="size-16 shrink-0" />
+        <div>
+          <p className="text-base font-semibold text-white">Nitu</p>
+          <p className="text-xs text-slate-400">Atlas anatómico</p>
+        </div>
+      </div>
       <Secao titulo="Como usar">
-        <ul className="list-disc space-y-1 pl-5">
+        <ul className="list-disc space-y-1 pl-4 text-xs leading-relaxed">
           <li>
             Toque em qualquer parte do corpo para ver o nome e ouvi-lo (o altifalante no topo liga e desliga a voz).
           </li>
@@ -38,37 +45,15 @@ export function Sobre({ aberto, fechar }: { aberto: boolean; fechar: () => void 
         </ul>
       </Secao>
 
-      <Secao titulo="Créditos e licenças">
-        <ul className="space-y-2">
-          <li>
-            Modelos 3D: <Link href="https://dbarchive.biosciencedbc.jp/en/bodyparts3d/">BodyParts3D</Link>, © The
-            Database Center for Life Science, licença{' '}
-            <Link href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</Link>. Adaptados: simplificados,
-            convertidos e, nos pulmões, com superfícies reconstruídas.
-          </li>
-          <li>
-            Corpo feminino (pele, órgãos genitais e mamas):{' '}
-            <Link href="https://humanatlas.io/3d-reference-library">HuBMAP Human Reference Atlas</Link>, órgãos de
-            referência 3D de K. Browne e H. Schlehlein (Visible Human Female), licença{' '}
-            <Link href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</Link>. Adaptados: reposicionados, com a
-            pele deformada para seguir o esqueleto do atlas.
-          </li>
-          <li>
-            Voz: <Link href="https://huggingface.co/rhasspy/piper-voices">Piper</Link>, voz pt_PT “tugão”, treinada com
-            dados de licença CC0.
-          </li>
-        </ul>
-      </Secao>
-
-      <Secao titulo="Sobre os modelos">
+      <div className="space-y-1 text-[11px] leading-snug text-slate-500">
         <p>
-          Os modelos 3D vêm de corpos reais digitalizados. Algumas estruturas que não existem nesses conjuntos, como a
-          vagina, a cavidade do útero, os lábios e o clitóris, são representações esquemáticas e estão indicadas no
-          cartão de cada uma. Conteúdo educativo: não substitui avaliação ou orientação médica.
+          <Link href="https://dbarchive.biosciencedbc.jp/en/bodyparts3d/">BodyParts3D</Link> &{' '}
+          <Link href="https://humanatlas.io/3d-reference-library">HuBMAP Human Reference Atlas</Link>
         </p>
-      </Secao>
-
-      <p className="text-xs text-slate-500">Versão de {__DATA_BUILD__}</p>
+        <p>© The Database Center for Life Science, K. Browne e H. Schlehlein, CC BY 4.0 (adaptados).</p>
+        <p>.</p>
+        <p>Versão de {__DATA_BUILD__}</p>
+      </div>
     </Janela>
   )
 }

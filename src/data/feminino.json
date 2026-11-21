@@ -34,8 +34,16 @@
       }
     },
     "genital": {
-      "modelo": "/models/genital-feminino.glb?v=b2e40d1730",
-      "total": 26
+      "modelo": "/models/genital-feminino.glb?v=8d09ea8140",
+      "total": 26,
+      "emprestadas": {
+        "VHF_hip_bone_R": "esqueleto",
+        "VHF_hip_bone_L": "esqueleto",
+        "VHF_sacrum": "esqueleto",
+        "VHF_coccyx": "esqueleto",
+        "VHF_urinary_bladder": "urinario",
+        "VHF_urethra": "urinario"
+      }
     },
     "mamas": {
       "modelo": "/models/mamas-feminina.glb?v=5337300453",
@@ -78,6 +86,12 @@
       "pai": "Mama esquerda"
     },
     {
+      "id": "VHF_urinary_bladder",
+      "nome": "Bexiga urinária",
+      "en": "Urinary bladder",
+      "sistema": "urinario"
+    },
+    {
       "id": "VHF_cervical_canal",
       "nome": "Canal do colo do útero",
       "en": "Cervical canal",
@@ -90,6 +104,12 @@
       "en": "Uterine cavity",
       "sistema": "genital",
       "esquematico": true
+    },
+    {
+      "id": "VHF_coccyx",
+      "nome": "Cóccix",
+      "en": "Coccyx",
+      "sistema": "esqueleto"
     },
     {
       "id": "VHF_cervix",
@@ -265,6 +285,18 @@
       "pai": "Pudendo feminino (vulva)"
     },
     {
+      "id": "VHF_hip_bone_R",
+      "nome": "Osso do quadril direito",
+      "en": "Right hip bone",
+      "sistema": "esqueleto"
+    },
+    {
+      "id": "VHF_hip_bone_L",
+      "nome": "Osso do quadril esquerdo",
+      "en": "Left hip bone",
+      "sistema": "esqueleto"
+    },
+    {
       "id": "VHF_external_cervical_os",
       "nome": "Óstio do útero (óstio externo)",
       "en": "external cervical os",
@@ -341,6 +373,12 @@
       "esquematico": true
     },
     {
+      "id": "VHF_sacrum",
+      "nome": "Sacro",
+      "en": "Sacrum",
+      "sistema": "esqueleto"
+    },
+    {
       "id": "VHF_lower_uterine_segment",
       "nome": "Segmento inferior do útero",
       "en": "lower uterine segment",
@@ -390,6 +428,13 @@
       "pai": "Mama esquerda"
     },
     {
+      "id": "VHF_urethra",
+      "nome": "Uretra feminina",
+      "en": "Female urethra",
+      "sistema": "urinario",
+      "esquematico": true
+    },
+    {
       "id": "VHF_vagina",
       "nome": "Vagina",
       "en": "Vagina",
@@ -405,6 +450,13 @@
       "esquematico": true
     }
   ],
+  "equivalentes": {
+    "FMA16586": "VHF_hip_bone_R",
+    "FMA16587": "VHF_hip_bone_L",
+    "FMA16202": "VHF_sacrum",
+    "FMA15900": "VHF_urinary_bladder",
+    "FMA19667": "VHF_urethra"
+  },
   "somenteMasculino": [
     "FMA20818",
     "FMA20819",
@@ -416,6 +468,10 @@
     "FMA21384",
     "FMA21386",
     "FMA14341",
-    "FMA14345"
+    "FMA14345",
+    "FMA16586",
+    "FMA16587",
+    "FMA16202",
+    "FMA15900"
   ]
 }

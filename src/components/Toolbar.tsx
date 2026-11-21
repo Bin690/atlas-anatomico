@@ -63,6 +63,8 @@ export function Toolbar() {
       <Botao
         rotulo="Corpo todo"
         onClick={() => {
+          // Corpo todo mesmo: desfaz o isolamento (ex.: "Isolar a mão") e enquadra o corpo inteiro
+          useAtlasStore.getState().mostrarTudo()
           useAtlasStore.setState({ vista: null })
           selecionar(null, { focar: true })
         }}

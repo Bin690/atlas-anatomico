@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { type ThreeEvent } from '@react-three/fiber'
+import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import {
   BatchedMesh,
@@ -19,6 +19,7 @@ import {
 import { useCatalogo } from '../../data'
 import { dizerNome } from '../../hooks/voz'
 import { useAtlasStore } from '../../store/useAtlasStore'
+import { useBatimento } from '../../store/preferencias'
 import type { Sistema } from '../../types/atlas'
 import { atualizarPlano, camadasMontadas, intersecaoReal, PLANO } from './corte'
 
@@ -34,6 +35,8 @@ interface InfoCamada {
   indice: Map<string, number>
   geometria: number[]
   corBase: Color[]
+  /** Matriz de cada instância em repouso (a animação do batimento parte dela). */
+  matrizesBase: Matrix4[]
 }
 
 /** Registro global: id da estrutura -> camada/instância (para foco da câmera e rótulos). */
@@ -243,11 +246,13 @@ function construir(
   const ids: string[] = []
   const geometria: number[] = []
   const corBase: Color[] = []
+  const matrizesBase: Matrix4[] = []
   const indice = new Map<string, number>()
   for (const m of meshes) {
     const g = malha.addGeometry(m.geometry as BufferGeometry)
     const i = malha.addInstance(g)
     malha.setMatrixAt(i, m.matrixWorld)
+    matrizesBase[i] = m.matrixWorld.clone()
     const cor = ((m.material as MeshStandardMaterial).color ?? new Color('#cccccc')).clone()
     malha.setColorAt(i, cor)
     ids[i] = m.name
@@ -257,7 +262,21 @@ function construir(
   }
   // Permite descobrir a estrutura de uma interseção de raio (rótulos, oclusão)
   malha.userData.ids = ids
-  return { malha, ids, indice, geometria, corBase }
+  return { malha, ids, indice, geometria, corBase, matrizesBase }
+}
+
+/** Ciclo cardíaco: 72 batimentos por minuto. */
+const CICLO = 60 / 72
+/** Aumento de escala no pico do batimento (3,5%): visível sem deformar a leitura da anatomia. */
+const AMPLITUDE = 0.035
+const pulso = (t: number, centro: number, largura: number) => Math.exp(-(((t - centro) / largura) ** 2))
+/**
+ * Escala do coração ao longo do ciclo: o "tum" (contração, mais forte) e o "tá" (fecho das válvulas, mais
+ * fraco), com o resto do ciclo em repouso.
+ */
+export const escalaDoBatimento = (segundos: number) => {
+  const t = segundos % CICLO
+  return 1 + AMPLITUDE * (pulso(t, 0.08, 0.06) + 0.55 * pulso(t, 0.34, 0.05))
 }
 
 interface CamadaProps {
@@ -283,6 +302,38 @@ function CamadaBatchedBase({ sistema, url, visivel, translucida }: CamadaProps) 
     [scene, sistema.estilo, solidas, sistema.esbatimento],
   )
   const { malha, ids, indice, corBase } = info
+
+  // Batimento do coração: a camada pulsa a partir do seu centro (só a do coração, ligada nas preferências,
+  // e fora do quiz, onde o movimento distrairia)
+  const batimento = useBatimento()
+  const modoQuiz = useAtlasStore((s) => s.modoQuiz)
+  const centroCoracao = useMemo(() => {
+    if (sistema.id !== 'coracao') return null
+    const caixa = new Box3()
+    const tmp = new Box3()
+    info.matrizesBase.forEach((base, i) => {
+      info.malha.getBoundingBoxAt(info.geometria[i], tmp)
+      caixa.union(tmp.applyMatrix4(base))
+    })
+    return caixa.getCenter(new Vector3())
+  }, [info, sistema.id])
+  const escalaAplicada = useRef(1)
+  useFrame(({ clock }) => {
+    if (!centroCoracao) return
+    const escala = batimento && !modoQuiz && visivel ? escalaDoBatimento(clock.elapsedTime) : 1
+    if (Math.abs(escala - escalaAplicada.current) < 1e-5) return
+    escalaAplicada.current = escala
+    // M' = T(centro) · S(escala) · T(-centro) · base
+    const m = new Matrix4()
+    const t = new Matrix4()
+    info.matrizesBase.forEach((base, i) => {
+      m.makeTranslation(centroCoracao.x, centroCoracao.y, centroCoracao.z)
+        .multiply(t.makeScale(escala, escala, escala))
+        .multiply(t.makeTranslation(-centroCoracao.x, -centroCoracao.y, -centroCoracao.z))
+        .multiply(base)
+      info.malha.setMatrixAt(i, m)
+    })
+  })
 
   const selecionada = useAtlasStore((s) => s.selecionada)
   const hover = useAtlasStore((s) => s.hover)

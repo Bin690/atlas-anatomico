@@ -1,5 +1,5 @@
 import { aplicarCamera, lerCamera } from '../components/3d/RigCamera'
-import { catalogoDoCorpo } from '../data'
+import { catalogoDoCorpo, equivalenteNoCorpo } from '../data'
 import { useAtlasStore, type PlanoCorte } from '../store/useAtlasStore'
 import type { Vec3 } from '../types/atlas'
 
@@ -36,8 +36,11 @@ export function aplicarVistaDoLink(params: URLSearchParams): boolean {
   const corpo = params.get('corpo')
   if (corpo === 'f' || corpo === 'm') s.definirSexo(corpo === 'f' ? 'feminino' : 'masculino', { lembrar: false })
   // Os ids são validados no catálogo do corpo do link (o útero não existe no corpo masculino, por exemplo)
-  const catalogo = catalogoDoCorpo(useAtlasStore.getState().sexo)
+  const sexo = useAtlasStore.getState().sexo
+  const catalogo = catalogoDoCorpo(sexo)
   const idValido = (id: string) => !!catalogo?.porId.has(id)
+  // Ids do outro corpo com equivalente neste (ex.: a pelve) são trocados pelo equivalente
+  const noCorpo = (id: string) => equivalenteNoCorpo(id, sexo)
   if (params.has('camadas')) s.definirCamadas(lista('camadas'))
   s.definirRaioX(params.get('raiox') === '1')
 
@@ -47,9 +50,10 @@ export function aplicarVistaDoLink(params: URLSearchParams): boolean {
     s.definirCorte({ plano: corte[0] as PlanoCorte, posicao: Number(corte[1]), inverter: corte[2] === '1', normal })
   } else s.definirCorte(null)
 
-  const isolar = lista('isolar').filter(idValido)
+  const isolar = lista('isolar').map(noCorpo).filter(idValido)
   useAtlasStore.setState({ isoladas: isolar.length ? new Set(isolar) : null, ocultas: new Set() })
-  const peca = params.get('peca')
+  const pedida = params.get('peca')
+  const peca = pedida ? noCorpo(pedida) : null
   s.selecionar(peca && idValido(peca) ? peca : null)
 
   // A câmera vai por último, depois de as camadas começarem a montar
