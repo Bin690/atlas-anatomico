@@ -5,6 +5,12 @@ import { useConta, type Resposta } from '../../store/conta'
 import { IconeGoogle } from './Icones'
 import { Janela, Secao } from './Janela'
 
+/**
+ * Métodos de entrada ativos, além do email. Para ligar um deles: ativá-lo no Supabase (Authentication >
+ * Providers; o Google precisa de credenciais no Google Cloud, o telefone de um fornecedor de SMS) e mudar aqui.
+ */
+const METODOS = { google: false, telefone: false }
+
 type Separador = 'entrar' | 'criar'
 type Metodo = 'email' | 'telefone'
 type Mensagem = { tipo: 'erro' | 'aviso'; texto: string } | null
@@ -56,10 +62,31 @@ export function Conta() {
         <Painel />
       ) : fase === 'sem-sessao' ? (
         <Entrada />
+      ) : fase === 'indisponivel' ? (
+        <NaoConfigurada />
       ) : (
         <p>A verificar a sessão…</p>
       )}
     </Janela>
+  )
+}
+
+/** Só se vê em desenvolvimento: falta ligar o projeto Supabase. */
+function NaoConfigurada() {
+  return (
+    <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+      <p className="text-sm font-semibold text-white">A conta ainda não está ligada</p>
+      <p>
+        Falta ligar um projeto Supabase para guardar contas e sincronizar os dados. Em versões publicadas, este botão
+        fica escondido enquanto isso não estiver feito.
+      </p>
+      <ol className="list-decimal space-y-1 pl-4 text-slate-400">
+        <li>Crie o projeto em supabase.com e corra o ficheiro supabase/schema.sql no SQL Editor.</li>
+        <li>Copie .env.example para .env.local e preencha o URL e a chave pública.</li>
+        <li>Reinicie o npm run dev.</li>
+      </ol>
+      <p className="text-slate-500">Os passos completos estão em “Conta e sincronização”, no README.</p>
+    </div>
   )
 }
 
@@ -150,21 +177,25 @@ function Entrada() {
         ))}
       </div>
 
-      <button
-        type="button"
-        disabled={ocupado}
-        onClick={() => {
-          if (!pedirConsentimento()) return
-          void correr(acoes.entrarComGoogle)
-        }}
-        className={`${botaoSecundario} flex items-center justify-center gap-2`}
-      >
-        <IconeGoogle /> Continuar com o Google
-      </button>
+      {METODOS.google && (
+        <>
+          <button
+            type="button"
+            disabled={ocupado}
+            onClick={() => {
+              if (!pedirConsentimento()) return
+              void correr(acoes.entrarComGoogle)
+            }}
+            className={`${botaoSecundario} flex items-center justify-center gap-2`}
+          >
+            <IconeGoogle /> Continuar com o Google
+          </button>
 
-      <p className="flex items-center gap-3 text-xs text-slate-500" aria-hidden>
-        <span className="h-px flex-1 bg-borda" /> ou <span className="h-px flex-1 bg-borda" />
-      </p>
+          <p className="flex items-center gap-3 text-xs text-slate-500" aria-hidden>
+            <span className="h-px flex-1 bg-borda" /> ou <span className="h-px flex-1 bg-borda" />
+          </p>
+        </>
+      )}
 
       {metodo === 'email' ? (
         <form onSubmit={enviarEmail} className="space-y-3" noValidate>
@@ -256,17 +287,19 @@ function Entrada() {
         </form>
       )}
 
-      <button
-        type="button"
-        onClick={() => {
-          setMetodo(metodo === 'email' ? 'telefone' : 'email')
-          setMensagem(null)
-          setRecuperar(false)
-        }}
-        className="block w-full text-center text-xs text-sky-300 underline underline-offset-2"
-      >
-        {metodo === 'email' ? 'Entrar com o número de telefone' : 'Entrar com email e palavra-passe'}
-      </button>
+      {METODOS.telefone && (
+        <button
+          type="button"
+          onClick={() => {
+            setMetodo(metodo === 'email' ? 'telefone' : 'email')
+            setMensagem(null)
+            setRecuperar(false)
+          }}
+          className="block w-full text-center text-xs text-sky-300 underline underline-offset-2"
+        >
+          {metodo === 'email' ? 'Entrar com o número de telefone' : 'Entrar com email e palavra-passe'}
+        </button>
+      )}
     </>
   )
 }

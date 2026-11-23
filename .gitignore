@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ficheiros temporários da ferramenta do Supabase
+supabase/.temp/

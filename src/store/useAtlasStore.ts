@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { PAGAMENTO_ATIVO } from '../data/planos'
 import type { Sexo, Vec3 } from '../types/atlas'
 
 export type Painel = 'camadas' | 'busca' | 'cortes' | 'aulas' | null
@@ -152,7 +153,9 @@ export const useAtlasStore = create<AtlasState>()((set, get) => ({
   emAula: false,
   destaques: [],
   focoIds: null,
+  // Sem pagamento ativo, tudo está liberado
   premium: (() => {
+    if (!PAGAMENTO_ATIVO) return true
     try {
       return localStorage.getItem('atlas3d:premium-demo') === '1'
     } catch {

@@ -1,8 +1,10 @@
+import { PAGAMENTO_ATIVO } from '../../data/planos'
 import { useAtlasStore } from '../../store/useAtlasStore'
 import { IconeFechar } from './Icones'
 
 /** Selo "PRO" ao lado de recursos pagos. */
 export function SeloPro({ className = '' }: { className?: string }) {
+  if (!PAGAMENTO_ATIVO) return null
   return (
     <span
       className={`inline-flex items-center rounded-md bg-gradient-to-r from-amber-300 to-orange-400 px-1.5 py-0.5 text-[9px] leading-none font-bold tracking-wider text-slate-950 ${className}`}
@@ -29,7 +31,7 @@ export function TelaPro() {
   const recurso = useAtlasStore((s) => s.paywall)
   const fechar = useAtlasStore((s) => s.fecharPaywall)
   const definirPremium = useAtlasStore((s) => s.definirPremium)
-  if (!recurso) return null
+  if (!recurso || !PAGAMENTO_ATIVO) return null
 
   return (
     <div

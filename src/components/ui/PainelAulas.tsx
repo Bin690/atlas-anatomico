@@ -5,6 +5,7 @@ import { useAtlasStore } from '../../store/useAtlasStore'
 import { useCaderno } from '../../store/caderno'
 import { IconeFechar } from './Icones'
 import { BotoesVersao, SimboloSexo } from './SeletorCorpo'
+import { PAGAMENTO_ATIVO } from '../../data/planos'
 import { SeloPro } from './Pro'
 
 export function PainelAulas() {
@@ -58,6 +59,8 @@ function Concluida({ id }: { id: string }) {
 }
 
 function Selos({ aulas, premium }: { aulas: Aula[]; premium: boolean }) {
+  // Sem pagamento, tudo é grátis: os selos não acrescentam nada
+  if (!PAGAMENTO_ATIVO) return null
   const paga = aulas.some((a) => a.premium)
   return (
     <>

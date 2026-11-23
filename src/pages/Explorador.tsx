@@ -25,7 +25,7 @@ import { PainelCortes } from '../components/ui/PainelCortes'
 import { PainelAulas } from '../components/ui/PainelAulas'
 import { SeletorCorpo } from '../components/ui/SeletorCorpo'
 import { useCatalogo } from '../data'
-import { contaConfigurada } from '../lib/supabase'
+import { mostrarBotaoConta } from '../lib/supabase'
 import { useConta } from '../store/conta'
 import { useAtlasStore } from '../store/useAtlasStore'
 
@@ -280,7 +280,7 @@ export default function Explorador() {
             >
               <IconeDefinicoes className="size-5" />
             </button>
-            {contaConfigurada && <BotaoConta />}
+            {mostrarBotaoConta && <BotaoConta />}
           </div>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-2">

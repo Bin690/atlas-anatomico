@@ -10,6 +10,12 @@ const CHAVE = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
 
 export const contaConfigurada = Boolean(URL && CHAVE)
 
+/**
+ * O botão da conta aparece quando há projeto ligado; em desenvolvimento aparece sempre (com instruções, se
+ * faltar a ligação), para se poder ver e testar o ecrã. Na versão publicada fica escondido sem projeto.
+ */
+export const mostrarBotaoConta = contaConfigurada || import.meta.env.DEV
+
 let cliente: Promise<SupabaseClient> | null = null
 export function obterCliente(): Promise<SupabaseClient> {
   cliente ??= import('@supabase/supabase-js').then(({ createClient }) =>

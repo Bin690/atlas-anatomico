@@ -4,7 +4,7 @@ import { limparProgresso } from '../../data/progresso'
 import versaoVoz from '../../data/voz.json'
 import { useOffline, type EstadoOffline } from '../../hooks/useOffline'
 import { useCaderno } from '../../store/caderno'
-import { contaConfigurada } from '../../lib/supabase'
+import { mostrarBotaoConta } from '../../lib/supabase'
 import { useConta } from '../../store/conta'
 import { aparelhoModesto, usePreferencias, type Desempenho, type TamanhoTexto } from '../../store/preferencias'
 import { Janela, Secao } from './Janela'
@@ -184,7 +184,7 @@ export function Preferencias({
             ? 'Respostas do quiz, aulas concluídas, favoritos e notas estão guardados na sua conta e neste aparelho.'
             : 'Respostas do quiz, aulas concluídas, favoritos e notas ficam guardados só neste aparelho.'}
         </p>
-        {contaConfigurada && (
+        {mostrarBotaoConta && (
           <button
             type="button"
             onClick={() => {
